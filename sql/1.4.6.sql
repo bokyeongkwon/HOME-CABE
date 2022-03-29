@@ -1,4 +1,5 @@
 --초기화를 위한 테이블 삭제
+--초기화를 위한 테이블 삭제
 drop table RESULT;
 drop table REPORT;
 drop table UPLOAD_FILE;
@@ -14,13 +15,13 @@ create table member (
     member_num   number(10),    --회원번호
     id       varchar2(40),      --아이디
     name      varchar2(40),     --이름
-    pw    varchar2(15),         --비밀번호
+    pw    varchar2(10),         --비밀번호
     tel      varchar2(13),      --전화번호
     email       varchar2(40),   --이메일
-    birth      varchar2(10),            --생년월일
-    gender      char(3) default '여',    --성별(남,여)
+    birth      DATE,            --생년월일
+    gender      CHAR(1) default '1',    --성별(남:0,여,1)
     nickname      varchar2(40),         --별칭
-    show_list      char(10) default '공개', --관심리스트 공개 여부 (공개, 비공개)
+    show_list      CHAR(1) default '1', --관심리스트 공개 여부
     cdate      TIMESTAMP default systimestamp,  --생성일시
     udate      TIMESTAMP                        --변경일시
 );
@@ -43,8 +44,8 @@ alter table member modify gender constraint member_gender_nn not null;
 alter table member modify show_list constraint member_show_list_nn not null;
 alter table member modify cdate constraint member_cdate_nn not null;
 
-alter table member add constraint member_gender_ck check (gender in ('남','여'));
-alter table member add constraint member_show_list_ck check (show_list in ('공개','비공개'));
+alter table member add constraint member_gender_ck check (gender in ('0','1'));
+alter table member add constraint member_show_list_ck check (show_list in ('0','1'));
 
 --시퀀스
 drop sequence member_member_num_seq;
@@ -119,7 +120,7 @@ nocache;
 create table LIKELIST (
     likelist_num   number(10),              --관심리스트 번호
     member_num       NUMBER(10),            --회원번호
-    likelist_chk      char(10) default '동의',  --관심리스트 체크 여부 (동의,비동의)
+    likelist_chk      CHAR(1) default '0',  --관심리스트 체크 여부
     likelist_date    TIMESTAMP default systimestamp,    --찜한 날짜
     board_num      NUMBER(10),              --게시판 게시글 번호
     board_picture    BLOB,                  --대표사진
@@ -146,8 +147,8 @@ nocache;
 --구독/알림 테이블
 create table SUBSCRIBE (
     member_num   number(10),            --구독자 회원번호
-    sub_chk       char(10) default '설정',  --구독설정 (설정,비설정)
-    alarm_chk      char(10) default '설정', --알림설정 (설정,비설정)
+    sub_chk       CHAR(1) default '0',  --구독설정
+    alarm_chk      CHAR(1) default '0', --알림설정
     sub_member_num    number(10),       --구독 된 사람 회원번호
     sub_num      number(10),            --구독/알림 번호
     board_title       VARCHAR2(150),    --제목
@@ -175,11 +176,9 @@ nocache;
 --게시판파일첨부 테이블
 create table UPLOAD_FILE (
     file_num   number(10),              --파일아이디
-    cate_code       NUMBER(10),         --분류코드
     board_num       number(10),         --게시글 번호
     file_date      TIMESTAMP default systimestamp,  --작성일
-    store_file_name    VARCHAR2(150),   --서버보관 파일명
-    upload_file_name    VARCHAR2(150),  --업로드 파일명
+    file_name    VARCHAR2(150),         --파일명
     file_size      NUMBER(30),          --파일크기
     file_type       VARCHAR2(100),      --파일유형
     file_data      BLOB                 --첨부파일
@@ -189,10 +188,10 @@ alter table UPLOAD_FILE add Constraint UPLOAD_FILE_file_num_pk primary key (file
 
 --제약조건
 alter table UPLOAD_FILE modify file_date constraint UPLOAD_FILE_file_date_nn not null;
-alter table UPLOAD_FILE modify store_file_name constraint UPLOAD_FILE_store_file_name_nn not null;
-alter table UPLOAD_FILE modify upload_file_name constraint UPLOAD_FILE_upload_file_name_nn not null;
+alter table UPLOAD_FILE modify file_name constraint UPLOAD_FILE_file_name_nn not null;
 alter table UPLOAD_FILE modify file_size constraint UPLOAD_FILE_file_size_nn not null;
 alter table UPLOAD_FILE modify file_type constraint UPLOAD_FILE_file_type_nn not null;
+alter table UPLOAD_FILE modify file_data constraint UPLOAD_FILE_file_data_nn not null;
 
 --시퀀스
 drop sequence upload_file_file_num_seq;
@@ -205,12 +204,7 @@ nocache;
 --카테고리 테이블
 create table CATEGORY (
     cate_num   number(10),      --분류번호
-    cate_name  VARCHAR2(60),     --분류명
-    descript    clob,               --코드설명
-    pcate_num    number(10),       --부모 분류번호
-    useyn       char(1) default 'Y',            --사용여부 (사용:'Y',미사용:'N')
-    cdate       timestamp default systimestamp,         --생성일시
-    udate       timestamp default systimestamp          --수정일시
+    cate_name  VARCHAR2(60)     --분류명
 );
 
 --기본키생성
@@ -218,9 +212,14 @@ alter table CATEGORY add Constraint CATEGORY_cate_num_pk primary key (cate_num);
 
 --제약조건
 alter table CATEGORY modify cate_name constraint CATEGORY_cate_name_nn not null;
-alter table CATEGORY modify useyn constraint CATEGORY_useyn_nn not null;
 
-alter table CATEGORY add constraint CATEGORY_useyn_ck check(useyn in ('Y','N'));   --해당 분류의 현재 사용 여부.
+--시퀀스
+drop sequence category_cate_num_seq;
+create sequence category_cate_num_seq
+increment by 1
+start with 1
+minvalue 1
+nocache;
 
 --신고 테이블
 create table REPORT (
@@ -230,7 +229,7 @@ create table REPORT (
     report_content    CLOB,                 --신고내용
     board_num      number(10),              --게시글 번호
     reply_num       number(10),             --댓글번호
-    report_proceed   char(10) default '진행'    --신고 진행 사항  (진행,완료)
+    report_proceed   CHAR(1) default '0'    --신고 진행 사항
 );
 
 --기본키생성
@@ -251,7 +250,7 @@ nocache;
 --신고 결과 테이블
 create table RESULT (
     report_num   number(10),            --신고번호
-    result   char(10) default '진행',       --신고결과 (진행,완료)
+    result   CHAR(1) default '0',       --신고결과
     result_reason       CLOB,           --신고 결과 이유
     result_date      TIMESTAMP default systimestamp,    --회원번호
     member_num    number(10),           --회원번호
@@ -291,10 +290,6 @@ alter table SUBSCRIBE add Constraint SUBSCRIBE_board_num_fk foreign key (board_n
 
 --게시판파일첨부
 alter table UPLOAD_FILE add Constraint UPLOAD_FILE_board_num_fk foreign key (board_num) REFERENCES BOARD(board_num);
-alter table UPLOAD_FILE add Constraint UPLOAD_FILE_cate_code_fk foreign key (cate_code) REFERENCES CATEGORY(cate_num);
-
---카테고리
-alter table CATEGORY add constraint CATEGORY_pcate_num_fk foreign key(pcate_num) references CATEGORY(cate_num);
 
 --신고
 alter table REPORT add Constraint REPORT_member_num_fk foreign key (member_num) REFERENCES MEMBER(member_num);
@@ -307,40 +302,7 @@ alter table RESULT add Constraint RESULT_member_num_fk foreign key (member_num) 
 alter table RESULT add Constraint RESULT_board_num_fk foreign key (board_num) REFERENCES BOARD(board_num);
 alter table RESULT add Constraint RESULT_reply_num_fk foreign key (reply_num) REFERENCES REPLY(reply_num);
 
---------------------------------------------------------------------------------------------------------------
 --샘플 데이터
---회원
 INSERT into member (member_num,id,name,pw,tel,email,birth,nickname)
 VALUES (1,'아이디1','이름1','비번1','635-252','이메일1@주소1','2000-05-03','닉네임1');
-
---카테고리 데이터
---첨부파일의 경우 테이블이름은 카테고리지만 일단 추가시킴
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (10,'분야별 레시피',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (11,'제과',10,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (12,'제빵',10,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (13,'음료',10,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (14,'노오븐 베이킹',10,'Y');
-
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (20,'테마별 레시피',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (21,'발렌타인 데이',20,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (22,'할로윈',20,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (23,'빼빼로 데이',20,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (24,'크리스마스',20,'Y');
-
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (30,'사진 팁',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (31,'구도/각도',30,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (32,'보정',30,'Y');
-
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (40,'베이킹 클래스 찾기',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (41,'베이킹 클래스 찾기',40,'Y');
-
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (50,'커뮤니티',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (51,'QnA',50,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (52,'자유 게시판',50,'Y');
-
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (90,'첨부',null,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (91,'파일',90,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (92,'이미지',90,'Y');
-insert into CATEGORY (cate_num,cate_name,pcate_num,useyn) values (93,'프로필',90,'Y');
-
 commit;
