@@ -1,4 +1,5 @@
 --초기화를 위한 테이블 삭제
+--초기화를 위한 테이블 삭제
 drop table RESULT;
 drop table REPORT;
 drop table UPLOAD_FILE;
