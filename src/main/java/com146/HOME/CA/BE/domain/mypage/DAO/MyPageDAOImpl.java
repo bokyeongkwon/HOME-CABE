@@ -89,6 +89,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    m.nickname, ");
         sql.append("    b.board_date, ");
         sql.append("    l.likelist_chk, ");
+        sql.append("    b.board_title ");
         sql.append("  from likelist l inner member m ");
         sql.append("    on l.member_num = m.member_num ");
         sql.append("                   inner join board b ");
@@ -124,7 +125,7 @@ public class MyPageDAOImpl implements MyPageDAO{
      * @return
      */
     @Override
-    public List<myBoard> myBoardList() {
+    public List<MyBoard> myBoardList() {
         StringBuffer sql = new StringBuffer();
 
         sql.append("select ");
@@ -140,7 +141,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on m.member_num = l.member_num ");
         sql.append("  where m.member_id = ? ");
 
-        List<myBoard> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(myBoard.class));
+        List<MyBoard> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyBoard.class));
 
 
         return list;
@@ -169,7 +170,7 @@ public class MyPageDAOImpl implements MyPageDAO{
      *  내가 작성한 댓글 목록
      */
     @Override
-    public List<myReply> myReplyList() {
+    public List<MyReply> myReplyList() {
         StringBuffer sql = new StringBuffer();
 
         sql.append("select ");
@@ -182,7 +183,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on b.member_num = r.member_num ");
         sql.append("  where r.member_id = ? ");
 
-        List<myReply> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(myReply.class));
+        List<MyReply> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyReply.class));
 
 
         return list;
@@ -212,7 +213,7 @@ public class MyPageDAOImpl implements MyPageDAO{
      *  내가 신고한 게시물 목록
      */
     @Override
-    public List<myBoardReport> boardReportList() {
+    public List<MyBoardReport> boardReportList() {
         StringBuffer sql = new StringBuffer();
 
         sql.append("select ");
@@ -229,7 +230,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on p.report_num = t.report_num ");
         sql.append("  where p.member_id = ? ");
 
-        List<myBoardReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(myBoardReport.class));
+        List<MyBoardReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyBoardReport.class));
 
 
         return list;
@@ -239,7 +240,7 @@ public class MyPageDAOImpl implements MyPageDAO{
      *  내가 신고한 댓글 목록
      */
     @Override
-    public List<myReplyReport> replyReportList() {
+    public List<MyReplyReport> replyReportList() {
         StringBuffer sql = new StringBuffer();
 
         sql.append("select ");
@@ -256,7 +257,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on p.report_num = t.report_num ");
         sql.append("  where p.member_id = ? ");
 
-        List<myReplyReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(myReplyReport.class));
+        List<MyReplyReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyReplyReport.class));
 
 
         return list;

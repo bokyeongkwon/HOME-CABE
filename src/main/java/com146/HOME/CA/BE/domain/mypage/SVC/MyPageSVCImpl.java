@@ -49,25 +49,25 @@ public class MyPageSVCImpl implements MyPageSVC{
 
     // 내가 작성한 게시물 목록
     @Override
-    public List<myBoard> myBoardList() {
+    public List<MyBoard> myBoardList() {
         return myPageDAO.myBoardList();
     }
 
     // 내가 작성한 댓글 목록
     @Override
-    public List<myReply> myReplyList() {
+    public List<MyReply> myReplyList() {
         return myPageDAO.myReplyList();
     }
 
     // 내가 신고한 게시물 목록
     @Override
-    public List<myBoardReport> boardReportList() {
+    public List<MyBoardReport> boardReportList() {
         return myPageDAO.boardReportList();
     }
 
     // 내가 신고한 댓글 목록
     @Override
-    public List<myReplyReport> replyReportList() {
+    public List<MyReplyReport> replyReportList() {
         return myPageDAO.replyReportList();
     }
 }

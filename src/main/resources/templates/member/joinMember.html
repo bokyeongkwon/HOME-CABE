@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/member/joinMember.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <!-- 로고 -->
+        <div class="logo"><img src="/logo.jpg" alt="" width="180px" height="150px"></div>
+        <!-- 상단 메뉴 -->
+        <nav>
+            <ul class="menu">
+                <li>분야별 레시피</li>
+                <li>|</li>
+                <li>테마별 레시피</li>
+                <li>|</li>
+                <li>사진 팁</li>
+                <li>|</li>
+                <li>홈베이킹 클래스</li>
+                <li>|</li>
+                <li>Q&A</li>
+                <li>|</li>
+                <li>자유게시판</li>
+            </ul>
+        </nav>
+        <!-- 우측상단 아이콘 -->
+        <div class="icon">
+            <ul class="icon_ul">
+                <li ><a href="#" class="searchBtn"><i class="fas fa-search"></i></a></li>
+                <li><i class="far fa-user"></i></li>
+                <li><i class="fas fa-bars"></i></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 검색창 -->
+    <!-- <div class="container_search">
+        <div class="search">
+            <input class="search textbox" type="text" placeholder="검색어를 입력하세요.">
+            <button class="search button">검색</button>
+        </div>
+    </div> -->
+
+    <!-- 회원가입 화면 -->
+    <main>
+        <form action="" method="post" th:action th:object="${joinForm}">
+            <!-- 회원가입 텍스트 -->
+            <div class="member_join">
+                <b>회원가입</b>
+            </div>
+
+            <!-- 필수 입력사항 텍스트-->
+            <p class="essential">필수입력사항</p>
+            <!-- 필수 입력사항 내용 -->
+            <div class="member_e">
+                <div class="content m_name">
+                    <div class="item name">이름</div>
+                    <div class="item2">
+                        <input typre="text" name="m_e_name" class="m_e_name" th:field="*{name}"
+                               th:class="${#fileds.hasErrors('name') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('id')}">
+                            <p th:erros="*{id}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_id">
+                    <div class="item id">아이디</div>
+                    <div class="item2">
+                        <input type="text" name="m_e_id" class="m_e_id" id="id" th:field="*{id}"
+                               th:class="${#fileds.hasErrors('id') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <button class="id_chk" id="idDubChk" type="button">중복확인</button>
+                        <span>영문, 숫자 조합 6~20자 입력 가능</span>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('id')}">
+                            <p th:erros="*{id}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_pwd">
+                    <div class="item pwd">비밀번호</div>
+                    <div class="item2">
+                        <input type="text" name="m_e_pwd" class="m_e_pwd" th:field="*{pw}"
+                               th:class="${#fileds.hasErrors('pw') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span>영문, 숫자, 특수문자 조합으로 8~20자 입력 가능</span>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('pw')}">
+                            <p th:erros="*{pw}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_pwd_chk">
+                    <div class="item pwd_chk">비밀번호 확인</div>
+                    <div class="item2">
+                        <input type="text" name="m_e_pwd_chk" class="m_e_pwd_chk" th:field="*{pw2}"
+                               th:class="${#fileds.hasErrors('pw2') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('pw2')}">
+                            <p th:erros="*{pw2}" th:errorclass="filedError"></p>
+                        </li>
+                        <li th:if="${#fields.hasErrors('global')}">
+                            <p th:erros="*{global}" th:errorclass="globalError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_nickname">
+                    <div class="item nickname">닉네임</div>
+                    <div class="item2"><input type="text" name="m_e_nickname" id="nickname" class="m_e_nickname" th:field="*{nickname}"></div>
+                    <button class="nickname_chk" id="nicknameDubChk" >중복확인</button>
+                    <span class="errmsg"></span>
+                    <li th:if="${#fields.hasErrors('nickname')}">
+                        <p th:erros="*{nickname}" th:errorclass="filedError"></p>
+                    </li>
+                </div>
+                <div class="content m_phone">
+                    <div class="item phone">연락처</div>
+                    <div class="item2">
+                        <input type="text" name="m_phone1" class="m_e_phone" th:field="*{tel}"
+                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}"required>
+                        <span class="dash">-</span>
+                        <input type="text" name="m_phone2" class="m_e_phone" th:fild="*{tel}"
+                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="dash">-</span>
+                        <input type="text" name="m_phone3" class="m_e_phone" th:field="*{tel}"
+                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('tel')}">
+                            <p th:erros="*{tel}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_email">
+                    <div class="item email">이메일</div>
+                    <div class="item2">
+                        <input type="text" name="m_e_email1" class="m_e_email" id="email1" th:field="*{email}"
+                               th:class="${#fileds.hasErrors('email') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="at">@</span>
+                        <input type="text" name="m_e_email2" class="m_e_email" id="email2" th:field="*{email2}"
+                               th:class="${#fileds.hasErrors('email2') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <button class="email_chk" id="emailDubChk" type="button">중복확인</button>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('email')}">
+                            <p th:erros="*{email}" th:errorclass="filedError"></p>
+                        </li>
+                        <li th:if="${#fields.hasErrors('email2')}">
+                            <p th:erros="*{email2}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_birth">
+                    <div class="item birth">생년월일</div>
+                    <div class="item2">
+                        <input type="text" name="m_birth" class="m_birth" placeholder="생년월일(YYYYMMDD)" th:field="*{birth}"
+                               th:class="${#fileds.hasErrors('email2') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <span class="errmsg"></span>
+                        <li th:if="${#fields.hasErrors('birth')}">
+                            <p th:erros="*{birth}" th:errorclass="filedError"></p>
+                        </li>
+                    </div>
+                </div>
+                <div class="content m_sex">
+                    <div class="item male">성별</div>
+                    <div class="item2">
+                        <label for="male">남자</label>
+                        <input type="radio" name="m_e_gender" id="male" >
+                        <label for="female">여자</label>
+                        <input type="radio" name="m_e_gender" id="female" checked="checked">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 선택 입력사항 텍스트 -->
+            <p class="unessential">선택입력사항</p>
+            <!-- 선택 입력사항 내용 -->
+            <div class="member_ue">
+                <div class="content ue_blog">
+                    <div class="item blog">홈페이지</div>
+                    <div class="item2"><input type="text" name="m_ue_blog" class="m_ue_blog"></div>
+                </div>
+                <div class="content ue_likelist">
+                    <div class="item likelist">관심리스트</div>
+                    <div class="item2">
+                        <label for="m_ue_likelist_public">공개</label>
+                        <input type="radio" name="m_ue_likelist" id="m_ue_likelist_public" checked="checked">
+                        <label for="m_ue_likelist_private">비공개</label>
+                        <input type="radio" name="m_ue_likelist" id="m_ue_likelist_private">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 가입하기 버튼 -->
+            <div class="join_cafe">
+                <button class="cafe" type="button" id="joinBtn"><b>가입하기</b></button>
+            </div>
+        </form>
+    </main>
+
+    <!-- 하단 -->
+    <footer>
+        <ul class="menu">
+            <li>HOME CA:BE 운영팀:a@kh.com</li>
+            <li>|</li>
+            <li>이용약관</li>
+            <li>|</li>
+            <li>개인정보취급방침</li>
+        </ul>
+    </footer>
+    <script>
+        //유효성 체크 상태
+        const validChkStatus = {
+            id:false,
+            email:false,
+            nickname:false
+        }
+
+        //아이디 중복 확인
+        const $id = document.getElementById('id');
+        const $idDubChk = document.getElementById('idDubChk');
+
+        $idDubChk.addEventListener('click', e=>{
+            const xmlHttpreq = new XMLHttpRequest();
+
+            const url = `/api/member/${$id.value}`;
+            xmlHttpreq.open("GET", url);
+            xmlHttpreq.send();
+
+            xmlHttpreq.addEventListener('load', e=>{
+                if(xmlHttpreq.status === 200){
+                    console.log(xmlHttpreq.response);
+                    const result = JSON.parse(xmlHttpreq.response);
+                    console.log(result);
+                    const $errmsg = $idDubChk.closest('div').querySelector('.errmsg');
+
+                    if(result.rtcd === '00'){
+                        $errmsg.textContent = '이미 사용 중인 아이디 입니다.';
+                        $errmsg.style.display = 'block';
+                    }else{
+                        $errmsg.textContent = '';
+                        $errmsg.style.display = 'none';
+                        $idDubChk.textContent = '사용가능';
+                        $idDubChk.disabled = 'disabled';
+                        validChkStatus.id = true;
+                    }
+                }else{
+                    console.log('Error', xmlHttpreq.status, xmlHttpreq.statusText);
+                }
+            });
+        });
+
+        //이메일 중복 확인
+        const $email = document.getElementById('email');
+        const $emailDubChk = document.getElementById('emailDubChk');
+
+        $emailDubChk.addEventListener('click', e=>{
+            const xmlHttpreq = new XMLHttpRequest();
+
+            const url = `/api/member/${$id.value}`;
+            xmlHttpreq.open("GET", url);
+            xmlHttpreq.send();
+
+            xmlHttpreq.addEventListener('load', e=>{
+                if(xmlHttpreq.status === 200){
+                    console.log(xmlHttpreq.response);
+                    const result = JSON.parse(xmlHttpreq.response);
+                    console.log(result);
+                    const $errmsg = $emailDubChk.closest('div').querySelector('.errmsg');
+
+                    if(result.rtcd === '00'){
+                        $errmsg.textContent = '이미 사용 중인 이메일 입니다.';
+                        $errmsg.style.display = 'block';
+                    }else{
+                        $errmsg.textContent = '';
+                        $errmsg.style.display = 'none';
+                        $emailDubChk.textContent = '사용가능';
+                        $emailDubChk.disabled = 'disabled';
+                        validChkStatus.email = true;
+                    }
+                }else{
+                    console.log('Error', xmlHttpreq.status, xmlHttpreq.statusText);
+                }
+            });
+        });
+
+        //닉네임 중복 확인
+        const $nickname = document.getElementById('nickname');
+        const $nicknameDubChk = document.getElementById('nicknameDubChk');
+
+        $nicknameDubChk.addEventListener('click', e=>{
+            const xmlHttpreq = new XMLHttpRequest();
+
+            const url = `/api/member/${$id.value}`;
+            xmlHttpreq.open("GET", url);
+            xmlHttpreq.send();
+
+            xmlHttpreq.addEventListener('load', e=>{
+                if(xmlHttpreq.status === 200){
+                    console.log(xmlHttpreq.response);
+                    const result = JSON.parse(xmlHttpreq.response);
+                    console.log(result);
+                    const $errmsg = $nicknameDubChk.closest('div').querySelector('.errmsg');
+
+                    if(result.rtcd === '00'){
+                        $errmsg.textContent = '이미 사용 중인 닉네임 입니다.';
+                        $errmsg.style.display = 'block';
+                    }else{
+                        $errmsg.textContent = '';
+                        $errmsg.style.display = 'none';
+                        $nicknameDubChk.textContent = '사용가능';
+                        $nicknameDubChk.disabled = 'disabled';
+                        validChkStatus.nickname = true;
+                    }
+                }else{
+                    console.log('Error', xmlHttpreq.status, xmlHttpreq.statusText);
+                }
+            });
+        });
+
+        //회원가입 버튼 클릭시
+        joinBtn.addEventListener('click', e=>{
+
+            //아이디 중복체크 미이행시
+            if(!validChkStatus.id){
+                 const $errmsg = $idDubChk.closest('div').querySelector('.errmsg');
+                 $errmsg.textContent = '아이디 중복체크를 해주세요.';
+                 $errmsg.style.display = 'none';
+                 return;
+            }
+
+            //이메일 중복체크 미이행시
+            if(!validChkStatus.email){
+                 const $errmsg = $emailDubChk.closest('div').querySelector('.errmsg');
+                 $errmsg.textContent = '이메일 중복체크를 해주세요.';
+                 $errmsg.style.display = 'none';
+                 return;
+            }
+
+            //별칭 중복체크 미이행시
+            if(!validChkStatus.nickname){
+                 const $errmsg = $nicknameDubChk.closest('div').querySelector('.errmsg');
+                 $errmsg.textContent = '닉네임 중복체크를 해주세요';
+                 $errmsg.style.display = 'none';
+                 return;
+            }
+            e.target.closest('form').submit();
+        });
+    </script>
+</body>
+</html>

@@ -16,16 +16,16 @@ public interface MyPageDAO {
     // 관심리스트 삭제
     int deleteLike(long likeNum);
     // 내가 작성한 게시물 목록
-    List<myBoard> myBoardList();
+    List<MyBoard> myBoardList();
     //내가 작성한 게시물 삭제
     int deleteMyBoard(long memberNum);
     // 내가 작성한 댓글 목록
-    List<myReply> myReplyList();
+    List<MyReply> myReplyList();
     int deleteMyReply(long memberNum);
     // 내가 신고한 게시물 목록
-    List<myBoardReport> boardReportList();
+    List<MyBoardReport> boardReportList();
     // 내가 신고한 댓글 목록
-    List<myReplyReport> replyReportList();
+    List<MyReplyReport> replyReportList();
 
 
 }
