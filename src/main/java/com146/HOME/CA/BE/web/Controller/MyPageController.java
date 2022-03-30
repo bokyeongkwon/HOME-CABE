@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.web;
+package com146.HOME.CA.BE.web.Controller;
 
 import com146.HOME.CA.BE.domain.mypage.DTO.*;
 import com146.HOME.CA.BE.domain.mypage.SVC.MyPageSVC;

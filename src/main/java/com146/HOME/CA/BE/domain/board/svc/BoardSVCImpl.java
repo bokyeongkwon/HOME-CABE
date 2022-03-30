@@ -7,63 +7,80 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class BoardSVCImpl implements BoardSVC {
 
-    private final BoardDAO boardDAO;
+  private final BoardDAO boardDAO;
 
-    //등록
-    @Override
-    public Long boardUpload(Board board) {
-        return boardDAO.boardUpload(board);
-    }
+  /**
+   * 등록
+   * @param board
+   * @return
+   */
+  @Override
+  public Long insertBoard(Board board) {
+    return boardDAO.insertBoard(board);
+  }
 
-    //등록 - 첨부파일 포함
-    @Override
-    public Long boardUpload(Board board, List<MultipartFile> files) {
-        return null;
-    }
+  /**
+   * 상세 조회, 조회수 +1
+   * @param boardNum
+   * @return
+   */
+  @Override
+  public Board selectByNum(Long boardNum) {
+    Board foundItem = boardDAO.selectByNum(boardNum);
+    boardDAO.increaseHit(boardNum);
+    return foundItem;
+  }
 
-    //상세조회
-    @Override
-    public Board findByBoard_num(Long board_num) {
-        return null;
-    }
+  /**
+   * 수정
+   * @param boardNum
+   * @param board
+   * @return
+   */
+  @Override
+  public int updateByNum(Long boardNum, Board board) {
+    return boardDAO.updateByNum(boardNum, board);
+  }
 
-    //수정
-    @Override
-    public int boardUpdate(Long board_num, Board board) {
-        return boardDAO.boardUpdate(board_num,board);
-    }
+  /**
+   * 삭제
+   * @param boardNum
+   * @return
+   */
+  @Override
+  public int deleteByNum(Long boardNum) {
+    return boardDAO.deleteByNum(boardNum);
+  }
 
-    //삭제
-    @Override
-    public int deleteByBoard_num(Long board_num) {
-        return boardDAO.deleteByBoard_num(board_num);
-    }
+  /**
+   * 페이징 적용된 카테고리별 게시판 목록
+   * @param cateCode
+   * @param startRec
+   * @param endRec
+   * @return
+   */
+  @Override
+  public List<Board> selectBoard(int cateCode, int startRec, int endRec) {
+    return boardDAO.selectBoard(cateCode, startRec, endRec);
+  }
 
-    //전체조회
-    @Override
-    public List<Board> findAll() {
-        return null;
-    }
+  /**
+   * 카테고리별 게시물 총 개수
+   * @param cateCode
+   * @return
+   */
+  @Override
+  public int totalCount(int cateCode) {
+    return boardDAO.totalCount(cateCode);
+  }
 
-    //카테고리별 전체조회
-    @Override
-    public List<Board> findAll(Long cate_code) {
-        return null;
-    }
-
-    //전체건수
-    @Override
-    public int totalCount() {
-        return 0;
-    }
 }

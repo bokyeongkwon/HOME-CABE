@@ -1,9 +1,9 @@
 package com146.HOME.CA.BE.domain.board.dao;
 
-
 import com146.HOME.CA.BE.domain.board.Board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,105 +22,185 @@ public class BoardDAOImpl implements BoardDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-    //등록
+    /**
+     * 게시글 작성 > 등록
+     * @param board 게시글
+     * @return 게시글 시퀀스(boardNum)
+     */
     @Override
-    public Long boardUpload(Board board) {
-
+    public Long insertBoard(Board board) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" insert into board (board_num,cate_code,board_title,member_num,board_content,board_map_address) ");
-        sql.append(" values(board_board_num_seq.nextval,?,?,?,?,?) ");
+        sql.append(" INSERT INTO board ( ");
+        sql.append("     board_num, ");
+        sql.append("     cate_code, ");
+        sql.append("     board_title, ");
+        sql.append("     member_num, ");
+        sql.append("     nickname, ");
+        sql.append("     board_content ");
+        sql.append(" ) VALUES ( ");
+        sql.append("     BOARD_board_num_SEQ.nextval, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ? ) ");
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql.toString(), new String[]{"board_num"});
-                pstmt.setLong(1,board.getCate_code());
-                pstmt.setString(2, board.getBoard_title());
-                pstmt.setLong(3, board.getMember_num());
-                pstmt.setString(4, board.getBoard_content());
-                pstmt.setString(5, board.getBoard_map_address());
+                pstmt.setInt(1, board.getCateCode());
+                pstmt.setString(2, board.getBoardTitle());
+                pstmt.setLong(3, board.getMemberNum());
+                pstmt.setString(4, board.getNickname());
+                pstmt.setString(5, board.getBoardContent());
+
                 return pstmt;
             }
-        },keyHolder);
+        }, keyHolder);
 
-
-
+//    게시글 번호를 반환.
         return Long.valueOf(keyHolder.getKeys().get("board_num").toString());
     }
 
-    //상세조회
+    /**
+     * 본문 상세 조회
+     * @param boardNum 게시글 시퀀스
+     * @return 게시글 상세페이지
+     */
     @Override
-    public Board findByBoard_num(Long board_num) {
-        return null;
+    public Board selectByNum(Long boardNum) {
+        StringBuffer sql = new StringBuffer();
+        sql.append(" SELECT ");
+        sql.append("     board_num, ");
+        sql.append("     cate_code, ");
+        sql.append("     board_title, ");
+        sql.append("     member_num, ");
+        sql.append("     nickname, ");
+        sql.append("     board_date, ");
+        sql.append("     board_hit, ");
+        sql.append("     board_content, ");
+        sql.append("     board_map_address, ");
+        sql.append("     board_picture ");
+        sql.append(" FROM ");
+        sql.append("     board ");
+        sql.append(" where board_num = ? ");
+
+        Board foundItem = null;
+        try {
+            foundItem = jdbcTemplate.queryForObject(sql.toString(),
+                new BeanPropertyRowMapper<>(Board.class),
+                boardNum);
+        }catch (Exception e){
+            foundItem = null;
+        }
+//    찾았으면 반환
+        return foundItem;
     }
 
-    //수정
+    /** 게시글 수정
+     * 
+     * @param boardNum 게시글 시퀀스
+     * @param board 덮어 쓸(수정) 게시물 내용
+     * @return 수정 성공 1
+     */
     @Override
-    public int boardUpdate(Long board_num, Board board) {
-
+    public int updateByNum(Long boardNum, Board board) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" update board ");
-        sql.append("   SET cate_code = ?, ");
-        sql.append("       board_title = ?, ");
-        sql.append("       board_content = ?, ");
-        sql.append("       board_map_address = ?, ");
-        sql.append("       board_date = systimestamp ");
+        sql.append(" UPDATE board ");
+        sql.append(" SET ");
+        sql.append("     cate_code = ?, ");
+        sql.append("     board_title = ?, ");
+        sql.append("     board_content = ? ");
         sql.append(" WHERE board_num = ? ");
 
-        int updatedItemCount = jdbcTemplate.update(
-                sql.toString(),
-                board.getCate_code(),
-                board.getBoard_title(),
-                board.getBoard_content(),
-                board.getBoard_map_address(),
-                board_num
+        int updateCnt = jdbcTemplate.update(sql.toString(),
+            board.getCateCode(),
+            board.getBoardTitle(),
+            board.getBoardContent(),
+            boardNum
         );
-
-        return updatedItemCount;
-
+//    성공했으면 1 반환
+        return updateCnt;
     }
 
-    //삭제
+    /**
+     * 게시물 삭제
+     * @param boardNum 게시물 시퀀스
+     * @return 삭제 성공 횟수 1
+     */
     @Override
-    public int deleteByBoard_num(Long board_num) {
+    public int deleteByNum(Long boardNum) {
+        String sql = " delete from board where board_num = ? ";
+        int deleteCnt = jdbcTemplate.update(sql, boardNum);
+
+        return deleteCnt;
+    }
+
+    /**
+     * 조회수 증가
+     * @param boardNum 게시물 시퀀스
+     * @return 해당 게시물 조회수 +1
+     */
+    @Override
+    public int increaseHit(Long boardNum) {
         StringBuffer sql = new StringBuffer();
-        sql.append("DELETE FROM board ");
+        sql.append(" UPDATE board ");
+        sql.append(" SET board_hit = board_hit+1 ");
         sql.append(" WHERE board_num = ? ");
 
-        int updateItemCount = jdbcTemplate.update(sql.toString(), board_num);
-
-        return updateItemCount;
+        int updateHit = jdbcTemplate.update(sql.toString(), boardNum);
+        return updateHit;
     }
 
-    //전체조회
+    /**
+     * 페이징 적용한 카테고리별 게시판 목록
+     * @param cateCode 게시판 분류
+     * @param startRec 시작 레코드
+     * @param endRec 마지막 레코드
+     * @return 목록
+     */
     @Override
-    public List<Board> findAll() {
-        return null;
-    }
-
-    //카테고리별 전체조회
-    @Override
-    public List<Board> findAll(Long cate_code) {
-        return null;
-    }
-
-    //조회수 증가
-    @Override
-    public int increaseHitCount(Long board_num) {
+    public List<Board> selectBoard(int cateCode, int startRec, int endRec) {
         StringBuffer sql = new StringBuffer();
-        sql.append("update board  ");
-        sql.append("set board_hit = board_hit + 1 ");
-        sql.append("where board_num = ? ");
+        sql.append(" select t1.* from( ");
+        sql.append("     SELECT ROW_NUMBER() OVER (ORDER BY board_num desc) no, ");
+        sql.append("     board_num, ");
+        sql.append("     cate_code, ");
+        sql.append("     board_title, ");
+        sql.append("     member_num, ");
+        sql.append("     nickname, ");
+        sql.append("     board_hit, ");
+        sql.append("     board_date ");
+        sql.append("     FROM ");
+        sql.append("     board ");
+        sql.append("     where cate_code = ? ) t1 ");
+        sql.append(" where t1.no between ? and ? ");
 
-        int affectedRows = jdbcTemplate.update(sql.toString(), board_num);
-
-        return affectedRows;
+        List<Board> list = jdbcTemplate.query(
+            sql.toString(),
+            new BeanPropertyRowMapper<>(Board.class),
+            cateCode, startRec, endRec
+        );
+        return list;
     }
 
-    //전체건수
+    /**
+     * 카테고리별 게시물 총 개수
+     * @param cateCode 카테고리
+     * @return 해당 게시판 총 게시물 수
+     */
     @Override
-    public int totalCount() {
-        return 0;
+    public int totalCount(int cateCode) {
+        String sql = " select count(*) from board where cate_code = ? ";
+
+        Integer itemCnt = 0;
+        try {
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, cateCode);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 }
