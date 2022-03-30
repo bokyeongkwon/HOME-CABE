@@ -77,4 +77,5 @@ public interface MemberDAO {
    */
   String findEmailByNickname(String nickname);
 
+
 }
