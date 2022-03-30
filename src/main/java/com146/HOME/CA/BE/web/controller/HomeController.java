@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.web;
+package com146.HOME.CA.BE.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
