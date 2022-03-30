@@ -2,6 +2,7 @@ package com146.HOME.CA.BE.web;
 
 import com146.HOME.CA.BE.domain.mypage.DTO.*;
 import com146.HOME.CA.BE.domain.mypage.SVC.MyPageSVC;
+import com146.HOME.CA.BE.web.form.login.LoginMember;
 import com146.HOME.CA.BE.web.form.mypage.LikeListForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class MyPageController {
         log.info(id);
 
 
-        List<Like> list = myPageSVC.likeList(id);
+        List<Like> list = myPageSVC.likeList();
 
         model.addAttribute("likeList", list);
 
@@ -70,7 +71,7 @@ public class MyPageController {
         String id = loginMember.getId();
         log.info(id);
 
-        List<Subscribe> list = myPageSVC.subscribeList(id);
+        List<Subscribe> list = myPageSVC.subscribeList();
 
         model.addAttribute("subscribeList", list);
 
@@ -128,7 +129,7 @@ public class MyPageController {
         String id = loginMember.getId();
         log.info(id);
 
-        List<MyBoard> list = myPageSVC.myBoardList(id);
+        List<MyBoard> list = myPageSVC.myBoardList();
 
         model.addAttribute("myBoardList", list);
         return "/mypage/board";
@@ -149,7 +150,7 @@ public class MyPageController {
         String id = loginMember.getId();
         log.info(id);
 
-        List<MyReply> list = myPageSVC.myReplyList(id);
+        List<MyReply> list = myPageSVC.myReplyList();
 
         model.addAttribute("myReplyList", list);
         return "/mypage/reply";
@@ -159,7 +160,7 @@ public class MyPageController {
 
     // 내가 신고한 게시물 목록
     @GetMapping("/boardReport")
-    public String Subscribe(HttpServletRequest request, Model model) {
+    public String myBoardReport(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loginMember") == null) {
@@ -170,7 +171,7 @@ public class MyPageController {
         String id = loginMember.getId();
         log.info(id);
 
-        List<MyBoardReport> list = myPageSVC.boardReportList(id);
+        List<MyBoardReport> list = myPageSVC.boardReportList();
 
         model.addAttribute("boardReportList", list);
         return "subscribe/list";
@@ -180,7 +181,7 @@ public class MyPageController {
 
     // 내가 신고한 댓글 목록
     @GetMapping("/replyReport")
-    public String Subscribe(HttpServletRequest request, Model model){
+    public String myReplyReport(HttpServletRequest request, Model model){
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("loginMember") == null) {
@@ -191,7 +192,7 @@ public class MyPageController {
         String id = loginMember.getId();
         log.info(id);
 
-        List<MyReplyReport> list = myPageSVC.replyReportList(id);
+        List<MyReplyReport> list = myPageSVC.replyReportList();
 
 
         model.addAttribute("replyReportList", list);

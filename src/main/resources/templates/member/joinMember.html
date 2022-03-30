@@ -11,7 +11,7 @@
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"> -->
-    <link rel="stylesheet" href="/member/joinMember.css">
+    <link rel="stylesheet" href="/css/member/joinMember.css">
     <title>Document</title>
 </head>
 <body>
@@ -116,8 +116,10 @@
                 </div>
                 <div class="content m_nickname">
                     <div class="item nickname">닉네임</div>
-                    <div class="item2"><input type="text" name="m_e_nickname" id="nickname" class="m_e_nickname" th:field="*{nickname}"></div>
-                    <button class="nickname_chk" id="nicknameDubChk" >중복확인</button>
+                    <div class="item2">
+                        <input type="text" name="m_e_nickname" id="nickname" class="m_e_nickname" th:field="*{nickname}">
+                        <button class="nickname_chk" id="nicknameDubChk" >중복확인</button>
+                    </div>
                     <span class="errmsg"></span>
                     <li th:if="${#fields.hasErrors('nickname')}">
                         <p th:erros="*{nickname}" th:errorclass="filedError"></p>
@@ -178,23 +180,13 @@
                         <input type="radio" name="m_e_gender" id="female" checked="checked">
                     </div>
                 </div>
-            </div>
-
-            <!-- 선택 입력사항 텍스트 -->
-            <p class="unessential">선택입력사항</p>
-            <!-- 선택 입력사항 내용 -->
-            <div class="member_ue">
-                <div class="content ue_blog">
-                    <div class="item blog">홈페이지</div>
-                    <div class="item2"><input type="text" name="m_ue_blog" class="m_ue_blog"></div>
-                </div>
-                <div class="content ue_likelist">
+                <div class="content m_likelist">
                     <div class="item likelist">관심리스트</div>
                     <div class="item2">
-                        <label for="m_ue_likelist_public">공개</label>
-                        <input type="radio" name="m_ue_likelist" id="m_ue_likelist_public" checked="checked">
-                        <label for="m_ue_likelist_private">비공개</label>
-                        <input type="radio" name="m_ue_likelist" id="m_ue_likelist_private">
+                        <label for="m_likelist_public">공개</label>
+                        <input type="radio" name="m_likelist" id="m_likelist_public" checked="checked">
+                        <label for="m_likelist_private">비공개</label>
+                        <input type="radio" name="m_likelist" id="m_likelist_private">
                     </div>
                 </div>
             </div>

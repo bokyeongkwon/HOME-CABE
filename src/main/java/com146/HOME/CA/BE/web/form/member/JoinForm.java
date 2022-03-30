@@ -18,8 +18,8 @@ public class JoinForm {
     @Size(min=2, max=20)
     private String name;                //이름 VARCHAR2(40)
     @NotBlank
-    @Size(min=8, max=20)
-    private String pw;                  //비밀번호 VARCHAR2(10)
+    @Size(min=8, max=15)
+    private String pw;                  //비밀번호 VARCHAR2(15)
     @NotBlank
     @Size(min=10, max=11)
     private String tel;                 //전화번호 VARCHAR2(13)
