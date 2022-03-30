@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 외부 아이콘 임포트 -->
+  <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
+
+  <!-- 외부 css -->
+  <link rel="stylesheet" href="/static/css/board/bakingClass.css" th:href="@{/css/board/bakingClass.css}">
+
+  <!-- 구글 폰트 Jua 적용  -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+  <title>베이킹 클래스 게시판</title>
+
+  <!-- 외부 JS파일 연결, 화면이 로딩 된 후 적용 -->
+  <script defer src="" th:src="@{/js/board/bakingClass_ajax.js}"></script>
+  <script defer src="" th:src="@{/js/board/bakingClass.js}"></script>
+
+  <!-- 네이버, 카카오 지도 API. 기기가 달라지면 플랫폼 별도 추가 필요 -->
+  <script type="text/javascript"
+          src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=0y3jm6bdzz"></script>
+  <script type="text/javascript"
+          src="//dapi.kakao.com/v2/maps/sdk.js?appkey=38d6ce372c141979c2b8c65e59778eb3&libraries=services">
+  </script>
+</head>
+
+<body>
+<header>
+  <!-- 로고, 클릭하면 메인 화면으로 이동 -->
+  <a href="" th:href="@{/}" class="logo"><img src="" th:src="@{/img/logo.jpg}" alt="" width="150px" height="100px"></a>
+
+  <!-- 상단 메뉴 -->
+  <div class="category">
+    <!-- 카테고리 구분, menu = depth1 -->
+    <ul class="menu">
+      <li class="pcode">분야별 레시피</li>
+      <li>|</li>
+      <li class="pcode">테마별 레시피</li>
+      <li>|</li>
+      <li class="pcode">사진 팁</li>
+      <li>|</li>
+      <li class="pcode">베이킹 클래스 찾기</li>
+      <li>|</li>
+      <li class="pcode">커뮤니티</li>
+    </ul>
+    <!-- 드롭다운 -->
+    <div class="dropdown-content">
+      <!-- 각 url에 {reqPage}/{cateCode} -->
+      <div class="depth2">
+        <a href="#" th:href="@{/board/1?cateCode=11}" class="ccode">제과</a>
+        <a href="#" th:href="@{/board/1?cateCode=12}" class="ccode">제빵</a>
+        <a href="#" th:href="@{/board/1?cateCode=13}" class="ccode">음료</a>
+        <a href="#" th:href="@{/board/1?cateCode=14}" class="ccode">노오븐 베이킹</a>
+      </div>
+      <div class="depth2">
+        <a href="#" th:href="@{/board/1?cateCode=21}" class="ccode">발렌타인 데이</a>
+        <a href="#" th:href="@{/board/1?cateCode=22}" class="ccode">할로윈</a>
+        <a href="#" th:href="@{/board/1?cateCode=23}" class="ccode">빼빼로 데이</a>
+        <a href="#" th:href="@{/board/1?cateCode=24}" class="ccode">크리스마스</a>
+      </div>
+      <div class="depth2">
+        <a href="#" th:href="@{/board/1?cateCode=31}" class="ccode">구도/각도</a>
+        <a href="#" th:href="@{/board/1?cateCode=32}" class="ccode">보정</a>
+      </div>
+      <div class="depth2">
+        <a href="#" th:href="@{/board/1?cateCode=41}" class="ccode">베이킹 클래스 찾기</a>
+      </div>
+      <div class="depth2">
+        <a href="#" th:href="@{/board/1?cateCode=51}" class="ccode">QnA</a>
+        <a href="#" th:href="@{/board/1?cateCode=52}" class="ccode">자유 게시판</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 우측상단 아이콘 -->
+  <div class="icon">
+    <ul class="icon_ul">
+      <li><a href="#" class="searchBtn"><i class="fas fa-search"></i></a></li>
+      <li><i class="far fa-user"></i></li>
+      <li><i class="fas fa-bars"></i></li>
+    </ul>
+  </div>
+</header>
+
+<!-- 검색창 -->
+<div class="container_search">
+  <div class="search">
+    <input class="search textbox" type="text">
+    <!-- placeholder="검색어를 입력하세요."> -->
+    <button class="search button">검색</button>
+  </div>
+</div>
+
+<main>
+  <!-- 게시판 -->
+  <div class="content_page">
+    <!-- 게시판 상단 현 페이지 주소 표시, 정렬 콤보박스, 글쓰기 버튼 -->
+    <div id="page_status">
+      <div id="page_name">지역별 클래스 검색</div>
+
+      <!-- order_wrapper = (order + write_btn) -->
+      <div class="order_wrapper">
+        <select name="order" id="post_order">
+          <option value="">정렬기준</option>
+          <option value="">아직미정</option>
+          <option value="">조회수등</option>
+        </select>
+        <button id="writeBtn">글쓰기</button>
+      </div>
+    </div>
+
+    <!-- 본문 -->
+    <!-- 지역 선택창 -->
+    <div class="cities-wrap">
+      <div id="superBox">
+
+        <div class="allCities">
+          <button id="allCityBtn">전체</button>
+        </div>
+        <div class="superCity">
+          <button class="cityBtn" data-super-id="Seoul">서울</button>
+          <button class="cityBtn" data-super-id="Busan">부산</button>
+          <button class="cityBtn" data-super-id="Daegu">대구</button>
+          <button class="cityBtn" data-super-id="Incheon">인천</button>
+          <button class="cityBtn" data-super-id="Gwangju">광주</button>
+          <button class="cityBtn" data-super-id="Dajeon">대전</button>
+          <button class="cityBtn" data-super-id="Ulsan">울산</button>
+          <button class="cityBtn" data-super-id="Sejong">세종</button>
+          <button class="cityBtn" data-super-id="Gyeonggi">경기</button>
+          <button class="cityBtn" data-super-id="Gangwon">강원</button>
+          <button class="cityBtn" data-super-id="Chungbuk">충북</button>
+          <button class="cityBtn" data-super-id="Chungnam">충남</button>
+          <button class="cityBtn" data-super-id="Jeonbuk">전북</button>
+          <button class="cityBtn" data-super-id="Jeonnam">전남</button>
+          <button class="cityBtn" data-super-id="Gyeongbuk">경북</button>
+          <button class="cityBtn" data-super-id="Gyeongnam">경남</button>
+          <button class="cityBtn" data-super-id="Jeju">제주</button>
+        </div>
+      </div>
+      <div id="subBox">
+        <!-- 군/구 체크박스가 출력될 자리 -->
+        <!-- <span><input type="checkbox">${}</span> -->
+      </div>
+    </div>
+
+    <!-- 본문 지도 디스플레이-->
+    <div id="mapDisplay">
+      <div id="map"></div>
+    </div>
+
+    <!-- 지도 아래 게시판 -->
+    <div class="mapBoard">
+      <div class="mapBoard_container">
+        <div class="col uppermost">no</div>
+        <div class="col uppermost">제목</div>
+        <div class="col uppermost">작성자</div>
+        <div class="col uppermost">작성일</div>
+        <div class="col uppermost">조회수</div>
+
+        <!-- db내용을 ListForm 형식에 맞게 표시하는 데 타임리프 반복문 필요 -->
+        <th:block th:each=" item : ${list}">
+          <div class="col" th:text="${item.boardNum}">게시물 번호</div>
+          <a href="" class="col" th:text="${item.boardTitle}" th:href="@{|/board/${item.boardNum}/detail|}">제목</a>
+          <div class="col" th:text="${item.nickname}">작성자ID or Nickname</div>
+          <div class="col" th:text="${#temporals.format(item.boardDate,'yy/MM/dd HH:dd')}">작성일</div>
+          <div class="col" th:text="${item.boardHit}">조회수</div>
+        </th:block>
+
+      </div>
+    </div>
+
+    <!-- 페이징 버튼 -->
+    <div class="bbs-page">
+      <!--이전페이지정보-->
+      <th:block th:if="${pc.prev}">
+        <a class="bbs-page-item" href="" th:href="@{/board/1(cateCode=${param.cateCode})}"><i class="fas fa-angle-double-left"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-left"></i></a>
+      </th:block>
+
+      <!--페이지표시-->
+      <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
+        <th:block th:if="${pnum != 0}">
+          <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'"
+             href="" th:href="@{/board/{reqPage}(reqPage=${pnum}, cateCode=${param.cateCode})}" th:text="${pnum}">1</a>
+        </th:block>
+      </th:block>
+
+      <!--다음페이지정보-->
+      <th:block th:if="${pc.next}">
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-right"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateCode=${param.cateCode})}"><i class="fas fa-angle-double-right"></i></a>
+      </th:block>
+    </div>
+
+  </div>
+</main>
+
+<!-- 게시판 하단. 게시글 검색, 기타 등등 -->
+<div id="post_search_bar">
+  <form action="">
+    <select name="post_filter" id="post_filter">
+      <option value="title">제목</option>
+      <option value="author">작성자</option>
+      <option value="mixed">제목+내용</option>
+    </select>
+    <input type="text" name="scan_post" id="scan_post"><button id="post_search_btn">검색</button>
+  </form>
+</div>
+
+<!-- 최하단 -->
+<footer>
+  <ul class="menu">
+    <li>개인정보취급방침</li>
+    <li>|</li>
+    <li>회원약관</li>
+    <li>|</li>
+    <li>공정위확인</li>
+    <li>|</li>
+    <li>쇼핑몰 고객센터</li>
+    <li>|</li>
+    <li>000-111-2222</li>
+  </ul>
+</footer>
+
+
+</body>
+
+</html>
