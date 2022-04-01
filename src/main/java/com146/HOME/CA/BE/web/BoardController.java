@@ -29,17 +29,17 @@ public class BoardController {
   private final BoardSVC boardSVC;
   private final CategoryDAO categoryDAO;
 
-//  페이징(10, 10)
+  //  페이징(10, 10)
   @Autowired
   @Qualifier("pc10")
-  private PageCriteria pc;
+  private PageCriteria pc10;
 
-//    페이징(9, 5)
-//    @Autowired
-//    @Qualifier("pc5")
-//    private PageCriteria pc5;
+  //    페이징(9, 5)
+  @Autowired
+  @Qualifier("pc5")
+  private PageCriteria pc5;
 
-//  게시판 카테고리
+  //  게시판 카테고리
   @ModelAttribute("classifier")
   public List<Category> classifier(){
 //    13개 일반 게시판 분류 전부 반환
@@ -47,47 +47,58 @@ public class BoardController {
   }
 
 
-//  각 카테고리별 게시판 목록으로 이동
-@GetMapping("/{reqPage}")
-public String list(
-    @PathVariable(required = false) Optional<Integer> reqPage,
-    @RequestParam int cateCode,
-    Model model
-){
+  //  각 카테고리별 게시판 목록으로 이동
+  @GetMapping("/{reqPage}")
+  public String list(
+      @PathVariable(required = false) Optional<Integer> reqPage,
+      @RequestParam int cateCode,
+      Model model
+  ){
+//    게시판 만들기 로직 추출
+    makingBoard(reqPage, cateCode, model);
+    //   분류별 적절한 게시판으로 이동.
+    if( cateCode == 41 ){
+      return "/board/bakingClass";
+    }else if( cateCode == 51 || cateCode == 52  ){
+      return "/board/boardCommu";
+    }else{
+      return "/board/boardList";
+    }
+  }
+
+  // 게시판 만드는 메소드
+  private void makingBoard(Optional<Integer> reqPage, int cateCode, Model model) {
+    //   페이지 컨셉에 맞게 페이징 구분
+    PageCriteria pc = null;
+    if(cateCode == 41 || cateCode == 51 || cateCode == 52 ){
+      pc = pc10;
+    }else{
+      pc = pc5;
+    }
+
 //    페이지 요청이 없으면 1페이지
-  Integer page = reqPage.orElse(1);
-//  String cate = getCategory(cateCode);
+    Integer page = reqPage.orElse(1);
 
-  pc.getRc().setReqPage(page);
-  List<Board> list = null;
+    pc.getRc().setReqPage(page);
+    List<Board> list = null;
 
-  pc.setTotalRec(boardSVC.totalCount(cateCode));
-  list = boardSVC.selectBoard(cateCode, pc.getRc().getStartRec(), pc.getRc().getEndRec());
+    pc.setTotalRec(boardSVC.totalCount(cateCode));
+    list = boardSVC.selectBoard(cateCode, pc.getRc().getStartRec(), pc.getRc().getEndRec());
 
 //  ListForm 과 데이터 대조, 복사
-  List<ListForm> partOfList = new ArrayList<>();
-  for (Board board : list) {
-    ListForm listForm = new ListForm();
-    BeanUtils.copyProperties(board, listForm);
-    partOfList.add(listForm);
+    List<ListForm> partOfList = new ArrayList<>();
+    for (Board board : list) {
+      ListForm listForm = new ListForm();
+      BeanUtils.copyProperties(board, listForm);
+      partOfList.add(listForm);
+    }
+    model.addAttribute("list", partOfList);
+    model.addAttribute("pc", pc);
+    model.addAttribute("catecode", cateCode);
   }
-  model.addAttribute("list", partOfList);
-  model.addAttribute("pc", pc);
-  model.addAttribute("catecode", cateCode);
-
-  //   분류별 적절한 게시판으로 이동.
-  if( cateCode == 41 ){
-    return "/board/bakingClass";
-  }else if( cateCode == 51 || cateCode == 52  ){
-    return "/board/boardCommu";
-  }else{
-    return "/board/boardList";
-  }
-}
 
 
-
-//  공통 CRUD
+  //  공통 CRUD
 //    작성 양식
   @GetMapping("/add")
   public String boardAdd(){

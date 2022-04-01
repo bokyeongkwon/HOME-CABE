@@ -5,13 +5,16 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>일반 게시판</title>
-  <!-- 외부 아이콘 임포트 -->
   <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
-  <!--    폰트 적용 -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-  <!-- css 임포트 -->
-  <link rel="stylesheet" href="/static/css/board/list.css" th:href="@{/css/board/boardList.css}">
+
+  <link rel="stylesheet" href="list.css" th:href="@{/css/board/boardList.css}">
+  <title>갤러리형 게시판</title>
 </head>
 
 <body>
@@ -19,11 +22,10 @@
   <!-- 로고, 클릭하면 메인 화면으로 이동 -->
   <a href="" th:href="@{/}" class="logo"><img src="" th:src="@{/img/logo.jpg}" alt="" width="150px"
                                               height="100px"></a>
-
   <!-- 상단 메뉴 -->
   <div class="category">
     <!-- 카테고리 구분, menu = depth1 -->
-    <ul class="menu">
+    <ul class="menu" >
       <li class="pcode">분야별 레시피</li>
       <li>|</li>
       <li class="pcode">테마별 레시피</li>
@@ -36,6 +38,7 @@
     </ul>
     <!-- 드롭다운 -->
     <div class="dropdown-content">
+      <!-- 각 url에 {reqPage}/{cateCode} -->
       <div class="depth2">
         <a href="#" th:href="@{/board/1?cateCode=11}" class="ccode">제과</a>
         <a href="#" th:href="@{/board/1?cateCode=12}" class="ccode">제빵</a>
@@ -75,61 +78,109 @@
 <!-- 검색창 -->
 <div class="container_search">
   <div class="search">
-    <input class="search textbox" type="text">
-    <!-- placeholder="검색어를 입력하세요."> -->
+    <input class="search textbox" type="text" placeholder="검색어를 입력하세요.">
     <button class="search button">검색</button>
   </div>
 </div>
 
-<!-- 본문 -->
 <main>
-  <div class="Board_container">
-    <div class="Board">
-      <div class="col uppermost">no</div>
-      <div class="col uppermost">제목</div>
-      <div class="col uppermost">작성자</div>
-      <div class="col uppermost">작성일</div>
-      <div class="col uppermost">조회수</div>
-
-      <!-- db내용을 ListForm 형식에 맞게 표시하는 데 타임리프 반복문 필요 -->
-<!--      <th:block th:each=" item : ${list}">-->
-
-<!--      </th:block>-->
-    </div>
+  <!-- 왼쪽 카테고리 -->
+  <div id="leftCategory" >
+    <div id="leftCategory_title">[super]</div>
+    <ul class="leftCategory_ul">
+      <li class="leftCategory_li"><a href="" class="leftLi_a">제과</a></li>
+      <li class="leftCategory_li"><a href="" class="leftLi_a">제빵</a></li>
+      <li class="leftCategory_li"><a href="" class="leftLi_a">음료</a></li>
+      <li class="leftCategory_li"><a href="" class="leftLi_a">노오븐 베이킹</a></li>
+    </ul>
   </div>
+  <!-- 본문 -->
+  <div class="liLiWrap" >
+    <div class="liLiMenu" >[sub]</div>
+    <div class="liLiItems">
 
+      <!-- start -->
+      <div class="item"  th:each=" item : ${list}">
+        <div class="post">
+          <div class="img-wrap">
+            <img src=" " alt="">
+          </div>
+          <div class="caption">
+            <a href="" th:href="@{|/board/${item.boardNum}/detail|}" class="postTitle" th:text="${item.boardTitle}">제목</a>
+            <div class="bookmark"><i class="fas fa-heart"></i></div>
+          </div>
+          <div class="info">
+            <span class="memId" th:text="${item.nickname}">By "회원명"</span>
+            <span class="uploadTime" th:text="${item.boardDate}">(업로드 날짜)</span>
+          </div>
+        </div>
+      </div>
+      <!-- end -->
 
+    </div>
+
+  </div>
 </main>
 
-<!-- 게시판 하단. 게시글 검색, 기타 등등 -->
-<div id="post_search_bar">
-  <form action="">
-    <select name="post_filter" id="post_filter">
-      <option value="title">제목</option>
-      <option value="author">작성자</option>
-      <option value="mixed">제목+내용</option>
-    </select>
-    <input type="text" name="scan_post" id="scan_post"><button id="post_search_btn">검색</button>
-  </form>
+<!-- 게시판 하단 쪽번호, 검색창 -->
+<div id="page_navi">
+  <!-- 페이징 버튼 -->
+  <div class="bbs-page">
+    <!--이전페이지정보-->
+    <th:block th:if="${pc.prev}">
+      <a class="bbs-page-item" href="" th:href="@{/board/1(cateCode=${param.cateCode})}"><i
+          class="fas fa-backward"></i></a>
+      <a class="bbs-page-item" href=""
+         th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateCode=${param.cateCode})}"><i
+          class="fas fa-angle-left"></i></a>
+    </th:block>
+
+    <!--페이지표시-->
+    <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
+      <th:block th:if="${pnum != 0}">
+        <!--                  <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href="" th:href="@{|/board/${pnum}|}" th:text="${pnum}">1</a>-->
+        <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href=""
+           th:href="@{/board/{reqPage}(reqPage=${pnum}, cateCode=${param.cateCode})}"
+           th:text="${pnum}">1</a>
+      </th:block>
+    </th:block>
+    <!--                (cateCode=${param.cateCode})-->
+
+    <!--다음페이지정보-->
+    <th:block th:if="${pc.next}">
+      <a class="bbs-page-item" href=""
+         th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateCode=${param.cateCode})}"><i
+          class="fas fa-angle-right"></i></a>
+      <a class="bbs-page-item" href=""
+         th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateCode=${param.cateCode})}"><i
+          class="fas fa-forward"></i></a>
+    </th:block>
+  </div>
+
 </div>
 
-<!-- 최하단 -->
+</div>
+
+<!-- 게시판 최하단. 게시글 검색, 기타 등등 -->
+<div id="post_search_bar">
+  <select name="post_filter" id="post_filter">
+    <option value="title">제목</option>
+    <option value="author">작성자</option>
+    <option value="mixed">제목+내용</option>
+  </select>
+  <input type="text" name="post_search" id="post_search"><button id="post_search_btn">검색</button>
+</div>
+
+<!-- 하단 -->
 <footer>
   <ul class="menu">
+    <li>HOME CA:BE 운영팀:a@kh.com</li>
+    <li>|</li>
+    <li>이용약관</li>
+    <li>|</li>
     <li>개인정보취급방침</li>
-    <li>|</li>
-    <li>회원약관</li>
-    <li>|</li>
-    <li>공정위확인</li>
-    <li>|</li>
-    <li>쇼핑몰 고객센터</li>
-    <li>|</li>
-    <li>000-111-2222</li>
   </ul>
 </footer>
-
-
-
 </body>
 
 </html>
