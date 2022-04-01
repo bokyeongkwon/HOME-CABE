@@ -1,6 +1,6 @@
-package com146.HOME.CA.BE.domain.mypage.DAO;
+package com146.HOME.CA.BE.domain.mypage.dao;
 
-import com146.HOME.CA.BE.domain.mypage.DTO.*;
+import com146.HOME.CA.BE.domain.mypage.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -8,7 +9,7 @@
   <title>Document</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/findID.css">
+  <link rel="stylesheet" href="/css/login/findID.css">
   <!-- 라디오버튼 선택해 div 보여주기 -->
   <script>
     function div_show(selectList) {
@@ -55,12 +56,12 @@
     <ul>
       <!-- 휴대폰으로 찾기 선택 -->
       <li class="findID_select">
-        <input type="radio" name="findID_type1" id="findID_type_1" checked="checked" onclick="div_show('0');" value="개인소득공제용">
+        <input type="radio" name="findID_type1" id="findID_type_1" checked="checked" onclick="div_show('0');" value="휴대폰으로 찾기">
         <label for="findID_type_1"><span class="text2">휴대폰으로 찾기</label></span>
       </li>
       <!-- 이메일로 찾기 선택 -->
       <li class="findID_select">
-        <input type="radio" name="findID_type1" id="findID_type_2" onclick="div_show('1');" value="지출증빙용">
+        <input type="radio" name="findID_type1" id="findID_type_2" onclick="div_show('1');" value="이메일로 찾기">
         <label for="findID_type_2"><span class="text3">이메일로 찾기</label></span>
       </li>
     </ul>

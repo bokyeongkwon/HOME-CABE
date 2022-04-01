@@ -1,7 +1,7 @@
 package com146.HOME.CA.BE.web.Controller;
 
-import com146.HOME.CA.BE.domain.mypage.DTO.*;
-import com146.HOME.CA.BE.domain.mypage.SVC.MyPageSVC;
+import com146.HOME.CA.BE.domain.mypage.dto.*;
+import com146.HOME.CA.BE.domain.mypage.svc.MyPageSVC;
 import com146.HOME.CA.BE.web.form.login.LoginMember;
 import com146.HOME.CA.BE.web.form.mypage.LikeListForm;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.domain.mypage.DTO;
+package com146.HOME.CA.BE.domain.mypage.dto;
 
 import lombok.Data;
 

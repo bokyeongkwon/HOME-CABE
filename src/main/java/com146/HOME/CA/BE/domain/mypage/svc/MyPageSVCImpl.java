@@ -1,7 +1,7 @@
-package com146.HOME.CA.BE.domain.mypage.SVC;
+package com146.HOME.CA.BE.domain.mypage.svc;
 
-import com146.HOME.CA.BE.domain.mypage.DAO.MyPageDAO;
-import com146.HOME.CA.BE.domain.mypage.DTO.*;
+import com146.HOME.CA.BE.domain.mypage.dao.MyPageDAO;
+import com146.HOME.CA.BE.domain.mypage.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

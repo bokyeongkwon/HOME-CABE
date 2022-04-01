@@ -1,8 +1,6 @@
-package com146.HOME.CA.BE.domain.mypage.DAO;
+package com146.HOME.CA.BE.domain.mypage.dao;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MyPageDAOImplTest {
 

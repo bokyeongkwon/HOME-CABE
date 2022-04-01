@@ -1,6 +1,6 @@
-package com146.HOME.CA.BE.domain.mypage.SVC;
+package com146.HOME.CA.BE.domain.mypage.svc;
 
-import com146.HOME.CA.BE.domain.mypage.DTO.*;
+import com146.HOME.CA.BE.domain.mypage.dto.*;
 
 import java.util.List;
 
