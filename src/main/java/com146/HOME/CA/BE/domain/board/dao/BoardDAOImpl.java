@@ -157,13 +157,13 @@ public class BoardDAOImpl implements BoardDAO {
 
     /**
      * 페이징 적용한 카테고리별 게시판 목록
-     * @param cateCode 게시판 분류
+     * @param cateNum 게시판 분류
      * @param startRec 시작 레코드
      * @param endRec 마지막 레코드
      * @return 목록
      */
     @Override
-    public List<Board> selectBoard(int cateCode, int startRec, int endRec) {
+    public List<Board> selectBoard(int cateNum, int startRec, int endRec) {
         StringBuffer sql = new StringBuffer();
         sql.append(" select t1.* from( ");
         sql.append("     SELECT ROW_NUMBER() OVER (ORDER BY board_num desc) no, ");
@@ -182,23 +182,23 @@ public class BoardDAOImpl implements BoardDAO {
         List<Board> list = jdbcTemplate.query(
             sql.toString(),
             new BeanPropertyRowMapper<>(Board.class),
-            cateCode, startRec, endRec
+            cateNum, startRec, endRec
         );
         return list;
     }
 
     /**
      * 카테고리별 게시물 총 개수
-     * @param cateCode 카테고리
+     * @param cateNum 카테고리
      * @return 해당 게시판 총 게시물 수
      */
     @Override
-    public int totalCount(int cateCode) {
+    public int totalCount(int cateNum) {
         String sql = " select count(*) from board where cate_code = ? ";
 
         Integer itemCnt = 0;
         try {
-            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, cateCode);
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, cateNum);
         }catch (Exception e){
             itemCnt = 0;
         }
