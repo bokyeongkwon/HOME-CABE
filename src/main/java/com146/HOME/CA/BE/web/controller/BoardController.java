@@ -29,15 +29,15 @@ public class BoardController {
   private final BoardSVC boardSVC;
   private final CategoryDAO categoryDAO;
 
-//  페이징(10, 10)
+  //    페이징 구현 (10, 10) - 디폴트?
   @Autowired
   @Qualifier("pc10")
-  private PageCriteria pc;
+  private PageCriteria pc10;
 
-//    페이징(9, 5)
-//    @Autowired
-//    @Qualifier("pc5")
-//    private PageCriteria pc5;
+  //    페이징 구현 (9, 5)
+  @Autowired
+  @Qualifier("pc5")
+  private PageCriteria pc5;
 
 //  게시판 카테고리
   @ModelAttribute("classifier")
@@ -51,20 +51,28 @@ public class BoardController {
 @GetMapping("/{reqPage}")
 public String list(
     @PathVariable(required = false) Optional<Integer> reqPage,
-    @RequestParam int cateCode,
+    @RequestParam int cateNum,
     Model model
 ){
-//    페이지 요청이 없으면 1페이지
+//        페이징 (10, 10)/(9,5) 분기
+  PageCriteria pc = null;
+  if(cateNum == 41 || cateNum == 51 || cateNum == 52){
+    pc = pc10;
+  }else{
+    pc = pc5;
+  }
+  //페이지 요청이 없으면 1페이지로.
   Integer page = reqPage.orElse(1);
-//  String cate = getCategory(cateCode);
-
+//      1) 사용자 입력 - 요청 페이지
   pc.getRc().setReqPage(page);
+//       2) 게시판 타입의 리스트 객체를 생성
   List<Board> list = null;
 
-  pc.setTotalRec(boardSVC.totalCount(cateCode));
-  list = boardSVC.selectBoard(cateCode, pc.getRc().getStartRec(), pc.getRc().getEndRec());
+//       3) 해당 게시판의 게시물 총 개수를 구하고 페이징 적용 메소드로 게시판의 처음과 끝 페이지 출력
+  pc.setTotalRec(boardSVC.totalCount(cateNum));
+  list = boardSVC.selectBoard(cateNum, pc.getRc().getStartRec(), pc.getRc().getEndRec());
 
-//  ListForm 과 데이터 대조, 복사
+//       4)ListForm과 데이터를 대조해 복사
   List<ListForm> partOfList = new ArrayList<>();
   for (Board board : list) {
     ListForm listForm = new ListForm();
@@ -73,12 +81,12 @@ public String list(
   }
   model.addAttribute("list", partOfList);
   model.addAttribute("pc", pc);
-  model.addAttribute("catecode", cateCode);
+  model.addAttribute("cateNum", cateNum);
 
   //   분류별 적절한 게시판으로 이동.
-  if( cateCode == 41 ){
+  if( cateNum == 41 ){
     return "/board/bakingClass";
-  }else if( cateCode == 51 || cateCode == 52  ){
+  }else if( cateNum == 51 || cateNum == 52  ){
     return "/board/boardCommu";
   }else{
     return "/board/boardList";
