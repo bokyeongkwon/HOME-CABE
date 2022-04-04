@@ -1,10 +1,11 @@
 *{
   padding: 0;
   margin: 0;
-  /* border: 1px solid red; */
   /* font-family: 'Gamja Flower', cursive; */
-  /* background-color: #F7EEE3; */
+  /* background-color: #fff8ee; */
+  font-family: 'Jua', sans-serif;
 }
+
 
 a{
   color: #000;
@@ -18,9 +19,10 @@ header{
 /*  justify-content: center; */
 }
 .topMenu {
+  display: none;
 }
 
-/* 아이디 찾기 구현 시작 */
+/* 비밀번호 찾기 구현 시작 */
 
 /* 헤드(여백 내용) */
 .head_blank {
@@ -38,21 +40,20 @@ header{
 }
 .big{
   font-size: 1.3em;
-  font-weight: bold;
 }
 .small1 {
   font-size: 0.5em;
 }
 /* 타이틀 내용 */
 article {
-  height: 330px;
+  height: 340px;
   width: 500px;
   margin: 0 auto;
   background-color: beige;
 }
-.idFind-top {
+.pwFind-top {
   height: 50px;
-  margin-top: 40px;
+  margin-top: 10px;
   padding-left: 25px;
   color: brown;
   line-height: 50px;
@@ -64,22 +65,27 @@ article {
   font-size: 20px;
 }
 /* 항목 선택 */
-.findID {
+.findPW {
 
 }
 /* 휴대폰으로 찾기,
   이메일로 찾기 선택 */
-.findID_select {
-  margin-top: 10px;
+.findPW_select {
+  margin-top: 15px;
   margin-left: 30px;
+  color: rgb(114, 62, 62);
 }
+
+.findPW_select input {
+}
+
 .text2,
 .text3 {
 
 }
 /* 선택 항목별 내용 */
 /* 정보 입력란 */
-.idFind-phoneText {
+.pwFind-phoneText {
   margin-top: 10px;
   text-align: center;
 }
@@ -96,7 +102,7 @@ li {
   border: 1px solid silver;
 }
 /* 정보 입력 버튼 */
-.findID-button {
+.findPW-button {
   height: 45px;
   width: 447px;
   margin-top: 15px;
@@ -106,17 +112,18 @@ li {
   font-size: 15px;
   background-color: orange;
 }
-.idFind-emailText {
+.pwFind-emailText {
+  margin-top: 10px;
   text-align: center;
 }
 
-/* 아이디찾기 구현 종료 */
+/* 비밀번호 구현 종료 */
 
 /* 하단 */
 footer {
   margin: 0 auto;
 }
-/* 비밀번호 찾기 바로가기 */
+/* 아이디 찾기 바로가기 */
 .bottom-text {
   margin-top: 10px;
   flex-direction: row;
