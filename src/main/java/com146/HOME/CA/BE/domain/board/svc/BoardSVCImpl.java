@@ -94,6 +94,18 @@ public class BoardSVCImpl implements BoardSVC {
   }
 
   /**
+   * 댓글 조회
+   * @param boardNum
+   * @param startRec
+   * @param endRec
+   * @return
+   */
+  @Override
+  public List<Board> replyList(long boardNum, int startRec, int endRec) {
+    return boardDAO.replyList(boardNum, startRec, endRec);
+  }
+
+  /**
    * 댓글 수정
    * @param replyNum
    * @param board
