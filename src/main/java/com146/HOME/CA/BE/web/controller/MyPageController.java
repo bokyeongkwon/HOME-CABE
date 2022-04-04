@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/mypage")
+@RequestMapping("/mypage/{memberNum}")
 public class MyPageController {
 
     private final MyPageSVC myPageSVC;

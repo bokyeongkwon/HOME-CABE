@@ -30,6 +30,9 @@ public interface BoardSVC {
   //댓글 등록
   Long insertReply(Board board);
 
+  //댓글 조회
+  List<Board> replyList(long boardNum, int startRec, int endRec);
+
   //댓글 수정
   int updateReply(Long replyNum, Board board);
 
