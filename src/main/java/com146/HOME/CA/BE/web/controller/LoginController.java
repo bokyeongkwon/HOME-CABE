@@ -1,18 +1,17 @@
 package com146.HOME.CA.BE.web.controller;
 
+import com146.HOME.CA.BE.domain.login.Login;
 import com146.HOME.CA.BE.domain.login.svc.LoginSVC;
 import com146.HOME.CA.BE.domain.member.Member;
 import com146.HOME.CA.BE.domain.member.svc.MemberSVC;
 import com146.HOME.CA.BE.web.form.login.*;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,23 +20,20 @@ import javax.validation.Valid;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
+//@RequestMapping("/login")
 public class LoginController {
 
-  private final MemberSVC memberSVC;
-//  private final LoginSVC loginSVC;
+//  private final MemberSVC memberSVC;
+  private final LoginSVC loginSVC;
 
   /**
    * 로그인
-   * @param loginForm
-   * @param request
+   * @param model
    * @return
    */
   @GetMapping("/login")
-  public String loginForm(
-          @ModelAttribute LoginForm loginForm,
-          HttpServletRequest request){
-    HttpSession httpSession = request.getSession(false);
-
+  public String loginForm(Model model){
+    model.addAttribute("loginForm",new LoginForm());
     return "login/loginForm";
 
   }
@@ -63,14 +59,14 @@ public class LoginController {
       log.info("loginError={}", bindingResult);
       return "login/loginForm";
     }
-    //회원유무 체크
-    if(!memberSVC.exitMember(loginForm.getId())){
-      bindingResult.reject("loginFail.id");
-      return "login/loginForm";
-    }
+//    //회원유무 체크
+//    if(!memberSVC.exitMember(loginForm.getId())){
+//      bindingResult.reject("loginFail.id");
+//      return "login/loginForm";
+//    }
     //로그인 체크
-    Member member = memberSVC.login(loginForm.getId(),loginForm.getPw());
-    if(member == null){
+    Login login = loginSVC.login(loginForm.getId(),loginForm.getPw());
+    if(login == null){
       bindingResult.reject("loginFail.pw");
       return "login/loginForm";
     }
@@ -78,10 +74,10 @@ public class LoginController {
     //로그인 성공
     HttpSession httpSession = request.getSession(true);
     //로그인 정보
-    LoginMember loginMember = new LoginMember(member.getId(),member.getNickname());
+    LoginMember loginMember = new LoginMember(login.getId(),login.getPw());
     httpSession.setAttribute("loginMember", loginMember);
     //URL 재요청
-    return "redirect:"+redirectUrl;
+    return "redirect:/";
 
     //자동로그인설정
     //아직안함
@@ -92,10 +88,9 @@ public class LoginController {
    * @return
    */
   @GetMapping("/findTelID")
-  public String findTelIDForm(
-          @ModelAttribute FindTelID findTelID){
+  public String findTelIDForm(){
 
-    return "login/findTelIDForm";
+    return "login/findTelID";
   }
 
 //  /**
@@ -107,23 +102,21 @@ public class LoginController {
 //  @PostMapping("/findTelID")
 //  public String findTelID(
 //          @ModelAttribute FindTelID findTelID, Model model){
-//    String telIDs = loginSVC.searchTelID(findTelID.getName(),findTelID.getTel());
+//    Login telIDs = loginSVC.searchTelID(findTelID.getName(),findTelID.getTel());
 //    model.addAttribute("telIDs",telIDs);
 //    return "login/findTelIDResult";
 //  }
-//
-//  /**
-//   * 아이디 찾기 양식(이메일)
-//   * @param findEmailID
-//   * @return
-//   */
-//  @GetMapping("/findEmailID")
-//  public String findEmailIDForm(
-//          @ModelAttribute FindEmailID findEmailID){
-//
-//    return "login/findEmailIDForm";
-//  }
-//
+
+  /**
+   * 아이디찾기(이메일)
+   * @return
+   */
+  @GetMapping("/findEmailID")
+  public String findEmailID(){
+
+    return "login/findEmailID";
+  }
+
 //  /**
 //   * 아이디 찾기 처리(이메일)
 //   * @param findEmailID
@@ -133,70 +126,64 @@ public class LoginController {
 //  @PostMapping("/findEmailID")
 //  public String findEmailID(
 //          @ModelAttribute FindEmailID findEmailID, Model model){
-//    String emailIDs = loginSVC.searchTelID(findEmailID.getName(),findEmailID.getEmail());
+//    Login emailIDs = loginSVC.searchTelID(findEmailID.getName(),findEmailID.getEmail());
 //    model.addAttribute("telIDs",emailIDs);
 //    return "login/findTelIDResult";
 //  }
 
   /**
-   * 비밀번호 찾기 양식(전화번호)
-   * @param findTelPW
+   * 비밀번호 찾기(휴대폰)
    * @return
    */
   @GetMapping("/findTelPW")
-  public String findTelPWForm(
-          @ModelAttribute FindTelPW findTelPW){
+  public String findTelPWForm(){
 
-    return "login/findTelPWForm";
+    return "login/findTelPW";
   }
 
+//  /**
+//   * 비밀번호 찾기 처리(전화번호)
+//   * @param findTelPW
+//   * @param httpServletRequest
+//   * @param model
+//   * @return
+//   */
+//  @PostMapping("findTelPW")
+//  public String findTelPW(
+//          @ModelAttribute FindTelPW findTelPW,
+//          HttpServletRequest httpServletRequest,
+//          Model model){
+//
+//
+//    return "redirect:/login/findTelPW";
+//  }
+
   /**
-   * 비밀번호 찾기 처리(전화번호)
-   * @param findTelPW
-   * @param httpServletRequest
-   * @param model
-   * @return
-   */
-  @PostMapping("findTelPW")
-  public String findTelPW(
-          @ModelAttribute FindTelPW findTelPW,
-          HttpServletRequest httpServletRequest,
-          Model model){
-
-
-
-    return "redirect:/login/findTelPW";
-  }
-
-  /**
-   * 비밀번호 찾기 양식(이메일)
-   * @param findEmailPW
+   * 비밀번호 찾기(이메일)
    * @return
    */
   @GetMapping("/findEmailPW")
-  public String findEmailPWForm(
-          @ModelAttribute FindEmailPW findEmailPW){
+  public String findEmailPWForm(){
 
-    return "login/findEmailPWForm";
+    return "login/findEmailPW";
   }
 
-  /**
-   * 비밀번호 찾기 처리(이메일)
-   * @param findEmailPW
-   * @param httpServletRequest
-   * @param model
-   * @return
-   */
-  @PostMapping("findEmailPW")
-  public String findEmailPW(
-          @ModelAttribute FindEmailPW findEmailPW,
-          HttpServletRequest httpServletRequest,
-          Model model){
-
-
-
-    return "redirect:/login/findEmailPW";
-  }
+//  /**
+//   * 비밀번호 찾기 처리(이메일)
+//   * @param findEmailPW
+//   * @param httpServletRequest
+//   * @param model
+//   * @return
+//   */
+//  @PostMapping("findEmailPW")
+//  public String findEmailPW(
+//          @ModelAttribute FindEmailPW findEmailPW,
+//          HttpServletRequest httpServletRequest,
+//          Model model){
+//
+//
+//    return "redirect:/login/findEmailPW";
+//  }
 
 
   /**

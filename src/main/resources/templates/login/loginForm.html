@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <link rel="stylesheet" href="/css/login/login.css">
+  <link rel="stylesheet" href="/css/login/loginForm.css">
 <!--  js 파일 만들어지면 따로 빼낼 예정-->
   <script>
     'use strict'
@@ -124,8 +124,8 @@
   </div>
 </div>
 <!-- 로그인 -->
+  <form action="" th:action="@{/login/loginForm}" method="post" th:object="${loginForm}">
 <section>
-  <form action="" th:action method="post" th:object="${loginForm}">
   <!-- 윗부분 여백(margin-top과 별개) -->
   <div class="margin-top"></div>
   <article>
@@ -142,7 +142,7 @@
           <input type="password" th:field="*{pw}" placeholder=" 비밀번호" class="pw-textbox">
         </div>
         <!-- 로그인 버튼 -->
-        <button class="login-button" type="submit" th:text="#{btn.login}">로그인</button>
+        <button class="login-button" type="submit" >로그인</button>
         <!-- 아이디저장, 자동로그인 -->
         <div class="login-checkbox">
           <div class="check1">
@@ -151,7 +151,7 @@
           </div>
           <div class="check2">
             <input type="checkbox" id="tag2" name="tag2">
-            <label for=tag2>자동로그인</label>
+            <label for=tag2><span class="autoLogin">자동로그인</span></label>
           </div>
         </div>
       </div>
@@ -175,13 +175,14 @@
       <div class="login-text">
         <div><a href="#" th:href="@{/member/add}">회원가입&nbsp;</a></div>
         <div class="login-text_br">|</div>
-        <div><a href="#" th:href="@{/login/findID}">&nbsp;아이디찾기&nbsp;</a></div>
+        <div><a href="/login/findTelID" th:action="@{/login/findTelID}">&nbsp;아이디찾기&nbsp;</a></div>
         <div class="login-text_br">|</div>
-        <div><a href="#" th:href="@{login/findPW}">&nbsp;비밀번호찾기</a></div>
+        <div><a href="/login/findTelPW" th:href="@{/login/findTelPW}">&nbsp;비밀번호찾기</a></div>
       </div>
     </div>
   </article>
 </section>
+  </form>
 
 <!-- 하단 -->
 <footer>
@@ -193,5 +194,11 @@
     <li>개인정보취급방침</li>
   </ul>
 </footer>
+<script>
+  const check = $("input[type='checkbox']");
+  check.click(function(){
+  $("p").toggle();
+  });
+</script>
 </body>
 </html>

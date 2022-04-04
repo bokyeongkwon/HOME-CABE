@@ -1,5 +1,6 @@
 package com146.HOME.CA.BE.domain.login.dao;
 
+import com146.HOME.CA.BE.domain.login.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Member;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -16,9 +18,34 @@ public class LoginDAOImpl implements LoginDAO{
   private final JdbcTemplate jdbcTemplate;
 
 
+  // 로그인
+  @Override
+  public Login login(String id, String pw) {
+
+    StringBuffer sql = new StringBuffer();
+    sql.append("select name, tel, email ");
+    sql.append("from member ");
+    sql.append("where id = ? and pw = ? ");
+
+    List<Login> list = jdbcTemplate.query(
+            sql.toString(),
+            new BeanPropertyRowMapper<>(Login.class),
+            id,pw
+    );
+
+    return list.size() == 1 ? list.get(0) : null;
+
+  }
+//
+//  // 비밀번호 일치여부 체크
+//  @Override
+//  public boolean isLogin(String id, String pw) {
+//    return false;
+//  }
+
   // 아이디 찾기(전화번호)
   @Override
-  public Member findTelID(String name, String tel) {
+  public Login findTelID(String name, String tel) {
 
     StringBuffer sql = new StringBuffer();
 
@@ -26,17 +53,17 @@ public class LoginDAOImpl implements LoginDAO{
     sql.append("  from member ");
     sql.append("  where name = ? and tel = ? ");
 
-    Member memberTelID = jdbcTemplate.queryForObject(
+    Login LoginTelID = jdbcTemplate.queryForObject(
             sql.toString(),
-            new BeanPropertyRowMapper<>(Member.class),
+            new BeanPropertyRowMapper<>(Login.class),
             name, tel);
 
-    return memberTelID;
+    return LoginTelID;
   }
 
   // 아이디 찾기(이메일)
   @Override
-  public Member findEmailID(String name, String email) {
+  public Login findEmailID(String name, String email) {
 
     StringBuffer sql = new StringBuffer();
 
@@ -44,48 +71,48 @@ public class LoginDAOImpl implements LoginDAO{
     sql.append("  from member ");
     sql.append("  where name = ? and email = ? ");
 
-    Member memberEmailId = jdbcTemplate.queryForObject(
+    Login LoginEmailId = jdbcTemplate.queryForObject(
             sql.toString(),
-            new BeanPropertyRowMapper<>(Member.class),
+            new BeanPropertyRowMapper<>(Login.class),
             name, email);
 
-    return memberEmailId;
+    return LoginEmailId;
   }
 
   // 비밀번호 찾기(전화번호)
   @Override
-  public Member findTelPW(String id, String tel) {
+  public Login findTelPW(String id, String tel) {
 
     StringBuffer sql = new StringBuffer();
 
     sql.append("select pw ");
     sql.append("  from member ");
-    sql.append("  where name = ? and tel = ? ");
+    sql.append("  where id = ? and tel = ? ");
 
-    Member memberTelPW = jdbcTemplate.queryForObject(
+    Login LoginTelPW = jdbcTemplate.queryForObject(
             sql.toString(),
-            new BeanPropertyRowMapper<>(Member.class),
+            new BeanPropertyRowMapper<>(Login.class),
             id, tel);
 
 
-    return memberTelPW;
+    return LoginTelPW;
   }
 
   // 비밀번호 찾기(이메일)
   @Override
-  public Member findEmailPW(String id, String email) {
+  public Login findEmailPW(String id, String email) {
 
     StringBuffer sql = new StringBuffer();
 
     sql.append("select pw ");
     sql.append("  from member ");
-    sql.append("  where name = ? and email = ? ");
+    sql.append("  where id = ? and email = ? ");
 
-    Member memberEmailPW = jdbcTemplate.queryForObject(
+    Login LoginEmailPW = jdbcTemplate.queryForObject(
             sql.toString(),
-            new BeanPropertyRowMapper<>(Member.class),
+            new BeanPropertyRowMapper<>(Login.class),
             id, email);
 
-    return memberEmailPW;
+    return LoginEmailPW;
   }
 }

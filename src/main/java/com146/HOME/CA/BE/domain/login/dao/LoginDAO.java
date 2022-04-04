@@ -1,9 +1,27 @@
 package com146.HOME.CA.BE.domain.login.dao;
 
 
+import com146.HOME.CA.BE.domain.login.Login;
+
 import java.lang.reflect.Member;
 
 public interface LoginDAO {
+
+  /**
+   * 로그인 인증
+   * @param id
+   * @param pw
+   * @return
+   */
+  Login login(String id, String pw);
+
+//  /**
+//   * 비밀번호 일치여부 체크
+//   * @param id
+//   * @param pw
+//   * @return
+//   */
+//  boolean isLogin(String id, String pw);
 
   /**
    * 아이디 찾기(전화번호)
@@ -11,7 +29,7 @@ public interface LoginDAO {
    * @param tel
    * @return
    */
-  Member findTelID(String name, String tel);
+  Login findTelID(String name, String tel);
 
   /**
    * 아이디 찾기(이메일)
@@ -19,7 +37,7 @@ public interface LoginDAO {
    * @param email
    * @return
    */
-  Member findEmailID(String name, String email);
+  Login findEmailID(String name, String email);
 
   /**
    * 비밀번호 찾기(전화번호)
@@ -27,7 +45,7 @@ public interface LoginDAO {
    * @param tel
    * @return
    */
-  Member findTelPW(String id, String tel);
+  Login findTelPW(String id, String tel);
 
   /**
    * 비밀번호 찾기(이메일)
@@ -35,6 +53,6 @@ public interface LoginDAO {
    * @param email
    * @return
    */
-  Member findEmailPW(String id, String email);
+  Login findEmailPW(String id, String email);
 
 }
