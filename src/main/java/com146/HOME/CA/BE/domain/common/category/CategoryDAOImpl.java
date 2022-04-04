@@ -17,13 +17,13 @@ public class CategoryDAOImpl implements CategoryDAO {
 
   /**
    * 상위 분류 > 하위 분류
-   * @param pcate 상위 분류 ex) 10
+   * @param pcateNum 상위 분류 ex) 10
    * @return 하위 ex) 11, 12, 13, 14...
    */
   @Override
-  public List<Category> category(int pcate) {
+  public List<Category> category(int pcateNum) {
     StringBuffer sql = new StringBuffer();
-    sql.append(" SELECT t1.cate_num cate, t1.cate_name cateName ");
+    sql.append(" SELECT t1.cate_num cateNum, t1.cate_name cateName ");
     sql.append(" FROM category t1, category t2 ");
     sql.append(" where t1.pcate_num = t2.cate_num ");
     sql.append(" and t1.useyn = 'Y' ");
@@ -32,7 +32,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     List<Category> categories = jdbcTemplate.query(
         sql.toString(),
         new BeanPropertyRowMapper<>(Category.class),
-        pcate
+        pcateNum
     );
     return categories;
   }
@@ -44,7 +44,7 @@ public class CategoryDAOImpl implements CategoryDAO {
   @Override
   public List<Category> category() {
     StringBuffer sql = new StringBuffer();
-    sql.append(" SELECT t1.cate_num cate, t1.cate_name cateName ");
+    sql.append(" SELECT t1.cate_num cateNum, t1.cate_name cateName ");
     sql.append(" FROM category t1, category t2 ");
     sql.append(" where t1.pcate_num = t2.cate_num ");
     sql.append(" and t1.useyn = 'Y' ");
@@ -64,7 +64,7 @@ public class CategoryDAOImpl implements CategoryDAO {
   @Override
   public List<CategoryAll> categoryAll() {
     StringBuffer sql = new StringBuffer();
-    sql.append(" select t1.pcate_num pcate, t2.cate_name pcateName, t1.cate_num ccate, t1.cate_name ccateName ");
+    sql.append(" select t1.pcate_num pcateNum, t2.cate_name pcateName, t1.cate_num ccateNum, t1.cate_name ccateName ");
     sql.append(" from category t1, category t2 ");
     sql.append(" where t1.pcate_num = t2.cate_num ");
     sql.append(" and t1.useyn = 'Y' ");

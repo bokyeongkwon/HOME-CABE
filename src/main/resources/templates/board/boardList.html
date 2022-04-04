@@ -38,29 +38,29 @@
     </ul>
     <!-- 드롭다운 -->
     <div class="dropdown-content">
-      <!-- 각 url에 {reqPage}/{cateCode} -->
+      <!-- 각 url에 {reqPage}/{cateNum} -->
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=11}" class="ccode">제과</a>
-        <a href="#" th:href="@{/board/1?cateCode=12}" class="ccode">제빵</a>
-        <a href="#" th:href="@{/board/1?cateCode=13}" class="ccode">음료</a>
-        <a href="#" th:href="@{/board/1?cateCode=14}" class="ccode">노오븐 베이킹</a>
+        <a href="#" th:href="@{/board/1?cateNum=11}" class="ccode">제과</a>
+        <a href="#" th:href="@{/board/1?cateNum=12}" class="ccode">제빵</a>
+        <a href="#" th:href="@{/board/1?cateNum=13}" class="ccode">음료</a>
+        <a href="#" th:href="@{/board/1?cateNum=14}" class="ccode">노오븐 베이킹</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=21}" class="ccode">발렌타인 데이</a>
-        <a href="#" th:href="@{/board/1?cateCode=22}" class="ccode">할로윈</a>
-        <a href="#" th:href="@{/board/1?cateCode=23}" class="ccode">빼빼로 데이</a>
-        <a href="#" th:href="@{/board/1?cateCode=24}" class="ccode">크리스마스</a>
+        <a href="#" th:href="@{/board/1?cateNum=21}" class="ccode">발렌타인 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=22}" class="ccode">할로윈</a>
+        <a href="#" th:href="@{/board/1?cateNum=23}" class="ccode">빼빼로 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=24}" class="ccode">크리스마스</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=31}" class="ccode">구도/각도</a>
-        <a href="#" th:href="@{/board/1?cateCode=32}" class="ccode">보정</a>
+        <a href="#" th:href="@{/board/1?cateNum=31}" class="ccode">구도/각도</a>
+        <a href="#" th:href="@{/board/1?cateNum=32}" class="ccode">보정</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=41}" class="ccode">베이킹 클래스 찾기</a>
+        <a href="#" th:href="@{/board/1?cateNum=41}" class="ccode">베이킹 클래스 찾기</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=51}" class="ccode">QnA</a>
-        <a href="#" th:href="@{/board/1?cateCode=52}" class="ccode">자유 게시판</a>
+        <a href="#" th:href="@{/board/1?cateNum=51}" class="ccode">QnA</a>
+        <a href="#" th:href="@{/board/1?cateNum=52}" class="ccode">자유 게시판</a>
       </div>
     </div>
   </div>
@@ -103,7 +103,7 @@
       <div class="item"  th:each=" item : ${list}">
         <div class="post">
           <div class="img-wrap">
-            <img src=" " alt="">
+            <a href="" th:href="@{|/board/${item.boardNum}/detail|}"><img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt=""></a>
           </div>
           <div class="caption">
             <a href="" th:href="@{|/board/${item.boardNum}/detail|}" class="postTitle" th:text="${item.boardTitle}">제목</a>
@@ -128,10 +128,10 @@
   <div class="bbs-page">
     <!--이전페이지정보-->
     <th:block th:if="${pc.prev}">
-      <a class="bbs-page-item" href="" th:href="@{/board/1(cateCode=${param.cateCode})}"><i
+      <a class="bbs-page-item" href="" th:href="@{/board/1(cateNum=${param.cateNum})}"><i
           class="fas fa-backward"></i></a>
       <a class="bbs-page-item" href=""
-         th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateCode=${param.cateCode})}"><i
+         th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateNum=${param.cateNum})}"><i
           class="fas fa-angle-left"></i></a>
     </th:block>
 
@@ -140,19 +140,18 @@
       <th:block th:if="${pnum != 0}">
         <!--                  <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href="" th:href="@{|/board/${pnum}|}" th:text="${pnum}">1</a>-->
         <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href=""
-           th:href="@{/board/{reqPage}(reqPage=${pnum}, cateCode=${param.cateCode})}"
+           th:href="@{/board/{reqPage}(reqPage=${pnum}, cateNum=${param.cateNum})}"
            th:text="${pnum}">1</a>
       </th:block>
     </th:block>
-    <!--                (cateCode=${param.cateCode})-->
 
     <!--다음페이지정보-->
     <th:block th:if="${pc.next}">
       <a class="bbs-page-item" href=""
-         th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateCode=${param.cateCode})}"><i
+         th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateNum=${param.cateNum})}"><i
           class="fas fa-angle-right"></i></a>
       <a class="bbs-page-item" href=""
-         th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateCode=${param.cateCode})}"><i
+         th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateNum=${param.cateNum})}"><i
           class="fas fa-forward"></i></a>
     </th:block>
   </div>

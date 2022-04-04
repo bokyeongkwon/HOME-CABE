@@ -51,15 +51,15 @@ public class BoardController {
   @GetMapping("/{reqPage}")
   public String list(
       @PathVariable(required = false) Optional<Integer> reqPage,
-      @RequestParam int cateCode,
+      @RequestParam int cateNum,
       Model model
   ){
 //    게시판 만들기 로직 추출
-    makingBoard(reqPage, cateCode, model);
+    makingBoard(reqPage, cateNum, model);
     //   분류별 적절한 게시판으로 이동.
-    if( cateCode == 41 ){
+    if( cateNum == 41 ){
       return "/board/bakingClass";
-    }else if( cateCode == 51 || cateCode == 52  ){
+    }else if( cateNum == 51 || cateNum == 52  ){
       return "/board/boardCommu";
     }else{
       return "/board/boardList";
@@ -67,10 +67,10 @@ public class BoardController {
   }
 
   // 게시판 만드는 메소드
-  private void makingBoard(Optional<Integer> reqPage, int cateCode, Model model) {
+  private void makingBoard(Optional<Integer> reqPage, int cateNum, Model model) {
     //   페이지 컨셉에 맞게 페이징 구분
     PageCriteria pc = null;
-    if(cateCode == 41 || cateCode == 51 || cateCode == 52 ){
+    if(cateNum == 41 || cateNum == 51 || cateNum == 52 ){
       pc = pc10;
     }else{
       pc = pc5;
@@ -82,8 +82,8 @@ public class BoardController {
     pc.getRc().setReqPage(page);
     List<Board> list = null;
 
-    pc.setTotalRec(boardSVC.totalCount(cateCode));
-    list = boardSVC.selectBoard(cateCode, pc.getRc().getStartRec(), pc.getRc().getEndRec());
+    pc.setTotalRec(boardSVC.totalCount(cateNum));
+    list = boardSVC.selectBoard(cateNum, pc.getRc().getStartRec(), pc.getRc().getEndRec());
 
 //  ListForm 과 데이터 대조, 복사
     List<ListForm> partOfList = new ArrayList<>();
@@ -94,7 +94,7 @@ public class BoardController {
     }
     model.addAttribute("list", partOfList);
     model.addAttribute("pc", pc);
-    model.addAttribute("catecode", cateCode);
+    model.addAttribute("cateNum", cateNum);
   }
 
 
