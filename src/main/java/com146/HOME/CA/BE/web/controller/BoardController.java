@@ -3,6 +3,7 @@ package com146.HOME.CA.BE.web.controller;
 import com146.HOME.CA.BE.domain.board.Board;
 import com146.HOME.CA.BE.domain.board.svc.BoardSVC;
 import com146.HOME.CA.BE.domain.common.category.Category;
+import com146.HOME.CA.BE.domain.common.category.CategoryAll;
 import com146.HOME.CA.BE.domain.common.category.CategoryDAO;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
 import com146.HOME.CA.BE.web.form.board.ListForm;
@@ -41,9 +42,9 @@ public class BoardController {
 
 //  게시판 카테고리
   @ModelAttribute("classifier")
-  public List<Category> classifier(){
+  public List<CategoryAll> classifier(){
 //    13개 일반 게시판 분류 전부 반환
-    return categoryDAO.category();
+    return categoryDAO.categoryAll();
   }
 
 
