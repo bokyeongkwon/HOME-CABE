@@ -38,23 +38,26 @@ public class CategoryDAOImpl implements CategoryDAO {
   }
 
   /**
-   * 모든 하위 게시판 분류
-   * @return 11~52
+   * 하위 카테고리가 소속된 상위 카테고리명을 추출해 페이지 소제목과 왼쪽 서브메뉴에 표시.
+   * @param ccateNum 11~52 까지의 하위 카테고리
+   * @return 상위 카테고리명
    */
   @Override
-  public List<Category> category() {
+  public List<Category> superCategory(int ccateNum) {
     StringBuffer sql = new StringBuffer();
-    sql.append(" SELECT t1.cate_num cateNum, t1.cate_name cateName ");
-    sql.append(" FROM category t1, category t2 ");
-    sql.append(" where t1.pcate_num = t2.cate_num ");
-    sql.append(" and t1.useyn = 'Y' ");
-    sql.append(" and t1.pcate_num < 60 ");
+    sql.append(" select cate_num, cate_name ");
+    sql.append(" from category ");
+    sql.append(" where cate_num in ( ");
+    sql.append("                     select pcate_num ");
+    sql.append("                     from category ");
+    sql.append("                     where cate_num like ?) ");
 
-    List<Category> boards = jdbcTemplate.query(
+    List<Category> aSuper = jdbcTemplate.query(
         sql.toString(),
-        new BeanPropertyRowMapper<>(Category.class)
+        new BeanPropertyRowMapper<>(Category.class),
+        ccateNum
     );
-    return boards;
+    return aSuper;
   }
 
   /**
