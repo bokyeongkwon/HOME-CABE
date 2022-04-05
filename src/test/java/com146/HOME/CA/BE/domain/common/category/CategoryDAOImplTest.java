@@ -19,9 +19,9 @@ class CategoryDAOImplTest {
   private CategoryDAO categoryDAO;
 
   @Test
-  @DisplayName("하위 코드 반환")
+  @DisplayName("특정 상위 카테고리에 소속된 하위 카테고리 반환")
   void category() {
-    int pcate = 30;
+    Integer pcate = 30;
 
     List<Category> sub = categoryDAO.category(pcate);
     Assertions.assertThat(sub.size()).isEqualTo(2);
@@ -29,16 +29,16 @@ class CategoryDAOImplTest {
   }
 
   @Test
-  @DisplayName("일반 게시판 하위 코드 반환")
-  void testCategory() {
-    List<Category> board = categoryDAO.category();
-    Assertions.assertThat(board.size()).isEqualTo(13);
-    log.info("subCode={}", board);
-
+  @DisplayName("하위 카테고리가 소속된 상위 카테고리 반환")
+  void categorySuper() {
+    Integer ccateNum = 32;
+    
+    List<Category> aSuper = categoryDAO.superCategory(ccateNum);
+    log.info("aSuper={}", aSuper);
   }
 
   @Test
-  @DisplayName("모든 코드 반환")
+  @DisplayName("첨부파일까지 포함한 테이블의 모든 카테고리 반환")
   void categoryAll() {
     List<CategoryAll> categoryAlls = categoryDAO.categoryAll();
     log.info("categoryAlls={}",categoryAlls);
