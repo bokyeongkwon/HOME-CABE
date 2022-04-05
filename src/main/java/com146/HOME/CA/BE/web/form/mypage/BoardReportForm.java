@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.domain.mypage.DTO;
+package com146.HOME.CA.BE.web.form.mypage;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.sql.Clob;
 import java.time.LocalDateTime;
 
 @Data
-public class MyBoardReport {
+public class BoardReportForm {
     private Long reportNum;             //신고번호 NUMBER(10)
     private Long memberNUm;             //회원번호 NUMBER(10)
     private LocalDateTime reportDate;   //신고일   TIMESTAMP

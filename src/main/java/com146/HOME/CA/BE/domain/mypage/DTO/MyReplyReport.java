@@ -13,8 +13,8 @@ public class MyReplyReport {
     private Clob replyContent;          //신고 된 댓글 CLOB
     private Clob reportContent;         //신고 내용 CLOB
     private Long replyNum;              //댓글 번호 NUMBER(10)
-    private int reportProceed;          //신고 진행 사항 CHAR(0) DEFAULT '진행 중'
-    private int result;                 //신고 결과 CHAR(0) DEFAULT '없음'
+    private String reportProceed;          //신고 진행 사항 CHAR(0) DEFAULT '진행 중'
+    private String result;                 //신고 결과 CHAR(0) DEFAULT '없음'
     private Clob resultReason;          //신고 결과 이유 CLOB
     private LocalDateTime resultDate;   //신고 결과 처리일 TIMESTAMP
 }

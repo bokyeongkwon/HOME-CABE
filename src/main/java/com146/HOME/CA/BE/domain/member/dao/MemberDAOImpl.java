@@ -6,8 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -17,9 +23,57 @@ public class MemberDAOImpl implements MemberDAO{
 
     private final JdbcTemplate jdbcTemplate;
 
+    // 등록
     @Override
     public Member insertMember(Member member) {
-        return null;
+        StringBuffer sql = new StringBuffer();
+        sql.append(" insert into member ( ");
+        sql.append("     member_num, ");
+        sql.append("     id, ");
+        sql.append("     name, ");
+        sql.append("     pw, ");
+        sql.append("     tel, ");
+        sql.append("     email, ");
+        sql.append("     birth, ");
+        sql.append("     gender, ");
+        sql.append("     nickname, ");
+        sql.append("     show_list ");
+        sql.append(" ) VALUES ( ");
+        sql.append("     member_member_num_SEQ.nextval, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ?, ");
+        sql.append("     ? ");
+
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement pstmt = con.prepareStatement(sql.toString(), new String[]{"member_num"});
+                pstmt.setString(1, member.getId());
+                pstmt.setString(2, member.getName());
+                pstmt.setString(3, member.getPw());
+                pstmt.setString(4, member.getTel());
+                pstmt.setString(5, member.getEmail());
+                pstmt.setString(6, member.getBirth());
+                pstmt.setInt(7, member.getGender());
+                pstmt.setString(8, member.getNickname());
+                pstmt.setInt(9, member.getShowList());
+
+
+                return pstmt;
+            }
+        }, keyHolder);
+
+        long memberNum = keyHolder.getKey().longValue();
+
+        return selectMemberByMemberNum(memberNum);
     }
 
     //수정
@@ -45,8 +99,8 @@ public class MemberDAOImpl implements MemberDAO{
                 member.getEmail(),
                 member.getGender(),
                 member.getNickname(),
-                member.getShow_list(),
-                member.getMember_num());
+                member.getShowList(),
+                member.getMemberNum());
     }
 
     //ID로찾기

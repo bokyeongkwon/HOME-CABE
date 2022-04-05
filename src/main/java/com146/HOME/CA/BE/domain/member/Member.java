@@ -22,4 +22,14 @@ public class Member {
     private String showList;           //CHAR(1) default '1'
     private LocalDateTime cdate;        //TIMESTAMP default systimestamp
     private LocalDateTime udate;        //TIMESTAMP
+
+    public Member(String id, String name, String pw, String tel, String email, String birth, String nickname){
+        this.id = id;
+        this.name = name;
+        this.pw = pw;
+        this.tel = tel;
+        this.email = email;
+        this.birth = birth;
+        this.nickname = nickname;
+    }
 }

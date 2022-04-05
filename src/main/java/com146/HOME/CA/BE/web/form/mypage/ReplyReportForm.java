@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.domain.mypage.DTO;
+package com146.HOME.CA.BE.web.form.mypage;
 
 import lombok.Data;
 
@@ -6,13 +6,13 @@ import java.sql.Clob;
 import java.time.LocalDateTime;
 
 @Data
-public class MyBoardReport {
+public class ReplyReportForm {
     private Long reportNum;             //신고번호 NUMBER(10)
     private Long memberNUm;             //회원번호 NUMBER(10)
-    private LocalDateTime reportDate;   //신고일   TIMESTAMP
+    private LocalDateTime reportDate;   //신고일 TIMESTAMP
+    private Clob replyContent;          //신고 된 댓글 CLOB
     private Clob reportContent;         //신고 내용 CLOB
-    private String boardTitle;          //게시물 제목 VARCHAR2(150)
-    private Long boardNum;              //게시글 번호 NUMBER(10)
+    private Long replyNum;              //댓글 번호 NUMBER(10)
     private String reportProceed;          //신고 진행 사항 CHAR(0) DEFAULT '진행 중'
     private String result;                 //신고 결과 CHAR(0) DEFAULT '없음'
     private Clob resultReason;          //신고 결과 이유 CLOB

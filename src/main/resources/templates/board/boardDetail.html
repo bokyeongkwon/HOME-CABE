@@ -113,7 +113,7 @@
               </div>
               <div class="side_med" th:unless="${memberNum} == ${board.memberNum}">
                 <button class="sub_member" type="button">구독</button>
-                <div><a href="#" class="likelist" th:href="@{/mypage/{board.memberNum}/likeList}" >[[${nickname}]]의 관심리스트</a></div>
+                <div><a href="#" class="likelist" th:href="@{/mypage/{board.memberNum}/likeList}" >[[${nickname}]]의 게시물</a></div>
               </div>
               <!-- 날짜, 조회수, 아이콘 -->
               <div class="side_bottom">

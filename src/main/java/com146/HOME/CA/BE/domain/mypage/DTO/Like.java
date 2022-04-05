@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class Like {
     private Long likeNum;              //관심리스트 번호 NUMBER(10)
     private Long memberNum;            //회원번호  NUMBER(10)
-    private int likeChk;               //관심리스트 체크 여부 CHAR(1)
     private Long boardNum;             //게시판 게시글 번호 NUMBER(10)
     private Blob boardPicture;         //대표 사진 BLOB
     private String boardTitle;         //게시글 제목 VARCHAR2(150)

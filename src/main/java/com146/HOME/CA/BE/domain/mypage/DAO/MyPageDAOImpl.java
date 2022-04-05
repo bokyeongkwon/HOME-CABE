@@ -26,7 +26,6 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("select ");
         sql.append("    s.sub_member, ");
         sql.append("    b.board_num, ");
-        sql.append("    s.sub_chk, ");
         sql.append("    b.board_title, ");
         sql.append("    m.nickname ");
         sql.append("  from subscribe s inner join member m ");
@@ -51,12 +50,29 @@ public class MyPageDAOImpl implements MyPageDAO{
 
         sql.append("update subscribe ");
         sql.append("    set alarm_chk = ? ");
-        sql.append("  where sub_member_num = ? ");
-        sql.append("       and board_num = ? ");
+        sql.append("  where sub_num = ? ");
 
         int cnt = jdbcTemplate.update(sql.toString(), alarm);
 
         return cnt;
+    }
+
+    /**
+     * 구독 수
+     * @param subNum
+     * @return
+     */
+    @Override
+    public int subCount(long subNum) {
+        String sql = "select count(*) from subscribe where member_num = ? ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, subNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 
     /**
@@ -67,9 +83,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         StringBuffer sql = new StringBuffer();
 
         sql.append("delete from subscribe ");
-        sql.append("    set sub_chk = ? ");
-        sql.append("  where sub_member_num = ? ");
-        sql.append("       and board_num = ? ");
+        sql.append("  where sub_num = ? ");
 
         int cnt = jdbcTemplate.update(sql.toString(), subNum);
 
@@ -101,6 +115,24 @@ public class MyPageDAOImpl implements MyPageDAO{
 
 
         return list;
+    }
+
+    /**
+     * 관심리스트 수
+     * @param likeNum
+     * @return
+     */
+    @Override
+    public int likeCount(long likeNum) {
+        String sql = "select count(*) from likeList where member_num = ? ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, likeNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 
     /**
@@ -139,12 +171,30 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on b.member_num = m.member_num ");
         sql.append("               inner join likelist l ");
         sql.append("    on m.member_num = l.member_num ");
-        sql.append("  where m.member_id = ? ");
+        sql.append("  where m.member_num = ? ");
 
         List<MyBoard> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyBoard.class));
 
 
         return list;
+    }
+
+    /**
+     * 내가 작성한 게시물 수
+     * @param boardContentboardNum
+     * @return
+     */
+    @Override
+    public int boardCount(long boardNum) {
+        String sql = "select count(*) from board where member_num = ? ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, boardNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 
     /**
@@ -157,8 +207,7 @@ public class MyPageDAOImpl implements MyPageDAO{
         StringBuffer sql = new StringBuffer();
 
         sql.append("delete from board ");
-        sql.append("  where member_num = ? ");
-        sql.append("  and board_num = ? ");
+        sql.append("  where board_num = ? ");
 
 
         int cnt = jdbcTemplate.update(sql.toString(), memberNum);
@@ -181,12 +230,30 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    b.board_title ");
         sql.append("  from board b inner join reply r ");
         sql.append("    on b.member_num = r.member_num ");
-        sql.append("  where r.member_id = ? ");
+        sql.append("  where r.member_num = ? ");
 
         List<MyReply> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyReply.class));
 
 
         return list;
+    }
+
+    /**
+     * 내가 작성한 댓글 수
+     * @param replydNum
+     * @return
+     */
+    @Override
+    public int replyCount(long replydNum) {
+        String sql = "select count(*) from reply where member_num = ? ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, replydNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 
     /**
@@ -199,9 +266,8 @@ public class MyPageDAOImpl implements MyPageDAO{
         StringBuffer sql = new StringBuffer();
 
         sql.append("delete from reply ");
-        sql.append("  where member_num = ? ");
+        sql.append("  where reply_num = ? ");
         sql.append("  and board_num = ? ");
-        sql.append("  and reply_num = ? ");
 
 
         int cnt = jdbcTemplate.update(sql.toString(), memberNum);
@@ -228,12 +294,31 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on b.member_num = p.member_num ");
         sql.append("               inner result t ");
         sql.append("    on p.report_num = t.report_num ");
-        sql.append("  where p.member_id = ? ");
+        sql.append("  where p.member_num = ? ");
 
         List<MyBoardReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyBoardReport.class));
 
 
         return list;
+    }
+
+    /**
+     * 내가 신고한 게시물 수
+     * @param reportNum
+     * @param boardNum
+     * @return
+     */
+    @Override
+    public int boardReportCount(long reportNum, long boardNum) {
+        String sql = "select count(*) from report where member_num = ? and board_num is not null ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, reportNum, boardNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 
     /**
@@ -255,11 +340,30 @@ public class MyPageDAOImpl implements MyPageDAO{
         sql.append("    on r.member_num = p.member_num ");
         sql.append("               inner result t ");
         sql.append("    on p.report_num = t.report_num ");
-        sql.append("  where p.member_id = ? ");
+        sql.append("  where p.member_num = ? ");
 
         List<MyReplyReport> list = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(MyReplyReport.class));
 
 
         return list;
+    }
+
+    /**
+     * 내가 신고한 댓글 수
+     * @param reportNum
+     * @param replyNum
+     * @return
+     */
+    @Override
+    public int replyReportCount(long reportNum, long replyNum) {
+        String sql = "select count(*) from report where member_num = ? and reply_num is not null ";
+
+        Integer itemCnt = 0;
+        try{
+            itemCnt = jdbcTemplate.queryForObject(sql, Integer.class, reportNum, reportNum, replyNum);
+        }catch (Exception e){
+            itemCnt = 0;
+        }
+        return itemCnt;
     }
 }

@@ -50,7 +50,7 @@ public class MemberController {
             return "member/editMember";
         }
 
-        Member member = new Member(member_num,null,null,editForm.getPw(),editForm.getTel(),editForm.getEmail(),null,editForm.getGender(),editForm.getNickname(),editForm.getShow_list(),null, LocalDateTime.now());
+        Member member = new Member(member_num,null,null,editForm.getPw(),editForm.getTel(),editForm.getEmail(),null,editForm.getGender(),editForm.getNickname(),editForm.getShowList(),null, LocalDateTime.now());
 
         memberSVC.editMember(member);
 

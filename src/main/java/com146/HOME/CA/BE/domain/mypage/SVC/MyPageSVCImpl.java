@@ -29,6 +29,12 @@ public class MyPageSVCImpl implements MyPageSVC{
         return myPageDAO.setAlarm(alarm);
     }
 
+    // 구독 수
+    @Override
+    public int subCount(long subNum) {
+        return myPageDAO.subCount(subNum);
+    }
+
     // 구독 취소
     @Override
     public int deleteSubscribe(long subNum) {
@@ -39,6 +45,12 @@ public class MyPageSVCImpl implements MyPageSVC{
     @Override
     public List<Like> likeList() {
         return myPageDAO.likeList();
+    }
+
+    // 관심리스트 수
+    @Override
+    public int likeCount(long likeNum) {
+        return myPageDAO.likeCount(likeNum);
     }
 
     // 관심리스트 삭제
@@ -53,10 +65,34 @@ public class MyPageSVCImpl implements MyPageSVC{
         return myPageDAO.myBoardList();
     }
 
+    // 내가 작성한 게시물 수
+    @Override
+    public int boardCount(long boardNum) {
+        return myPageDAO.boardCount(boardNum);
+    }
+
+    // 내가 작성한 게시물 삭제
+    @Override
+    public int deleteMyBoard(long memberNum) {
+        return myPageDAO.deleteMyBoard(memberNum);
+    }
+
     // 내가 작성한 댓글 목록
     @Override
     public List<MyReply> myReplyList() {
         return myPageDAO.myReplyList();
+    }
+
+    // 내가 작성한 댓글 수
+    @Override
+    public int replyCount(long replydNum) {
+        return myPageDAO.replyCount(replydNum);
+    }
+
+    // 내가 작성한 댓글 삭제
+    @Override
+    public int deleteMyReply(long memberNum) {
+        return myPageDAO.deleteMyReply(memberNum);
     }
 
     // 내가 신고한 게시물 목록
@@ -65,9 +101,22 @@ public class MyPageSVCImpl implements MyPageSVC{
         return myPageDAO.boardReportList();
     }
 
+    // 내가 신고한 게시물 수
+    @Override
+    public int boardReportCount(long reportNum, long boardNum) {
+        return myPageDAO.boardReportCount(reportNum, boardNum);
+    }
+
     // 내가 신고한 댓글 목록
     @Override
     public List<MyReplyReport> replyReportList() {
         return myPageDAO.replyReportList();
+    }
+
+
+    // 내가 신고한 댓글 수
+    @Override
+    public int replyReportCount(long reportNum, long replyNum) {
+        return myPageDAO.replyReportCount(reportNum, replyNum);
     }
 }
