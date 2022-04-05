@@ -21,10 +21,10 @@ class CategoryDAOImplTest {
   @Test
   @DisplayName("특정 상위 카테고리에 소속된 하위 카테고리 반환")
   void category() {
-    Integer pcate = 30;
+    int pcate = 10;
 
     List<Category> sub = categoryDAO.category(pcate);
-    Assertions.assertThat(sub.size()).isEqualTo(2);
+    Assertions.assertThat(sub.size()).isEqualTo(4);
     log.info("sub={}", sub);
   }
 

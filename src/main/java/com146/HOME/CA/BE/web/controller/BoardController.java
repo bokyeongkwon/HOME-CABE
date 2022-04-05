@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @Slf4j
 @Controller
@@ -45,6 +46,41 @@ public class BoardController {
   public List<CategoryAll> classifier(){
 //    13개 일반 게시판 분류 전부 반환
     return categoryDAO.categoryAll();
+  }
+
+//  각 페이지 소제목, 왼쪽 카테고리 메뉴 하위 분류명 자동 렌더링
+ @ModelAttribute("subTitle")
+ public List<Category> subTitle(@RequestParam Integer cateNum){
+    log.info("cateNum={}",cateNum);
+    int pcateNum = 0;
+    switch (cateNum){
+      case 11: case 12: case 13: case 14:
+        pcateNum = 10;
+        break;
+      case 21: case 22: case 23: case 24:
+        pcateNum = 20;
+        break;
+      case 31: case 32:
+        pcateNum = 30;
+        break;
+      case 41:
+        pcateNum = 40;
+        break;
+      case 51: case 52:
+        pcateNum = 50;
+        break;
+      default:
+        break;
+    }
+   return categoryDAO.category(pcateNum);
+ }
+
+// 왼쪽 카테고리 메뉴에 상위 분류명 자동 렌더링
+  @ModelAttribute("leftMenuTitle")
+  public List<Category> leftMenuTitle(@RequestParam Integer cateNum){
+    log.info("cateNum={}", cateNum);
+    int ccateNum = cateNum;
+    return categoryDAO.superCategory(ccateNum);
   }
 
 
@@ -95,6 +131,7 @@ public String list(
 }
 
 
+//=============================================구분선=========================================
 
 //  공통 CRUD
 //    작성 양식
@@ -111,13 +148,13 @@ public String list(
     return "redirect:/board/{num}/detail";
   }
 
-
   //    상세 조회
-  @GetMapping("/{num}/detail")
+  @GetMapping(value="/{num}/detail")
   public String boardDetail(
       @PathVariable Long num,
       Model model
   ){
+
     Board detail = boardSVC.selectByNum(num);
     DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detail, detailForm);

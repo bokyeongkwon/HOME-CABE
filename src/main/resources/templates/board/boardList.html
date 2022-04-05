@@ -6,14 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-
+<!--css-->
   <link rel="stylesheet" href="/static/css/board/list.css" th:href="@{/css/board/boardList.css}">
+<!--  js-->
+  <script defer src="" th:src="@{/js/board/boardList.js}"></script>
   <title>갤러리형 게시판</title>
 </head>
 
@@ -40,27 +37,27 @@
     <div class="dropdown-content">
       <!-- 각 url에 {reqPage}/{cateNum} -->
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateNum=11}" class="ccode">제과</a>
-        <a href="#" th:href="@{/board/1?cateNum=12}" class="ccode">제빵</a>
-        <a href="#" th:href="@{/board/1?cateNum=13}" class="ccode">음료</a>
-        <a href="#" th:href="@{/board/1?cateNum=14}" class="ccode">노오븐 베이킹</a>
+        <a href="#" th:href="@{/board/1?cateNum=11}" class="">제과</a>
+        <a href="#" th:href="@{/board/1?cateNum=12}" class="">제빵</a>
+        <a href="#" th:href="@{/board/1?cateNum=13}" class="">음료</a>
+        <a href="#" th:href="@{/board/1?cateNum=14}" class="">노오븐 베이킹</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateNum=21}" class="ccode">발렌타인 데이</a>
-        <a href="#" th:href="@{/board/1?cateNum=22}" class="ccode">할로윈</a>
-        <a href="#" th:href="@{/board/1?cateNum=23}" class="ccode">빼빼로 데이</a>
-        <a href="#" th:href="@{/board/1?cateNum=24}" class="ccode">크리스마스</a>
+        <a href="#" th:href="@{/board/1?cateNum=21}" class="">발렌타인 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=22}" class="">할로윈</a>
+        <a href="#" th:href="@{/board/1?cateNum=23}" class="">빼빼로 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=24}" class="">크리스마스</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateNum=31}" class="ccode">구도/각도</a>
-        <a href="#" th:href="@{/board/1?cateNum=32}" class="ccode">보정</a>
+        <a href="#" th:href="@{/board/1?cateNum=31}" class="">구도/각도</a>
+        <a href="#" th:href="@{/board/1?cateNum=32}" class="">보정</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateNum=41}" class="ccode">베이킹 클래스 찾기</a>
+        <a href="#" th:href="@{/board/1?cateNum=41}" class="">베이킹 클래스 찾기</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateNum=51}" class="ccode">QnA</a>
-        <a href="#" th:href="@{/board/1?cateNum=52}" class="ccode">자유 게시판</a>
+        <a href="#" th:href="@{/board/1?cateNum=51}" class="">QnA</a>
+        <a href="#" th:href="@{/board/1?cateNum=52}" class="">자유 게시판</a>
       </div>
     </div>
   </div>
@@ -86,24 +83,34 @@
 <main>
   <!-- 왼쪽 배너.-->
   <div id="leftCategory" >
-    <div id="leftCategory_title">[super]</div>
-    <ul class="leftCategory_ul">
-        <li class="leftCategory_li"><a href="" id="leftCategory_li" class="leftLi_a">[sub]</a></li>
+    <th:block th:each=" super :${leftMenuTitle}">
+    <div id="leftCategory_title" th:text="${super.cateName}">[super]</div>
+    </th:block>
+    <ul class="leftCategory_ul" >
+      <th:block th:each=" items :${subTitle}">
+        <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
+      </th:block>
     </ul>
   </div>
   <!-- 본문 -->
   <div class="liLiWrap">
-    <div class="liLiMenu" >[sub]</div>
+    <div class="upperBox">
+    <th:block th:each=" items :${subTitle}" th:if="${items.cateNum}==${cateNum}">
+    <div class="liLiMenu" th:text="${items.cateName}">[sub]</div>
+    </th:block>
+    <button type="button" id="writeBtn">글쓰기</button>
+    </div>
+
     <div class="liLiItems">
 
       <!-- start -->
       <div class="item"  th:each=" item : ${list}">
         <div class="post">
           <div class="img-wrap">
-            <a href="" th:href="@{|/board/${item.boardNum}/detail|}"><img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt=""></a>
+            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}"><img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt=""></a>
           </div>
           <div class="caption">
-            <a href="" th:href="@{|/board/${item.boardNum}/detail|}" class="postTitle" th:text="${item.boardTitle}">제목</a>
+            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}" class="postTitle" th:text="${item.boardTitle}">제목</a>
             <div class="bookmark"><i class="fas fa-heart"></i></div>
           </div>
           <div class="info">
