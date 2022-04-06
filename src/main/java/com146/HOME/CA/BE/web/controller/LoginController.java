@@ -84,6 +84,23 @@ public class LoginController {
   }
 
   /**
+   * 카카오로그인
+   * @return
+   */
+  @RequestMapping(value="/login/kakaoLogin")
+  public String kakaoLogin() {
+    StringBuffer loginUrl = new StringBuffer();
+    loginUrl.append("https://kauth.kakao.com/oauth/authorize?client_id=");
+    loginUrl.append("f2f1fba2f863bd6c7452dc44fc18562c");
+    loginUrl.append("&redirect_uri=");
+    loginUrl.append("https://localhost:9080/kakaoLogin");
+    loginUrl.append("&response_type=code");
+
+    return "redirect:"+loginUrl.toString();
+  }
+
+
+  /**
    * 아이디 찾기 양식(전화번호)
    * @return
    */

@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.thymeleaf.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -188,6 +189,24 @@ public class BoardDAOImpl implements BoardDAO {
     }
 
     /**
+     * 검색 전체건수
+     * @param filterCondition
+     * @return
+     */
+    @Override
+    public int totalCount(BoardFilterCondition filterCondition) {
+        StringBuffer sql = new StringBuffer();
+
+        sql.append("select count(*) ");
+        sql.append("  from board  ");
+        sql.append(" where  ");
+
+
+
+        return 0;
+    }
+
+    /**
      * 카테고리별 게시물 총 개수
      * @param cateCode 카테고리
      * @return 해당 게시판 총 게시물 수
@@ -325,5 +344,34 @@ public class BoardDAOImpl implements BoardDAO {
 
         return deleteCnt;
     }
+
+    /**
+     * 검색
+     * @param filterCondition
+     * @return
+     */
+    @Override
+    public List<Board> findAll(BoardFilterCondition filterCondition) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT t1.*");
+        sql.append("from( ");
+        sql.append("  SELECT ");
+        sql.append("  ROW_NUMBER() OVER(Order by board_num desc) no, ");
+        sql.append("  board_num, ");
+        sql.append("  cate_code, ");
+        sql.append("  board_title, ");
+        sql.append("  member_num, ");
+        sql.append("  nickname, ");
+        sql.append("  board_date, ");
+        sql.append("  board_hit, ");
+        sql.append("  board_content, ");
+        sql.append("  board_map_address ");
+        sql.append(" FROM ");
+        sql.append("  BOARD ");
+        sql.append("     WHERE ");
+
+        return null;
+    }
+
 
 }

@@ -15,6 +15,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <link rel="stylesheet" href="/css/login/loginForm.css">
+  <!--카카오로그인API-->
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  <script>Kakao.init("13985b7a92d3ad25544564af1540eed1");</script>
+  <!--네이버로그인API-->
+  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
+
 <!--  js 파일 만들어지면 따로 빼낼 예정-->
   <script>
     'use strict'
@@ -161,10 +167,13 @@
       <div class="login-body2">
         <!-- SNS 외부 API -->
         <div class="login-sns">
-          <a href="#"><img class="login-naver"
+          <a id="naverIdLogin_loginButton" href="javascript:void(0)"><img class="login-naver"
                            src="https://nuriss.kr/data/editor/1811/thumb-f25dcaecf0e201873d1d781c022795e4_1542973599_017_835x181.png"></a>
-          <a href="#"><img class="login-kakao"
+          <a href="/login/kakaoLogin"><img class="login-kakao"
                            src="https://www.gb.go.kr/Main/Images/ko/member/certi_kakao_login.png"></a>
+          <!--카카오로그인API
+          <form id="form-kakao-login" method="post" action="kakao-login">
+            <input type="hidden" name="name"/>-->
           <!-- <a href="#"><img class="login-facebook"
               src="https://www.junohair.com/static_resources/images/myjuno/facebook_login.png"></a> -->
         </div>
@@ -199,6 +208,54 @@
   check.click(function(){
   $("p").toggle();
   });
+
+  //네이버로그인API구현
+  var naverLogin = new naver.LoginWithNaverId(
+		{
+			clientId: "9TUr3P7Zc6dpozd8LHJg", //내 애플리케이션 정보에 cliendId를 입력해줍니다.
+			callbackUrl: "https://localhost:9080/callback", // 내 애플리케이션 API설정의 Callback URL 을 입력해줍니다.
+			isPopup: false,
+			callbackHandle: true
+		}
+	);
+
+naverLogin.init();
+
+window.addEventListener('load', function () {
+	naverLogin.getLoginStatus(function (status) {
+		if (status) {
+			var email = naverLogin.user.getEmail(); // 필수로 설정할것을 받아와 아래처럼 조건문을 줍니다.
+
+			console.log(naverLogin.user);
+
+            if( email == undefined || email == null) {
+				alert("이메일은 필수정보입니다. 정보제공을 동의해주세요.");
+				naverLogin.reprompt();
+				return;
+			}
+		} else {
+			console.log("callback 처리에 실패하였습니다.");
+		}
+	});
+});
+
+
+var testPopUp;
+function openPopUp() {
+    testPopUp= window.open("https://nid.naver.com/nidlogin.logout", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,width=1,height=1");
+}
+function closePopUp(){
+    testPopUp.close();
+}
+
+function naverLogout() {
+	openPopUp();
+	setTimeout(function() {
+		closePopUp();
+		}, 1000);
+
+
+}
 </script>
 </body>
 </html>
