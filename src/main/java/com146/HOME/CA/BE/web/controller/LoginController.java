@@ -110,6 +110,16 @@ public class LoginController {
     return "login/findTelID";
   }
 
+  /**
+   * 아이디 찾기 처리(전화번호)
+   * @return
+   */
+  @PostMapping("/findTelID")
+  public String findTelID(){
+
+    return "login/findTelIDResult";
+  }
+
 //  /**
 //   * 아이디 찾기 처리(전화번호)
 //   * @param findTelID

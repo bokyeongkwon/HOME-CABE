@@ -47,7 +47,9 @@
   </div>
 </div>
 <!-- 타이틀 내용 -->
-<form action="" th:action="@{/login/findTelID}" >
+<form action="/home.html" th:action="@{/findTelID}" class="findTelID" th:object="${findTelIDForm}" method="post" th:method="post">
+<!--<form action="" th:action method="post" th:object="${findTelID}">-->
+
 
 <article>
   <div class="idFind-top">
@@ -102,7 +104,7 @@
 <footer>
   <div class="bottom-text">
     <div>비밀번호가 기억나지 않는다면?&nbsp;&nbsp;</div>
-    <div><a href="/login/findTelPW" th:href="@{/login/findTelPW}">비밀번호 찾기&nbsp;</a></div>
+    <div><a href="#" th:href="@{/findTelPW}">비밀번호 찾기&nbsp;</a></div>
   </div>
 </footer>
 <script>
