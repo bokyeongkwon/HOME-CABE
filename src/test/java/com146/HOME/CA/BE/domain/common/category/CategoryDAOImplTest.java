@@ -29,16 +29,16 @@ class CategoryDAOImplTest {
   }
 
   @Test
-  @DisplayName("일반 게시판 하위 코드 반환")
-  void testCategory() {
-    List<Category> board = categoryDAO.category();
-    Assertions.assertThat(board.size()).isEqualTo(13);
-    log.info("subCode={}", board);
+  @DisplayName("상위 카테고리 반환")
+  void superCategory() {
+    int ccateNum = 51;
+    List<Category> aSuper = categoryDAO.superCategory(ccateNum);
+    log.info("aSuper={}", aSuper);
 
   }
 
   @Test
-  @DisplayName("모든 코드 반환")
+  @DisplayName("60번대 이하의 모든 코드 반환")
   void categoryAll() {
     List<CategoryAll> categoryAlls = categoryDAO.categoryAll();
     log.info("categoryAlls={}",categoryAlls);

@@ -1,6 +1,7 @@
 @charset "utf-8";
 
 *{
+  outline: red 1px so;
   font-family: 'Jua', sans-serif;
   padding: 0;
   margin: 0;
@@ -45,7 +46,7 @@
       /* 숨기기 */
       display: none;
       position: absolute;
-      z-index: 1;
+      z-index: 1000;
 
   }
   /* 펼치기 */
@@ -66,7 +67,7 @@
       font-size: 20px;
       text-align: center;
   }
-  /* 마우스 호버링 */
+  /* 마우스 호버링 컬러 */
   .dropdown-content > div > a:hover{ background-color: black; color: white; }
     /* 우측 상단 아이콘 */
     .icon li{
@@ -99,16 +100,11 @@
     background-color: #e5d0b5;
    }
 
-   /* *{outline: 1px red solid;} */
-   /* body {
-   background-color: whitesmoke;
-   } */
-
    /* m5 메인 박스 */
    main {
     height: 1400px;
-    width: 90%;
-    min-width: 1000px;
+    width: 80%;
+    min-width: 1200px;
     margin: auto;
     margin-top: 100px;
 
@@ -136,10 +132,10 @@
    }
 
    #page_name{
-    margin-right: auto;
-    margin-left: 5px;
-    font-size: 25pt;
-    font-weight: bold;
+    margin-left: 10px;
+    padding-left: 20px;
+    border-left: 4px solid #F37335;
+    font-size: 35px;
    }
 
    /* 지도 화면의 경우 게시판이 맨아래에 있어 글쓰기 버튼도 하단으로 내릴 필요가 있어 보임   */
@@ -154,7 +150,7 @@
     margin: auto;
    }
 
-   #writeBtn{
+   #bakingClassWriteBtn{
     height: 34px;
     width: 104px;
     margin: auto;
@@ -168,7 +164,7 @@
     display: flex;
     height: 30%;
     margin: 10px 20px 0 20px;
-    max-height: 325px;
+    max-height: 295px;
    }
 
     /* 지역(상위) 상자 */
@@ -208,10 +204,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
-    /* 갭을 주면 내용물이 상자의 패딩선을 넘어버리는데 오버플로우가 제 역할을 못하고 있다 */
 
    }
-   /* 시군구 선택 */
 
 
    /* 지도 */
@@ -293,12 +287,13 @@
       border: 1px solid #594440;
 
       display: grid;
-      grid-template-columns: 100px 1fr 200px 150px 100px;
+      grid-template-columns: 150px 1fr 200px 150px 100px;
       grid-auto-rows: 50px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px;
 
    text-align: center;
-
  }
+ #boardTitle{ text-align: left;}
+
  .col.uppermost{
      line-height: 50px;
      font-weight: bold;
@@ -337,55 +332,35 @@
   color:white;
 }
 
-
-   /* 페이지 검색창 */
-   #page_search_bar {
-    width: 100%;
-    text-align: center;
-   }
-
-   #scan_page {
-    width: 65px;
-    margin-right: 5px;
-   }
-
-   #page_search_btn {
-    margin-left: 5px;
-    color: #594440;
-    background-color: #e5d0b5;
-   }
-
    /* 게시글 검색 */
    #post_search_bar {
-    height: 22px;
     width: 80%;
-    margin: auto;
-    margin-top: 30px;
-    margin-bottom: 50px;
-    text-align: right;
+    margin: 30px auto 50px;
+
+    display: flex;
+    justify-content: end;
    }
 
    #scan_post {
-    height: 20px;
-    margin: 0;
-    padding: 0;
+    width: 200px; height: 20px;
     border: 1px solid black;
+    margin: 0; padding: 0;
+    background-color: white;
    }
 
    #post_search_btn {
-    width: 40px;
+    width: 55px;
     margin-left: 5px;
-    background-color: #e5d0b5;
+    color: black;
    }
 
    /* 최하단 */
    footer{
-    min-width: 1000px;
+    min-width: 1300px;
     border-top: 1px solid darkgreen;
    }
 
    footer>ul{
-    /* background-color: darkgrey; */
     width: 80%;
     margin: 0 auto;
     display: flex;

@@ -23,7 +23,7 @@ class BoardDAOImplTest {
   @DisplayName("게시글 등록")
   void insertBoard() {
     Board board = new Board();
-    board.setCateCode(41);
+    board.setCateNum(41);
     board.setBoardTitle("베이킹 클래스");
     board.setMemberNum(1L);
     board.setNickname("닉네임1");
@@ -56,7 +56,7 @@ class BoardDAOImplTest {
 //    덮어쓸 새 객체를 만들고 수정하고 싶은 내용 채우기.
     Board board = new Board();
 //    다 안 넣어도 될 걸..? 아니네.
-    board.setCateCode(41);
+    board.setCateNum(41);
     board.setBoardTitle("장현동 베이킹 클래스");
     board.setBoardContent("당근케이크 만들었어요 맛있어보이죠?");
 
@@ -113,7 +113,7 @@ class BoardDAOImplTest {
   void insertBbss() {
     for(int i=1; i<101; i++) {
       Board board = new Board();
-      board.setCateCode(11);
+      board.setCateNum(11);
       board.setBoardTitle("제과"+i);
       board.setMemberNum(1L);
       board.setNickname("닉네임1");

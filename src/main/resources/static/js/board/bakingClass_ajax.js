@@ -347,7 +347,8 @@ const data = {
 // -------------------------------------이하 로직-----------------------------------------------
 
 
-// 일단 각 상위 지역에 리스너. 대한민국 범위에서 검색하는 전체 버튼은 1개이니 따로 리스너를 단다.
+// 일단 각 상위 지역에 리스너를 단다. 대한민국 범위에서 검색하는 전체 버튼은 1개이니 따로 리스너를 단다.
+// querySelectorAll로 모으면 배열이 된다. 전부 다 리스너 등록.
  const $cityBtn = document.querySelectorAll('.cityBtn');
  $cityBtn.forEach(ele => {
      ele.addEventListener('click', super_f);
@@ -358,8 +359,11 @@ function super_f(e){
     // console.log(e.target.dataset.superId);
     const $btnWhere = e.target.dataset.superId;
 
-    // url은 사용 기기에 따라 변경 주의.
+    // url은 사용 기기에 따라 변경 주의. 1은 집, 2는 교육장. 3, 4는 포트 번호 변경.
+    const url1 = 'http://192.168.168.103:5500';
     const url2 = 'http://192.168.0.171:5500';
+
+    const url3 = 'http://192.168.168.103:9080';
     const url4 = 'http://192.168.0.171:9080';
 
     fetch(url4,{

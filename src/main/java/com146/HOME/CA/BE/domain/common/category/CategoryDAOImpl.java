@@ -62,7 +62,7 @@ public class CategoryDAOImpl implements CategoryDAO {
 
   /**
    * 카테고리 테이블의 모든 사용중 레코드 반환
-   * @return 90번대 첨부파일 분류까지 반환
+   * @return 일반게시판 분류(< 60)까지 반환
    */
   @Override
   public List<CategoryAll> categoryAll() {
@@ -71,6 +71,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     sql.append(" from category t1, category t2 ");
     sql.append(" where t1.pcate_num = t2.cate_num ");
     sql.append(" and t1.useyn = 'Y' ");
+    sql.append(" and t1.pcate_num < 60 ");
 
     List<CategoryAll> categoryAll = jdbcTemplate.query(
         sql.toString(),
