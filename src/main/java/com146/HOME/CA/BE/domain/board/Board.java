@@ -17,4 +17,13 @@ public class Board {
     String boardContent;	              //내용 CLOB
     String boardMapAddress;	          //지도 주소 VARCHAR2(300 BYTE)
     Blob boardPicture;                 //이미지
+
+    Long ReplyNum;                    //댓글번호 NUMBER(10)
+    LocalDate replyDate;              //작성일 TIMESTAMP
+    String replyContent;              //댓글내용 CLOB
+    int replyGroup;                   //댓글그룹 NUMBER(5)
+    int replyStep;                    //댓글의 단계 NUMBER(5)
+    int replyIndent;                  //댓글의 들여쓰기 NUMBER(5)
+    int preplyNum;                    //부모댓글번호 NUMBER(10)
+
 }

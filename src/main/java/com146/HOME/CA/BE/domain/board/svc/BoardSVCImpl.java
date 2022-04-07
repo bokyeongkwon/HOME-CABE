@@ -83,4 +83,34 @@ public class BoardSVCImpl implements BoardSVC {
     return boardDAO.totalCount(cateCode);
   }
 
+  /**
+   * 댓글 작성
+   * @param board
+   * @return
+   */
+  @Override
+  public Long insertReply(Board board) {
+    return boardDAO.insertReply(board);
+  }
+
+  /**
+   * 댓글 수정
+   * @param replyNum
+   * @param board
+   * @return
+   */
+  @Override
+  public int updateReply(Long replyNum, Board board) {
+    return boardDAO.updateReply(replyNum, board);
+  }
+
+  /**
+   * 댓글 삭제
+   * @param replyNum
+   * @return
+   */
+  @Override
+  public int deleteReply(Long replyNum) {
+    return boardDAO.deleteReply(replyNum);
+  }
 }
