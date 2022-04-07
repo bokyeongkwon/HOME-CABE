@@ -88,35 +88,57 @@
       <!-- 본문 -->
       <!-- 게시물 -->
       <div class="main_content">
-        <div class="contentWrap">
+        <div class="contentWrap" th:data-code="${cateNum}">
           <!-- 게시물 상단 -->
           <div class="content_top">
-            <div class="title">휘낭시에 레시피</div>
+            <form action="" method="post" th:object="${detailForm,likeList}"></form>
+            <div class="title" th:text="*{boardTitle}">휘낭시에 레시피</div>
             <!-- 제목 오른쪽 -->
             <div class="side">
               <!-- 등급, 닉네임, 좋아요 -->
               <div class="side_top">
                 <ul class="top_ul">
                   <li><img src="/등급 아이콘/1.png" alt="" width="30px" height="30px"></li>
-                  <li class="top_ul_nickname">알로하</li>
-                  <li><i class="far fa-heart"></i></li>
+                  <li class="top_ul_nickname" th:text="*{nickname}">알로하</li>
+                  <li><i th:if="$(good==-0)" th:data-boardNum="*{boardNum}" class="far fa-heart"></i></li>
+                  <li><i th:if="$(good==-1)" th:data-boardNum="*{boardNum}" class="fas fa-heart toggleColorChange"></i></li>
                 </ul>
               </div>
               <!-- 구독, 관심리스트 -->
               <div class="side_med">
-                <button class="sub_member" type="button">구독</button>
-                <div><a href="#" class="likelist">알로하님의 관심리스트</a></div>
+                <ul class="med_ul">
+                  <li><button class="sub_member" type="button" id="subscribe"
+                              th:unless="${board.memberNum} == &{subscribe.subMemberNum}">구독</button></li>
+                  <li><button class="del_sub_member" type="button" id="delSubscribe"
+                              th:if="${board.memberNum} == &{subscribe.subMemberNum}">구독 취소</button></li>
+                  <li><div><a href="#" class="boardList" th:href="@{/mypage/{board.memberNum}/boardList}" >[[${nickname}]]의 게시물</a></div></li>
+                </ul>
               </div>
-              <!-- 날짜, 신고 -->
+              <!-- 날짜, 조회수, 아이콘 -->
               <div class="side_bottom">
-                <div class="upload_date">2022-03-03</div>
-                <button class="content_report" type="button">신고</button>
+                <div class="upload_date" th:text="*{cdate}">2022-03-03</div>
+                <div class="hit" th:text="|조회수 *{hit}|">조회수 41</div>
+                <div class="menu_icon">
+                    <i class="fas fa-bars">
+                      <div class="menu_list">
+                        <div class="side_menu1" th:unless="${memberNum} == ${board.memberNum}">
+                          <a href="#" role="button" class="reportBtn" id="boardRBtn" th:href="/">신고</a>
+                        </div>
+                        <div class="side_menu2" th:if="${memberNum} == ${board.memberNum}">
+                          <ul class="side_menu_list">
+                            <li class="side_menu_item"><button href="#" role="button" class="updateBtn" id="boarUBtn">수정</button></li>
+                            <li class="side_menu_item"><button href="#" role="button" class="deleteBtn" id="boardDBtn">삭제</button></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </i>
+                </div>
               </div>
             </div>
           </div>
           <!-- 게시물 내용 -->
           <div class="content_main">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sed labore ut tempora amet? Id, voluptatibus incidunt quis rem et amet ut excepturi minus, aliquid velit eum numquam quos cupiditate.
+            <p th:text="*{boardContent}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sed labore ut tempora amet? Id, voluptatibus incidunt quis rem et amet ut excepturi minus, aliquid velit eum numquam quos cupiditate.
               Laboriosam, quaerat aliquid placeat quia, amet optio totam voluptatum illo nulla autem blanditiis architecto ipsa laborum debitis vel neque modi in cum! Fuga at unde officia tenetur distinctio vel delectus.
               Aliquam obcaecati eveniet soluta eligendi alias quibusdam recusandae harum, quis cum sed repellendus veniam minus culpa nostrum dolorem assumenda, illum corporis suscipit deserunt error accusantium doloribus minima placeat voluptates. Consequuntur.
               Beatae pariatur et perferendis, rerum quaerat dolor rem molestiae, architecto ab dolorum magni alias soluta sequi, temporibus adipisci laudantium a. Impedit perferendis quam eveniet cumque exercitationem ipsa, molestiae voluptatum saepe!
@@ -133,20 +155,56 @@
           <!-- 댓글 상단 -->
           <div class="replied_top">댓글</div>
           <!-- 댓글 내용 -->
-          <div class="replied_med">
-            <div class="replied_med_1">
-              <div class="replied_num">1.</div>
-              <div class="replied_content">너무 맛있어 보여요~</div>
-
-              <div class="replied_nickname"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</div>
-              <div class="replied_date">2022-03-04</div>
-              <button class="reply_report" type="button">신고</button>
-            </div>
-          </div>
+          <table>
+            <tr th:each="board : ${list}">
+              <td width="20% th:text=${board.nickname}"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</td>
+              <td width="55%" th:text="${board.replyContent}">너무 맛있어 보여요~</td>
+              <td width="20%" th:text="${board.replyDate}">2022-03-04</td>
+              <td width="5%" class="icon">
+                  <i class="fas fa-bars" >
+                      <div class="menu1" th:unless="${memberNum} == ${board.memberNum}" >
+                        <ul class="menu_list">
+                          <li class="menu_item"><button class="replyBtn" id="replyBtn" type="button">답글</button></li>
+                          <li class="menu_item"><button class="reportBtn" id="reportRBtn" type="button"><a href="#">신고</a></button></li>
+                        </ul>
+                      </div>
+                      <div class="menu2" th:if="${memberNum} == ${board.memberNum}" >
+                        <ul class="menu_list">
+                          <li class="menu_item"><button class="updateBtn" id="replyUBtn" type="button">수정</button></li>
+                          <li class="menu_item"><button class="deleteBtn" id="replyDBtn" type="button">삭제</button></li>
+                        </ul>
+                      </div>
+                  </i>
+              </td>
+            </tr>
+          </table>
           <!-- 댓글 작성 -->
           <div class="replied_bottom">
-            <textarea name="reply" id="reply" cols="150" rows="5" placeholder="댓글을 입력하세요."></textarea>
+            <textarea name="reply" id="reply" cols="150" rows="5" placeholder="댓글을 입력하세요." th:field="*{replyContent}"></textarea>
             <button class="submit" type="button">등록</button>
+          </div>
+
+          <!-- 페이징 버튼 -->
+          <div class="bbs-page">
+            <!--이전페이지정보-->
+            <th:block th:if="${pc.prev}">
+              <a class="bbs-page-item" href="" th:href="@{/board/1(cateCode=${param.cateCode})}"><i class="fas fa-angle-double-left"></i></a>
+              <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-left"></i></a>
+            </th:block>
+
+            <!--페이지표시-->
+            <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
+              <th:block th:if="${pnum != 0}">
+                <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'"
+                   href="" th:href="@{/board/{reqPage}(reqPage=${pnum}, cateCode=${param.cateCode})}" th:text="${pnum}">1</a>
+              </th:block>
+            </th:block>
+
+            <!--다음페이지정보-->
+            <th:block th:if="${pc.next}">
+              <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-right"></i></a>
+              <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateCode=${param.cateCode})}"><i class="fas fa-angle-double-right"></i></a>
+            </th:block>
           </div>
         </div>
       </div>

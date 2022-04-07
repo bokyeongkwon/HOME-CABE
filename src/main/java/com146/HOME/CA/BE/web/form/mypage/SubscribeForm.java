@@ -3,9 +3,8 @@ package com146.HOME.CA.BE.web.form.mypage;
 import lombok.Data;
 
 @Data
-public class Alarm {
+public class SubscribeForm {
     private Long memberNum;       //구독자 회원번호 NUMBER(10)
-    private int subChk;           //구독 설정 CHAR
     private int alarmChk;         //알림 설정 CHAR
     private Long subMemberNum;    //구독 된 회원번허 NUMBER(10)
     private String nickname;      //구독 된 회원 닉네임 VARCHAR2(40)
