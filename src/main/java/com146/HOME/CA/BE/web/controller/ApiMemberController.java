@@ -1,4 +1,4 @@
-package com146.HOME.CA.BE.web;
+package com146.HOME.CA.BE.web.controller;
 
 
 import com146.HOME.CA.BE.domain.member.Member;
