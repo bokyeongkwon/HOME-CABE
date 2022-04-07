@@ -8,7 +8,7 @@
   <!-- 외부 아이콘 임포트 -->
   <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
 
-  <!-- 외부 css -->
+  <!-- 외부 css파일을 여러 개 적용할 때 코드 순서상 가장 아래에 적용된 css의 우선순위가 높다 -->
   <link rel="stylesheet" href="/static/css/board/bakingClass.css" th:href="@{/css/board/bakingClass.css}">
 
   <!-- 구글 폰트 Jua 적용  -->
@@ -17,8 +17,8 @@
   <title>베이킹 클래스 게시판</title>
 
   <!-- 외부 JS파일 연결, 화면이 로딩 된 후 적용 -->
-  <script defer src="" th:src="@{/js/board/bakingClass_ajax.js}"></script>
-  <script defer src="" th:src="@{/js/board/bakingClass.js}"></script>
+  <script defer src="" th:src="@{/js/board/bakingClass/bakingClass_ajax.js}"></script>
+  <script defer src="" th:src="@{/js/board/bakingClass/bakingClass.js}"></script>
 
   <!-- 네이버, 카카오 지도 API. 기기가 달라지면 플랫폼 별도 추가 필요 -->
   <script type="text/javascript"
@@ -49,29 +49,29 @@
     </ul>
     <!-- 드롭다운 -->
     <div class="dropdown-content">
-      <!-- 각 url에 {reqPage}/{cateCode} -->
+      <!-- 각 url에 {reqPage}/{cateNum} -->
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=11}" class="ccode">제과</a>
-        <a href="#" th:href="@{/board/1?cateCode=12}" class="ccode">제빵</a>
-        <a href="#" th:href="@{/board/1?cateCode=13}" class="ccode">음료</a>
-        <a href="#" th:href="@{/board/1?cateCode=14}" class="ccode">노오븐 베이킹</a>
+        <a href="#" th:href="@{/board/1?cateNum=11}" class="">제과</a>
+        <a href="#" th:href="@{/board/1?cateNum=12}" class="">제빵</a>
+        <a href="#" th:href="@{/board/1?cateNum=13}" class="">음료</a>
+        <a href="#" th:href="@{/board/1?cateNum=14}" class="">노오븐 베이킹</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=21}" class="ccode">발렌타인 데이</a>
-        <a href="#" th:href="@{/board/1?cateCode=22}" class="ccode">할로윈</a>
-        <a href="#" th:href="@{/board/1?cateCode=23}" class="ccode">빼빼로 데이</a>
-        <a href="#" th:href="@{/board/1?cateCode=24}" class="ccode">크리스마스</a>
+        <a href="#" th:href="@{/board/1?cateNum=21}" class="">발렌타인 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=22}" class="">할로윈</a>
+        <a href="#" th:href="@{/board/1?cateNum=23}" class="">빼빼로 데이</a>
+        <a href="#" th:href="@{/board/1?cateNum=24}" class="">크리스마스</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=31}" class="ccode">구도/각도</a>
-        <a href="#" th:href="@{/board/1?cateCode=32}" class="ccode">보정</a>
+        <a href="#" th:href="@{/board/1?cateNum=31}" class="">구도/각도</a>
+        <a href="#" th:href="@{/board/1?cateNum=32}" class="">보정</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=41}" class="ccode">베이킹 클래스 찾기</a>
+        <a href="#" th:href="@{/board/1?cateNum=41}" class="">베이킹 클래스 찾기</a>
       </div>
       <div class="depth2">
-        <a href="#" th:href="@{/board/1?cateCode=51}" class="ccode">QnA</a>
-        <a href="#" th:href="@{/board/1?cateCode=52}" class="ccode">자유 게시판</a>
+        <a href="#" th:href="@{/board/1?cateNum=51}" class="">QnA</a>
+        <a href="#" th:href="@{/board/1?cateNum=52}" class="">자유 게시판</a>
       </div>
     </div>
   </div>
@@ -99,8 +99,11 @@
   <!-- 게시판 -->
   <div class="content_page">
     <!-- 게시판 상단 현 페이지 주소 표시, 정렬 콤보박스, 글쓰기 버튼 -->
-    <div id="page_status">
-      <div id="page_name">지역별 클래스 검색</div>
+    <!--            th:data-code="${cateNum}"-->
+    <div id="page_status" >
+      <th:block th:each=" sub : ${subTitle}">
+      <div id="page_name" th:text="${sub.cateName}">지역별 클래스 검색</div>
+      </th:block>
 
       <!-- order_wrapper = (order + write_btn) -->
       <div class="order_wrapper">
@@ -109,7 +112,7 @@
           <option value="">아직미정</option>
           <option value="">조회수등</option>
         </select>
-        <button id="writeBtn">글쓰기</button>
+        <button id="bakingClassWriteBtn">글쓰기</button>
       </div>
     </div>
 
@@ -164,12 +167,11 @@
         <!-- db내용을 ListForm 형식에 맞게 표시하는 데 타임리프 반복문 필요 -->
         <th:block th:each=" item : ${list}">
           <div class="col" th:text="${item.boardNum}">게시물 번호</div>
-          <a href="" class="col" th:text="${item.boardTitle}" th:href="@{|/board/${item.boardNum}/detail|}">제목</a>
+          <a href="" class="col" id="boardTitle" th:text="${item.boardTitle}" th:href="@{|/board/${item.boardNum}/detail|}">제목</a>
           <div class="col" th:text="${item.nickname}">작성자ID or Nickname</div>
           <div class="col" th:text="${#temporals.format(item.boardDate,'yy/MM/dd HH:dd')}">작성일</div>
           <div class="col" th:text="${item.boardHit}">조회수</div>
         </th:block>
-
       </div>
     </div>
 
@@ -177,38 +179,39 @@
     <div class="bbs-page">
       <!--이전페이지정보-->
       <th:block th:if="${pc.prev}">
-        <a class="bbs-page-item" href="" th:href="@{/board/1(cateCode=${param.cateCode})}"><i class="fas fa-angle-double-left"></i></a>
-        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-left"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/1(cateNum=${param.cateNum})}"><i class="fas fa-angle-double-left"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateNum=${param.cateNum})}"><i class="fas fa-angle-left"></i></a>
       </th:block>
 
       <!--페이지표시-->
       <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
         <th:block th:if="${pnum != 0}">
+          <!--                  <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href="" th:href="@{|/board/${pnum}|}" th:text="${pnum}">1</a>-->
           <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'"
-             href="" th:href="@{/board/{reqPage}(reqPage=${pnum}, cateCode=${param.cateCode})}" th:text="${pnum}">1</a>
+             href="" th:href="@{/board/{reqPage}(reqPage=${pnum}, cateNum=${param.cateNum})}" th:text="${pnum}">1</a>
         </th:block>
       </th:block>
+      <!--                (cateNum=${param.cateNum})-->
 
       <!--다음페이지정보-->
       <th:block th:if="${pc.next}">
-        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateCode=${param.cateCode})}"><i class="fas fa-angle-right"></i></a>
-        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateCode=${param.cateCode})}"><i class="fas fa-angle-double-right"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateNum=${param.cateNum})}"><i class="fas fa-angle-right"></i></a>
+        <a class="bbs-page-item" href="" th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateNum=${param.cateNum})}"><i class="fas fa-angle-double-right"></i></a>
       </th:block>
     </div>
+  </div>
 
   </div>
 </main>
 
 <!-- 게시판 하단. 게시글 검색, 기타 등등 -->
 <div id="post_search_bar">
-  <form action="">
-    <select name="post_filter" id="post_filter">
-      <option value="title">제목</option>
-      <option value="author">작성자</option>
-      <option value="mixed">제목+내용</option>
-    </select>
-    <input type="text" name="scan_post" id="scan_post"><button id="post_search_btn">검색</button>
-  </form>
+  <select name="post_filter" id="post_filter">
+    <option value="title">제목</option>
+    <option value="author">작성자</option>
+    <option value="mixed">제목+내용</option>
+  </select>
+  <input type="text" name="scan_post" id="scan_post"><button id="post_search_btn">검색</button>
 </div>
 
 <!-- 최하단 -->
@@ -226,7 +229,16 @@
   </ul>
 </footer>
 
+<script>
+        //  글작성 버튼
+    const $bakingClassWriteBtn = document.getElementById('bakingClassWriteBtn');
+    $bakingClassWriteBtn?.addEventListener('click', e=>{
+      // 경로에 매개값이 없으면 따옴표로 써도 된다
+      location.href='/board/add';
+    });
+    </script>
 
 </body>
+
 
 </html>

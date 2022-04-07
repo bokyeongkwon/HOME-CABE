@@ -2,6 +2,7 @@ package com146.HOME.CA.BE.web.controller;
 
 import com146.HOME.CA.BE.domain.board.Board;
 import com146.HOME.CA.BE.domain.board.svc.BoardSVC;
+import com146.HOME.CA.BE.domain.common.category.Category;
 import com146.HOME.CA.BE.domain.common.category.CategoryAll;
 import com146.HOME.CA.BE.domain.common.category.CategoryDAO;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
@@ -50,6 +51,48 @@ public class BoardController {
 //    13개 일반 게시판 분류 전부 반환
     return categoryDAO.categoryAll();
   }
+
+//  페이지 소제목과 왼쪽 메뉴에 카테고리 데이터 바인딩
+  @ModelAttribute("subTitle")
+  public List<Category> subTitle(@RequestParam int cateNum){
+    int pcateNum = 0;
+    switch (cateNum) {
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+        pcateNum = 10;
+        break;
+      case 21:
+      case 22:
+      case 23:
+      case 24:
+        pcateNum = 20;
+        break;
+      case 31:
+      case 32:
+        pcateNum = 30;
+        break;
+      case 41:
+        pcateNum = 40;
+        break;
+      case 51:
+      case 52:
+        pcateNum = 50;
+        break;
+      default:
+        break;
+    }
+   return categoryDAO.category(pcateNum);
+}
+
+//왼쪽 메뉴 상위 카테고리명 반환
+@ModelAttribute("superTitle")
+public List<Category> superTitle(@RequestParam int cateNum){
+    int ccateNum = cateNum;
+    return categoryDAO.superCategory(ccateNum);
+  }
+
 
 
 //  각 카테고리별 게시판 목록으로 이동
@@ -117,42 +160,44 @@ public String list(
 
 
   //상세 조회
-  @GetMapping("/{num}/detail")
+  @GetMapping("/{boardNum}/detail")
   public String boardDetail(@PathVariable Long boardNum,
+                            @RequestParam int cateNum,
                             HttpServletRequest request,
                             Model model){
 
     HttpSession session = request.getSession(false);
 
     LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
-    //if(loginMember != null)
+    if(loginMember != null)
     String id = loginMember.getId();
 
     Board detail = boardSVC.selectByNum(boardNum);
     DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detail, detailForm);
     model.addAttribute("detailForm", detailForm);
+    model.addAttribute("cateNum", cateNum);
 
     return "/board/boardDetail";
   }
 
 
   //    수정 양식
-  @GetMapping("/{num}/edit")
+  @GetMapping("/{boardNum}/edit")
   public String boardEdit(){
 
     return  "/board/boardEdit";
   }
 
   //    수정 처리
-  @PostMapping("/{num}/edit")
+  @PostMapping("/{boardNum}/edit")
   public String edit(){
 
-    return  "redirect:/board/{num}/detail";
+    return  "redirect:/board/{boardNum}/detail";
   }
 
   //    삭제
-  @GetMapping("/{num}/delete")
+  @GetMapping("/{boardNum}/delete")
   public String delete(){
 
     return "redirect:/board";
@@ -192,13 +237,13 @@ public String list(
 
 
   //댓글 삭제
-  @DeleteMapping("/{boardNum}}/{replyNum}/")
-  public String delReply(@PathVariable Long replyNum){
-
-    boardSVC.deleteReply(replyNum);
-
-    return "redirect:/board/{boardNum}/reply";
-  }
+//  @DeleteMapping("/{boardNum}}/{replyNum}/")
+//  public String delReply(@PathVariable Long replyNum){
+//
+//    boardSVC.deleteReply(replyNum);
+//
+//    return "redirect:/board/{boardNum}/reply";
+//  }
 
 
 
