@@ -88,56 +88,57 @@
       <!-- 본문 -->
       <!-- 게시물 -->
       <div class="main_content">
-        <div class="contentWrap" th:data-code="${cate}">
+        <div class="contentWrap" th:data-code="${cateNum}">
           <!-- 게시물 상단 -->
           <div class="content_top">
             <form action="" method="post" th:object="${detailForm,likeList}"></form>
-            <div class="title">휘낭시에 레시피</div>
+            <div class="title" th:text="*{boardTitle}">휘낭시에 레시피</div>
             <!-- 제목 오른쪽 -->
             <div class="side">
               <!-- 등급, 닉네임, 좋아요 -->
               <div class="side_top">
                 <ul class="top_ul">
                   <li><img src="/등급 아이콘/1.png" alt="" width="30px" height="30px"></li>
-                  <li class="top_ul_nickname" th:text="${nickname}">알로하</li>
-                  <li><i class="far fa-heart" th:text="${likeList}"></i></li>
+                  <li class="top_ul_nickname" th:text="*{nickname}">알로하</li>
+                  <li><i th:if="$(good==-0)" th:data-boardNum="*{boardNum}" class="far fa-heart"></i></li>
+                  <li><i th:if="$(good==-1)" th:data-boardNum="*{boardNum}" class="fas fa-heart toggleColorChange"></i></li>
                 </ul>
               </div>
               <!-- 구독, 관심리스트 -->
               <div class="side_med">
                 <ul class="med_ul">
-                <li><button class="sub_member" type="button">구독</button></li>
-                <li><a href="#" class="likelist">관심리스트</a></li>
-                <li><a href="#" class="boardList">게시물</a></li>
+                  <li><button class="sub_member" type="button" id="subscribe"
+                              th:unless="${board.memberNum} == &{subscribe.subMemberNum}">구독</button></li>
+                  <li><button class="del_sub_member" type="button" id="delSubscribe"
+                              th:if="${board.memberNum} == &{subscribe.subMemberNum}">구독 취소</button></li>
+                  <li><div><a href="#" class="boardList" th:href="@{/mypage/{board.memberNum}/boardList}" >[[${nickname}]]의 게시물</a></div></li>
                 </ul>
-              </div>
-              <div class="side_med" th:unless="${memberNum} == ${board.memberNum}">
-                <button class="sub_member" type="button">구독</button>
-                <div><a href="#" class="likelist" th:href="@{/mypage/{board.memberNum}/likeList}" >[[${nickname}]]의 게시물</a></div>
               </div>
               <!-- 날짜, 조회수, 아이콘 -->
               <div class="side_bottom">
-                <div class="upload_date">2022-03-03</div>
-                <div class="hit">조회수 41</div>
+                <div class="upload_date" th:text="*{cdate}">2022-03-03</div>
+                <div class="hit" th:text="|조회수 *{hit}|">조회수 41</div>
                 <div class="menu_icon">
                     <i class="fas fa-bars">
-                      <div class="side_menu1" th:unless="${memberNum} == ${board.memberNum}">
-                        <a href="#" role="button" class="reportBtn" th:href="/">신고</a>
+                      <div class="menu_list">
+                        <div class="side_menu1" th:unless="${memberNum} == ${board.memberNum}">
+                          <a href="#" role="button" class="reportBtn" id="boardRBtn" th:href="/">신고</a>
+                        </div>
+                        <div class="side_menu2" th:if="${memberNum} == ${board.memberNum}">
+                          <ul class="side_menu_list">
+                            <li class="side_menu_item"><button href="#" role="button" class="updateBtn" id="boarUBtn">수정</button></li>
+                            <li class="side_menu_item"><button href="#" role="button" class="deleteBtn" id="boardDBtn">삭제</button></li>
+                          </ul>
+                        </div>
                       </div>
-                      <div class="side_menu2" th:if="${memberNum} == ${board.memberNum}">
-                        <ul class="side_menu_list">
-                          <li class="side_menu_item"><button href="#" role="button" class="updateBtn">수정</button></li>
-                          <li class="side_menu_item"><button href="#" role="button" class="deleteBtn">삭제</button></li>
-                        </ul>
                     </i>
-
                 </div>
               </div>
             </div>
           </div>
           <!-- 게시물 내용 -->
           <div class="content_main">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sed labore ut tempora amet? Id, voluptatibus incidunt quis rem et amet ut excepturi minus, aliquid velit eum numquam quos cupiditate.
+            <p th:text="*{boardContent}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sed labore ut tempora amet? Id, voluptatibus incidunt quis rem et amet ut excepturi minus, aliquid velit eum numquam quos cupiditate.
               Laboriosam, quaerat aliquid placeat quia, amet optio totam voluptatum illo nulla autem blanditiis architecto ipsa laborum debitis vel neque modi in cum! Fuga at unde officia tenetur distinctio vel delectus.
               Aliquam obcaecati eveniet soluta eligendi alias quibusdam recusandae harum, quis cum sed repellendus veniam minus culpa nostrum dolorem assumenda, illum corporis suscipit deserunt error accusantium doloribus minima placeat voluptates. Consequuntur.
               Beatae pariatur et perferendis, rerum quaerat dolor rem molestiae, architecto ab dolorum magni alias soluta sequi, temporibus adipisci laudantium a. Impedit perferendis quam eveniet cumque exercitationem ipsa, molestiae voluptatum saepe!
@@ -156,18 +157,21 @@
           <!-- 댓글 내용 -->
           <table>
             <tr th:each="board : ${list}">
-              <td width="20% th:text=${board.}"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</td>
+              <td width="20% th:text=${board.nickname}"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</td>
               <td width="55%" th:text="${board.replyContent}">너무 맛있어 보여요~</td>
               <td width="20%" th:text="${board.replyDate}">2022-03-04</td>
               <td width="5%" class="icon">
                   <i class="fas fa-bars" >
-                      <div class="menu_item">
-                        <a href="#" role="button" class="reportBtn" th:unless="${memberNum} == ${board.memberNum}">신고</a>
+                      <div class="menu1" th:unless="${memberNum} == ${board.memberNum}" >
+                        <ul class="menu_list">
+                          <li class="menu_item"><button class="replyBtn" id="replyBtn" type="button">답글</button></li>
+                          <li class="menu_item"><button class="reportBtn" id="reportRBtn" type="button"><a href="#">신고</a></button></li>
+                        </ul>
                       </div>
                       <div class="menu2" th:if="${memberNum} == ${board.memberNum}" >
                         <ul class="menu_list">
-                          <li class="menu_item"><a href="#" role="button" class="updateBtn">수정</a></li>
-                          <li class="menu_item"><a href="#" role="button" class="deleteBtn">삭제</a></li>
+                          <li class="menu_item"><button class="updateBtn" id="replyUBtn" type="button">수정</button></li>
+                          <li class="menu_item"><button class="deleteBtn" id="replyDBtn" type="button">삭제</button></li>
                         </ul>
                       </div>
                   </i>

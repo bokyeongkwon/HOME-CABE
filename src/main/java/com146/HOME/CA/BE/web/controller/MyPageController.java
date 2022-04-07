@@ -245,10 +245,10 @@ public class MyPageController {
     }
 
     // 내가 작성한 댓글 삭제
-    @DeleteMapping("/board/{boardNum}")
+    @DeleteMapping("/board/{boardNum}/{replyNum}")
     public String delReply(@PathVariable Long replyNum) {
 
-        myPageSVC.deleteSubscribe(replyNum);
+        myPageSVC.deleteMyReply(replyNum);
 
         return "redirect:/mypage/{memberNum}/reply}";
     }

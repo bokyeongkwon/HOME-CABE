@@ -100,6 +100,10 @@ main {
 }
 
 /* 게시물 상단 공통*/
+ul li{
+    list-style: none;
+}
+
 .content_top{
     margin: 30px 20px;
     display: flex;
@@ -131,9 +135,8 @@ main {
     margin: 0 5px;
 }
 
-/* 구독, 관심리스트 */
-.content_top .side_med{
-    display: none;
+.content_top .fas{
+    color: red;
 }
 
 /* 날짜, 조회수, 아이콘 */
@@ -150,8 +153,7 @@ main {
 }
 
 /* 신고 */
-.side_menu1 .side_menu_item{
-    display: none;
+.side_menu1 {
     width: 50px;
     height: 30px;
     text-align: center;
@@ -161,7 +163,6 @@ main {
 
 /* 수정, 삭제 */
 .side_menu2 .side_menu_item{
-    /* display: none; */
     width: 50px;
     height: 30px;
     text-align: center;
@@ -210,7 +211,6 @@ table tbody .icon{
 }
 
 .menu1 .menu_item{
-    display: none;
     width: 50px;
     height: 30px;
     text-align: center;
@@ -221,7 +221,6 @@ table tbody .icon{
 }
 
 .menu2 .menu_item{
-    display: none;
     width: 50px;
     height: 30px;
     text-align: center;

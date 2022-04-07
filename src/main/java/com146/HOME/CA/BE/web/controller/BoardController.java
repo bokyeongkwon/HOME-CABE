@@ -7,6 +7,8 @@ import com146.HOME.CA.BE.domain.common.category.CategoryAll;
 import com146.HOME.CA.BE.domain.common.category.CategoryDAO;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
 import com146.HOME.CA.BE.web.form.board.ListForm;
+import com146.HOME.CA.BE.web.form.board.ReplyForm;
+import com146.HOME.CA.BE.web.form.login.LoginMember;
 import com146.HOME.CA.BE.web.form.member.DetailForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -112,13 +117,19 @@ public String list(
   }
 
 
-  //    상세 조회
+  //상세 조회
   @GetMapping("/{num}/detail")
-  public String boardDetail(
-      @PathVariable Long num,
-      Model model
-  ){
-    Board detail = boardSVC.selectByNum(num);
+  public String boardDetail(@PathVariable Long boardNum,
+                            HttpServletRequest request,
+                            Model model){
+
+    HttpSession session = request.getSession(false);
+
+    LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
+    //if(loginMember != null)
+    String id = loginMember.getId();
+
+    Board detail = boardSVC.selectByNum(boardNum);
     DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detail, detailForm);
     model.addAttribute("detailForm", detailForm);
@@ -148,6 +159,47 @@ public String list(
     return "redirect:/board";
   }
 
+  //댓글 작성
+  @PostMapping("/{boardNum}/reply")
+  public String insertReply(ReplyForm replyForm,
+                            @PathVariable Long replyNum,
+                            HttpServletRequest request,
+                            RedirectAttributes redirectAttributes) {
+
+    Board board = new Board();
+    BeanUtils.copyProperties(replyForm, board);
+
+    board.setReplyNum(replyNum);
+
+    HttpSession session = request.getSession(false);
+    if(session != null && session.getAttribute("loginMember") != null) {
+      LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
+
+      String id = loginMember.getId();
+      log.info(id);
+    }
+
+
+    boardSVC.insertReply(board);
+
+    redirectAttributes.addAttribute("boardNum", replyNum);
+    return "redirect:/board/{boardNum}";
+  }
+
+
+
+  //댓글 수정
+
+
+
+  //댓글 삭제
+  @DeleteMapping("/{boardNum}}/{replyNum}/")
+  public String delReply(@PathVariable Long replyNum){
+
+    boardSVC.deleteReply(replyNum);
+
+    return "redirect:/board/{boardNum}/reply";
+  }
 
 
 

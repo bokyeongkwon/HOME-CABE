@@ -51,7 +51,7 @@ public class BoardDAOImpl implements BoardDAO {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql.toString(), new String[]{"board_num"});
-                pstmt.setInt(1, board.getCateCode());
+                pstmt.setInt(1, board.getCateNum());
                 pstmt.setString(2, board.getBoardTitle());
                 pstmt.setLong(3, board.getMemberNum());
                 pstmt.setString(4, board.getNickname());
@@ -117,7 +117,7 @@ public class BoardDAOImpl implements BoardDAO {
         sql.append(" WHERE board_num = ? ");
 
         int updateCnt = jdbcTemplate.update(sql.toString(),
-            board.getCateCode(),
+            board.getCateNum(),
             board.getBoardTitle(),
             board.getBoardContent(),
             boardNum
