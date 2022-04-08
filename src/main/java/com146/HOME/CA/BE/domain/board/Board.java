@@ -2,21 +2,21 @@ package com146.HOME.CA.BE.domain.board;
 
 import lombok.Data;
 
-import java.sql.Blob;
 import java.time.LocalDate;
 
 @Data
 public class Board {
-    Long boardNum;	                    //게시물 시퀀스 NUMBER(10,0)
-    int cateNum;	                    //게시판 분류 NUMBER(10,0)
-    String boardTitle;	                //제목 VARCHAR2(150 BYTE)
-    Long memberNum;	                  //회원 시퀀스 번호 NUMBER(10,0)
-    String nickname;	                  //회원 별칭 varchar2(40)
-    LocalDate boardDate;	                //작성일 TIMESTAMP(6)
-    Long boardHit;	                    //조회수 NUMBER(5,0)
-    String boardContent;	              //내용 CLOB
-    String boardMapAddress;	          //지도 주소 VARCHAR2(300 BYTE)
-    Blob boardPicture;                 //이미지
+    private Long boardNum;	            //NUMBER(10) --게시판 게시글 번호
+    private int cateNum;	            //NUMBER(10) --분류코드
+    private String boardTitle;	        //VARCHAR2(150) --게시글 제목
+    private Long memberNum;	        //NUMBER(10) --회원번호
+    private String nickname;            //varchar2(40) --별칭
+    private String boardDate;	        //TIMESTAMP default systimestamp --작성일
+    private Long boardHit;	            //NUMBER(5) default '0' --조회수
+    private String boardContent;	    //CLOB --게시글 내용
+    private String fromRecipe;          //varchar2(30) --레시피 출처
+    private String boardMapAddress;	//VARCHAR2(300) --지도 API에서 받은 주소
+    private byte[] boardPicture;         //BLOB --대표사진
 
     Long ReplyNum;                    //댓글번호 NUMBER(10)
     LocalDate replyDate;              //작성일 TIMESTAMP

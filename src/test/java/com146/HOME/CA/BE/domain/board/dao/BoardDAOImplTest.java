@@ -10,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
 class BoardDAOImplTest {
@@ -39,7 +37,7 @@ class BoardDAOImplTest {
   @DisplayName("게시글 조회")
   void selectByNum() {
     Long num = 3L;
-    Board foundItem = boardDAO.selectByNum(num);
+    Board foundItem = boardDAO.selectByBoardNum(num);
   //    조회수 증가
     boardDAO.increaseHit(num);
 
@@ -60,7 +58,7 @@ class BoardDAOImplTest {
     board.setBoardTitle("장현동 베이킹 클래스");
     board.setBoardContent("당근케이크 만들었어요 맛있어보이죠?");
 
-    int i = boardDAO.updateByNum(num, board);
+    int i = boardDAO.updateByBoardNum(num, board);
     Assertions.assertThat(i).isEqualTo(1);
     log.info("updatedItem={}", board);
   }
@@ -71,7 +69,7 @@ class BoardDAOImplTest {
     //    삭제할 id
     Long num = 5L;
 //    삭제빵
-    int i = boardDAO.deleteByNum(num);
+    int i = boardDAO.deleteByBoardNum(num);
     Assertions.assertThat(i).isEqualTo(1);
   }
 
@@ -81,8 +79,8 @@ class BoardDAOImplTest {
     Long num = 3L;
     boardDAO.increaseHit(num);
 
-    Assertions.assertThat(boardDAO.selectByNum(num).getBoardHit()).isEqualTo(1);
-    log.info("hit={}", boardDAO.selectByNum(num).getBoardHit());
+    Assertions.assertThat(boardDAO.selectByBoardNum(num).getBoardHit()).isEqualTo(1);
+    log.info("hit={}", boardDAO.selectByBoardNum(num).getBoardHit());
 
   }
 

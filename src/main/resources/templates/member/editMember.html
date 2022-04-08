@@ -12,7 +12,7 @@
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet"> -->
-    <link rel="stylesheet" href="/member/editMember.css">
+    <link rel="stylesheet" href="/css/member/editMember.css">
 
 </head>
 
@@ -58,12 +58,10 @@
     <main>
         <form action="" th:action th:object="${detailForm}" method="post">
             <input type="hidden" th:field="*{gender}">
-            <input type="hidden" th:field="*{show_list}">
-            <input type="hidden" th:field="*{member_num}">
+            <input type="hidden" th:field="*{memberNum}">
             <!-- 회원정보수정 텍스트 -->
             <div class="member_correction">
                 <b>회원정보수정</b>
-                <button type="button" id="outBtn">탈퇴</button>
             </div>
             <!-- 회원정보수정 내용 -->
             <div class="member_Information">
@@ -108,16 +106,18 @@
                 </div>
                 <div class="content m_birth">
                     <div class="item birth">생년월일</div>
-                    <div class="item2">
-                        <div class="item2_birth" th:text="${detailForm.birth}">데이터베이스에서 가져올 생년월일</div>
+                    <div class="item3">
+                        <div class="item3_birth" th:text="${detailForm.birth}">데이터베이스에서 가져올 생년월일</div>
+                        <input type="text" th:field="*{birth}">
+                        <button type="button" class="modify_member birth_modify">수정</button>
                     </div>
                 </div>
                 <div class="content m_sex">
                     <div class="item sex">성별</div>
                     <div class="item2">
-                        <label for="male"><input type="radio" name="sex" id="male" value="0"
+                        <label for="male"><input type="radio" name="sex" id="male" value="남"
                                 onclick='getGender(event)'>남</label>
-                        <label for="female"><input type="radio" name="sex" id="female" value="1"
+                        <label for="female"><input type="radio" name="sex" id="female" value="여"
                                 onclick='getGender(event)'>여</label>
                     </div>
                 </div>
@@ -130,11 +130,10 @@
                         <button type="button" class="modify_member nickname_modify">수정</button>
                     </div>
                 </div>
-                <div class="content m_likelist">
-                    <div class="item likelist">관심리스트 공개 여부</div>
+                <div class="content m_outBtn">
+                    <div class="item outBtn">탈퇴</div>
                     <div class="item2">
-                        <label for="public"><input type="radio" name="likelist" id="public" value="1" onclick='getLikelist(event)'>공개</label>
-                        <label for="private"><input type="radio" name="likelist" id="private" value="0" onclick='getLikelist(event)'>비공개</label>
+                        <button type="button" id="outBtn">탈퇴</button>
                     </div>
                 </div>
             </div>
@@ -162,9 +161,8 @@
 
     <script>
         //값 가지고오기용 입력창
-        const $member_num = document.getElementById('member_num');
+        const $memberNum = document.getElementById('memberNum');
         const $gender = document.getElementById('gender');
-        const $show_list = document.getElementById('show_list');
 
 
 
@@ -174,12 +172,14 @@
         //입력버튼
         const $pw = document.getElementById('pw');
         const $tel = document.getElementById('tel');
+        const $birth = document.getElementById('birth');
         const $email = document.getElementById('email');
         const $nickname = document.getElementById('nickname');
 
         //수정버튼
         const $pwd_modify_Btn = document.querySelector('.pwd_modify');
         const $phone_modify_Btn = document.querySelector('.phone_modify');
+        const $birth_modify_Btn = document.querySelector('.birth_modify');
         const $email_modify_Btn = document.querySelector('.email_modify');
         const $nickname_modify_Btn = document.querySelector('.nickname_modify');
 
@@ -196,6 +196,9 @@
         $email_modify_Btn.addEventListener('click', function (e) {
             $email.style.display = 'inline';
         });
+        $birth_modify_Btn.addEventListener('click', function (e) {
+            $birth.style.display = 'inline';
+        });
         $nickname_modify_Btn.addEventListener('click', function (e) {
             $nickname.style.display = 'inline';
             $nickname_chk_Btn.style.display = 'inline';
@@ -206,14 +209,14 @@
         //회원탈퇴
         function del_f(e) {
             if (window.confirm("정말 탈퇴하시겠습니까?")) {
-                const url = `/member/${member_num.value}/del`;
+                const url = `/member/${memberNum.value}/del`;
                 location.href = url;
             }
         }
 
         // //회원탈퇴
         // function del_f(e) {
-        //     const url = `/api/member/{member_num.value}`;
+        //     const url = `/api/member/{memberNum.value}`;
         //     fetch(url, {
         //         method: 'DELETE'
         //     }).then(res => res.json())
@@ -228,26 +231,13 @@
                 event.target.value;
         }
 
-        //공개여부값 숨겨준 input 값을 바꾸기
-        function getLikelist(event) {
-            document.getElementById('show_list').value =
-                event.target.value;
-        }
-
         //라디오버튼 미리 틀어놓기
         function radio(e) {
-
-            if ($gender.value == "1") {
+            if ($gender.value == "여") {
                 female.checked = true;
             }else{
                 male.checked = true;
             }
-            if ($show_list.value == "1") {
-                public.checked = true;
-            }else{
-                private.checked = true;
-            }
-            
         }
         radio();
 

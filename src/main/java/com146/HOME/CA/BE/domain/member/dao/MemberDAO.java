@@ -18,8 +18,9 @@ public interface MemberDAO {
   /**
    * 수정
    * @param member
+   * @return
    */
-  void updateMember(Member member);
+  Member updateMember(Member member);
 
   /**
    * 조회 by id
@@ -29,11 +30,11 @@ public interface MemberDAO {
   Member selectMemberById(String id);
 
   /**
-   * 조회 by member_num
-   * @param member_num
+   * 조회 by memberNum
+   * @param memberNum
    * @return
    */
-  Member selectMemberByMemberNum(Long member_num);
+  Member selectMemberByMemberNum(Long memberNum);
 
   /**
    * 전체조회
@@ -43,9 +44,9 @@ public interface MemberDAO {
 
   /**
    * 탈퇴
-   * @param member_num
+   * @param memberNum
    */
-  void deleteMember(Long member_num);
+  void deleteMember(Long memberNum);
 
   /**
    * 회원유무 체크
@@ -75,7 +76,6 @@ public interface MemberDAO {
    * @param nickname
    * @return
    */
-  String findEmailByNickname(String nickname);
-
+  String findIdByNickname(String nickname);
 
 }

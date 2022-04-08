@@ -18,53 +18,63 @@ public class MemberSVCImpl implements MemberSVC {
 
     private final MemberDAO memberDAO;
 
+    //가입
     @Override
     public Member joinMember(Member member) {
-        return null;
+        return memberDAO.insertMember(member);
     }
 
+    //수정
     @Override
-    public void editMember(Member member) {
-        memberDAO.updateMember(member);
+    public Member editMember(Member member) {
+        return memberDAO.updateMember(member);
     }
 
+    //조회 by id
     @Override
     public Member findById(String id) {
         return memberDAO.selectMemberById(id);
     }
 
+    //조회 by memberNum
     @Override
-    public Member findByMemberNum(Long member_num) {
-        return memberDAO.selectMemberByMemberNum(member_num);
+    public Member findByMemberNum(Long memberNum) {
+        return memberDAO.selectMemberByMemberNum(memberNum);
     }
 
+    //전체조회
     @Override
     public List<Member> findAll() {
         return memberDAO.selectAll();
     }
 
+    //탈퇴
     @Override
-    public void outMember(Long member_num) {
-        memberDAO.deleteMember(member_num);
+    public void outMember(Long memberNum) {
+        memberDAO.deleteMember(memberNum);
     }
 
+    //회원유무 체크
     @Override
     public boolean exitMember(String id) {
-        return false;
+        return memberDAO.exitMember(id);
     }
 
+    //로그인 인증
     @Override
     public Member login(String id, String pw) {
-        return null;
+        return memberDAO.login(id,pw);
     }
 
+    //비밀번호 일치여부 체크
     @Override
     public boolean isMember(String id, String pw) {
-        return false;
+        return memberDAO.isMember(id,pw);
     }
 
+    //아이디 찾기
     @Override
-    public String findEmailByNickname(String nickname) {
-        return null;
+    public String findIdByNickname(String nickname) {
+        return memberDAO.findIdByNickname(nickname);
     }
 }

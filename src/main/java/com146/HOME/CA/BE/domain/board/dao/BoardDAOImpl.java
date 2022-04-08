@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.thymeleaf.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -31,38 +30,37 @@ public class BoardDAOImpl implements BoardDAO {
      */
     @Override
     public Long insertBoard(Board board) {
+
         StringBuffer sql = new StringBuffer();
-        sql.append(" INSERT INTO board ( ");
-        sql.append("     board_num, ");
-        sql.append("     cate_code, ");
-        sql.append("     board_title, ");
-        sql.append("     member_num, ");
-        sql.append("     nickname, ");
-        sql.append("     board_content ");
-        sql.append(" ) VALUES ( ");
-        sql.append("     BOARD_board_num_SEQ.nextval, ");
-        sql.append("     ?, ");
-        sql.append("     ?, ");
-        sql.append("     ?, ");
-        sql.append("     ?, ");
-        sql.append("     ? ) ");
+        sql.append(" insert into board ( ");
+        sql.append(" board_num, ");
+        sql.append(" cate_num, ");
+        sql.append(" board_title, ");
+        sql.append(" member_num, ");
+        sql.append(" nickname, ");
+        sql.append(" board_content, ");
+        sql.append(" from_recipe, ");
+        sql.append(" board_map_address) ");
+        sql.append(" values(board_board_num_seq.nextval,?,?,?,?,?,?,?) ");
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql.toString(), new String[]{"board_num"});
-                pstmt.setInt(1, board.getCateNum());
+                pstmt.setInt(1,board.getCateNum());
                 pstmt.setString(2, board.getBoardTitle());
                 pstmt.setLong(3, board.getMemberNum());
                 pstmt.setString(4, board.getNickname());
                 pstmt.setString(5, board.getBoardContent());
-
+                pstmt.setString(6, board.getBoardMapAddress());
+                pstmt.setString(7, board.getBoardMapAddress());
                 return pstmt;
             }
-        }, keyHolder);
+        },keyHolder);
 
-//    게시글 번호를 반환.
+
+
         return Long.valueOf(keyHolder.getKeys().get("board_num").toString());
     }
 
@@ -72,33 +70,34 @@ public class BoardDAOImpl implements BoardDAO {
      * @return 게시글 상세페이지
      */
     @Override
-    public Board selectByNum(Long boardNum) {
+    public Board selectByBoardNum(Long boardNum) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" SELECT ");
-        sql.append("     board_num, ");
-        sql.append("     cate_code, ");
-        sql.append("     board_title, ");
-        sql.append("     member_num, ");
-        sql.append("     nickname, ");
-        sql.append("     board_date, ");
-        sql.append("     board_hit, ");
-        sql.append("     board_content, ");
-        sql.append("     board_map_address, ");
-        sql.append("     board_picture ");
+        sql.append("SELECT ");
+        sql.append("  board_num, ");
+        sql.append("  cate_num, ");
+        sql.append("  board_title, ");
+        sql.append("  member_num, ");
+        sql.append("  nickname, ");
+        sql.append("  board_date, ");
+        sql.append("  board_hit, ");
+        sql.append("  board_content, ");
+        sql.append(" from_recipe, ");
+        sql.append("  board_map_address ");
         sql.append(" FROM ");
-        sql.append("     board ");
-        sql.append(" where board_num = ? ");
+        sql.append("  BOARD ");
+        sql.append("where board_num = ?  ");
 
-        Board foundItem = null;
+        Board boardItem = null;
         try {
-            foundItem = jdbcTemplate.queryForObject(sql.toString(),
-                new BeanPropertyRowMapper<>(Board.class),
-                boardNum);
-        }catch (Exception e){
-            foundItem = null;
+            boardItem = jdbcTemplate.queryForObject(
+                    sql.toString(),
+                    new BeanPropertyRowMapper<>(Board.class),
+                    boardNum);
+        }catch (Exception e){ // 1건을 못찾으면
+            boardItem = null;
         }
-//    찾았으면 반환
-        return foundItem;
+
+        return boardItem;
     }
 
     /** 게시글 수정
@@ -108,23 +107,29 @@ public class BoardDAOImpl implements BoardDAO {
      * @return 수정 성공 1
      */
     @Override
-    public int updateByNum(Long boardNum, Board board) {
+    public int updateByBoardNum(Long boardNum, Board board) {
+
         StringBuffer sql = new StringBuffer();
-        sql.append(" UPDATE board ");
-        sql.append(" SET ");
-        sql.append("     cate_code = ?, ");
-        sql.append("     board_title = ?, ");
-        sql.append("     board_content = ? ");
+        sql.append(" update board ");
+        sql.append("   SET cate_num = ?, ");
+        sql.append("       board_title = ?, ");
+        sql.append("       board_content = ?, ");
+        sql.append("       from_recipe = ? , ");
+        sql.append("       board_map_address = ?, ");
+        sql.append("       board_date = systimestamp ");
         sql.append(" WHERE board_num = ? ");
 
-        int updateCnt = jdbcTemplate.update(sql.toString(),
-            board.getCateNum(),
-            board.getBoardTitle(),
-            board.getBoardContent(),
-            boardNum
+        int updatedItemCount = jdbcTemplate.update(
+                sql.toString(),
+                board.getCateNum(),
+                board.getBoardTitle(),
+                board.getBoardContent(),
+                board.getFromRecipe(),
+                board.getBoardMapAddress(),
+                boardNum
         );
-//    성공했으면 1 반환
-        return updateCnt;
+
+        return updatedItemCount;
     }
 
     /**
@@ -133,7 +138,7 @@ public class BoardDAOImpl implements BoardDAO {
      * @return 삭제 성공 횟수 1
      */
     @Override
-    public int deleteByNum(Long boardNum) {
+    public int deleteByBoardNum(Long boardNum) {
         String sql = " delete from board where board_num = ? ";
         int deleteCnt = jdbcTemplate.update(sql, boardNum);
 
