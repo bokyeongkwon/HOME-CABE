@@ -3,10 +3,13 @@ package com146.HOME.CA.BE.domain.board.svc;
 
 import com146.HOME.CA.BE.domain.board.Board;
 import com146.HOME.CA.BE.domain.board.dao.BoardDAO;
+import com146.HOME.CA.BE.domain.board.dao.BoardFilterCondition;
+import com146.HOME.CA.BE.domain.common.file.svc.UploadFileSVC;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ import java.util.List;
 public class BoardSVCImpl implements BoardSVC {
 
   private final BoardDAO boardDAO;
+  private final UploadFileSVC uploadFileSVC;
 
   /**
    * 등록
@@ -24,8 +28,25 @@ public class BoardSVCImpl implements BoardSVC {
    * @return
    */
   @Override
-  public Long insertBoard(Board board) {
+  public Long boardUpload(Board board) {
     return boardDAO.insertBoard(board);
+  }
+
+  /**
+   * 등록 - 첨부파일 포함
+   * @param board
+   * @param files
+   * @return
+   */
+  @Override
+  public Long boardUpload(Board board, List<MultipartFile> files) {
+    //1)원글 저장
+    Long boardNum = boardUpload(board);
+
+    //2)첨부 저장
+    uploadFileSVC.addFile(board.getCateNum(), boardNum,files);
+
+    return boardNum;
   }
 
   /**
@@ -34,8 +55,8 @@ public class BoardSVCImpl implements BoardSVC {
    * @return
    */
   @Override
-  public Board selectByNum(Long boardNum) {
-    Board foundItem = boardDAO.selectByNum(boardNum);
+  public Board findByBoardNum(Long boardNum) {
+    Board foundItem = boardDAO.selectByBoardNum(boardNum);
     boardDAO.increaseHit(boardNum);
     return foundItem;
   }
@@ -47,8 +68,26 @@ public class BoardSVCImpl implements BoardSVC {
    * @return
    */
   @Override
-  public int updateByNum(Long boardNum, Board board) {
-    return boardDAO.updateByNum(boardNum, board);
+  public int boardUpdate(Long boardNum, Board board) {
+    return boardDAO.updateByBoardNum(boardNum, board);
+  }
+
+  /**
+   *  수정 - 첨부파일 포함
+   * @param boardNum 게시글 번호
+   * @param board 수정내용
+   * @param files 첨부파일
+   * @return
+   */
+  @Override
+  public int boardUpdate(Long boardNum, Board board, List<MultipartFile> files) {
+    //1)수정
+    int affectedRow = boardUpdate(boardNum,board);
+
+    //2)첨부 저장
+    uploadFileSVC.addFile(board.getCateNum(),boardNum,files);
+
+    return affectedRow;
   }
 
   /**
@@ -57,8 +96,15 @@ public class BoardSVCImpl implements BoardSVC {
    * @return
    */
   @Override
-  public int deleteByNum(Long boardNum) {
-    return boardDAO.deleteByNum(boardNum);
+  public int deleteByBoardNum(Long boardNum) {
+    //1)첨부파일 삭제
+    int cateNum = boardDAO.selectByBoardNum(boardNum).getCateNum();
+    uploadFileSVC.deleteFileByCateNumWithBoardNum(cateNum, boardNum);
+
+    //2)게시글 삭제
+    int affectedRow =  boardDAO.deleteByBoardNum(boardNum);
+
+    return affectedRow;
   }
 
   /**
@@ -81,6 +127,16 @@ public class BoardSVCImpl implements BoardSVC {
   @Override
   public int totalCount(int cateCode) {
     return boardDAO.totalCount(cateCode);
+  }
+
+  /**
+   * 검색
+   * @param filterCondition 분류,시작레코드번호,종료레코드번호,검색유형,검색어
+   * @return
+   */
+  @Override
+  public List<Board> findAll(BoardFilterCondition filterCondition) {
+    return boardDAO.findAll(filterCondition);
   }
 
   /**

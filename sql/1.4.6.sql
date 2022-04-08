@@ -3,7 +3,6 @@ drop table RESULT;
 drop table REPORT;
 drop table UPLOAD_FILE;
 drop table LIKELIST;
-drop table SUBSCRIBE;
 drop table REPLY;
 drop table BOARD;
 drop table CATEGORY;
@@ -20,7 +19,6 @@ create table member (
     birth      varchar2(10),            --생년월일
     gender      char(3) default '여',    --성별(남,여)
     nickname      varchar2(40),         --별칭
-    show_list      char(10) default '공개', --관심리스트 공개 여부 (공개, 비공개)
     cdate      TIMESTAMP default systimestamp,  --생성일시
     udate      TIMESTAMP                        --변경일시
 );
@@ -40,11 +38,9 @@ alter table member modify tel constraint member_tel_nn not null;
 alter table member modify email constraint member_email_nn not null;
 alter table member modify birth constraint member_birth_nn not null;
 alter table member modify gender constraint member_gender_nn not null;
-alter table member modify show_list constraint member_show_list_nn not null;
 alter table member modify cdate constraint member_cdate_nn not null;
 
 alter table member add constraint member_gender_ck check (gender in ('남','여'));
-alter table member add constraint member_show_list_ck check (show_list in ('공개','비공개'));
 
 --시퀀스
 drop sequence member_member_num_seq;
@@ -57,13 +53,14 @@ nocache;
 --게시판 테이블
 create table BOARD (
     board_num   number(10),             --게시판 게시글 번호
-    cate_code       NUMBER(10),         --분류코드
+    cate_num       NUMBER(10),         --분류코드
     board_title      varchar2(150),     --게시글 제목
     member_num    NUMBER(10),           --회원번호
     nickname      varchar2(40),         --별칭
     board_date      TIMESTAMP default systimestamp, --작성일
     board_hit       NUMBER(5) default '0',          --조회수
     board_content      CLOB,                --게시글 내용
+    from_recipe     varchar2(30),           --레시피 출처
     board_map_address      VARCHAR2(300),   --지도 API에서 받은 주소
     board_picture      BLOB                 --대표사진
 );
@@ -72,9 +69,11 @@ alter table BOARD add Constraint BOARD_board_num_pk primary key (board_num);
 
 --제약조건
 alter table BOARD modify board_title constraint BOARD_board_title_nn not null;
+alter table BOARD modify nickname constraint BOARD_nickname_nn not null;
 alter table BOARD modify board_date constraint BOARD_board_date_nn not null;
 alter table BOARD modify board_hit constraint BOARD_board_hit_nn not null;
 alter table BOARD modify board_content constraint BOARD_board_content_nn not null;
+alter table BOARD modify from_recipe constraint BOARD_from_recipe_nn not null;
 alter table BOARD modify board_picture constraint BOARD_board_picture_nn not null;
 
 
@@ -134,7 +133,7 @@ alter table LIKELIST modify likelist_chk constraint LIKELIST_likelist_chk_nn not
 alter table LIKELIST modify likelist_date constraint LIKELIST_likelist_date_nn not null;
 alter table LIKELIST modify board_picture constraint LIKELIST_board_picture_nn not null;
 
-alter table LIKELIST add constraint LIKELIST_likelist_chk_ck check (likelist_chk in ('0','1'));
+alter table LIKELIST add constraint LIKELIST_likelist_chk_ck check (likelist_chk in ('동의','비동의'));
 
 --시퀀스
 drop sequence likelist_likelist_num_seq;
@@ -144,39 +143,10 @@ start with 1
 minvalue 1
 nocache;
 
---구독/알림 테이블
-create table SUBSCRIBE (
-    member_num   number(10),            --구독자 회원번호
-    sub_chk       char(10) default '설정',  --구독설정 (설정,비설정)
-    alarm_chk      char(10) default '설정', --알림설정 (설정,비설정)
-    sub_member_num    number(10),       --구독 된 사람 회원번호
-    sub_num      number(10),            --구독/알림 번호
-    board_title       VARCHAR2(150),    --제목
-    board_num      number(10)           --게시판 게시글 번호
-);
---기본키생성
-alter table SUBSCRIBE add Constraint SUBSCRIBE_member_num_pk primary key (member_num);
-
---제약조건
-alter table SUBSCRIBE modify sub_chk constraint SUBSCRIBE_sub_chk_nn not null;
-alter table SUBSCRIBE modify alarm_chk constraint SUBSCRIBE_alarm_chk_nn not null;
-alter table SUBSCRIBE modify board_title constraint SUBSCRIBE_board_title_nn not null;
-
-alter table SUBSCRIBE add constraint SUBSCRIBE_sub_chk_ck check (sub_chk in ('0','1'));
-alter table SUBSCRIBE add constraint SUBSCRIBE_alarm_chk_ck check (alarm_chk in ('0','1'));
-
---시퀀스
-drop sequence SUBSCRIBE_sub_num_seq;
-create sequence SUBSCRIBE_sub_num_seq
-increment by 1
-start with 1
-minvalue 1
-nocache;
-
 --게시판파일첨부 테이블
 create table UPLOAD_FILE (
     file_num   number(10),              --파일아이디
-    cate_code       NUMBER(10),         --분류코드
+    cate_num       NUMBER(10),         --분류코드
     board_num       number(10),         --게시글 번호
     file_date      TIMESTAMP default systimestamp,  --작성일
     store_file_name    VARCHAR2(150),   --서버보관 파일명
@@ -207,7 +177,6 @@ nocache;
 create table CATEGORY (
     cate_num   number(10),      --분류번호
     cate_name  VARCHAR2(60),     --분류명
-    descript    clob,               --코드설명
     pcate_num    number(10),       --부모 분류번호
     useyn       char(1) default 'Y',            --사용여부 (사용:'Y',미사용:'N')
     cdate       timestamp default systimestamp,         --생성일시
@@ -268,12 +237,12 @@ alter table RESULT add Constraint RESULT_report_num_pk primary key (report_num);
 alter table RESULT modify result_date constraint RESULT_result_date_nn not null;
 alter table RESULT modify report_date constraint RESULT_report_date_nn not null;
 
-alter table RESULT add constraint RESULT_result_ck check (result in ('0','1'));
+alter table RESULT add constraint RESULT_result_ck check (result in ('진행','완료'));
 
 
 --외래키 모음--
 --게시판
-alter table BOARD add Constraint BOARD_cate_code_fk foreign key (cate_code) REFERENCES CATEGORY(cate_num);
+alter table BOARD add Constraint BOARD_cate_num_fk foreign key (cate_num) REFERENCES CATEGORY(cate_num);
 alter table BOARD add Constraint BOARD_member_num_fk foreign key (member_num) REFERENCES MEMBER(member_num);
 
 --댓글게시판
@@ -285,14 +254,9 @@ alter table REPLY add Constraint REPLY_preply_num_fk foreign key (preply_num) RE
 alter table LIKELIST add Constraint LIKELIST_member_num_fk foreign key (member_num) REFERENCES MEMBER(member_num);
 alter table LIKELIST add Constraint LIKELIST_board_num_fk foreign key (board_num) REFERENCES BOARD(board_num);
 
---구독/알림
-alter table SUBSCRIBE add Constraint SUBSCRIBE_member_num_fk foreign key (member_num) REFERENCES MEMBER(member_num);
-alter table SUBSCRIBE add Constraint SUBSCRIBE_sub_member_num_fk foreign key (sub_member_num) REFERENCES SUBSCRIBE(member_num);
-alter table SUBSCRIBE add Constraint SUBSCRIBE_board_num_fk foreign key (board_num) REFERENCES BOARD(board_num);
-
 --게시판파일첨부
 alter table UPLOAD_FILE add Constraint UPLOAD_FILE_board_num_fk foreign key (board_num) REFERENCES BOARD(board_num);
-alter table UPLOAD_FILE add Constraint UPLOAD_FILE_cate_code_fk foreign key (cate_code) REFERENCES CATEGORY(cate_num);
+alter table UPLOAD_FILE add Constraint UPLOAD_FILE_cate_num_fk foreign key (cate_num) REFERENCES CATEGORY(cate_num);
 
 --카테고리
 alter table CATEGORY add constraint CATEGORY_pcate_num_fk foreign key(pcate_num) references CATEGORY(cate_num);

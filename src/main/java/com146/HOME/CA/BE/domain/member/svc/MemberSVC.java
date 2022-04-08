@@ -10,14 +10,17 @@ public interface MemberSVC {
    * 가입
    * @param member
    * @return
+   * @return
    */
   Member joinMember(Member member);
 
   /**
    * 수정
    * @param member
+   * @return
+   *
    */
-  void editMember(Member member);
+  Member editMember(Member member);
 
   /**
    * 조회 by id
@@ -27,11 +30,11 @@ public interface MemberSVC {
   Member findById(String id);
 
   /**
-   * 조회 by member_num
-   * @param member_num
+   * 조회 by memberNum
+   * @param memberNum
    * @return
    */
-  Member findByMemberNum(Long member_num);
+  Member findByMemberNum(Long memberNum);
 
   /**
    * 전체조회
@@ -41,9 +44,9 @@ public interface MemberSVC {
 
   /**
    * 탈퇴
-   * @param member_num
+   * @param memberNum
    */
-  void outMember(Long member_num);
+  void outMember(Long memberNum);
 
   /**
    * 회원유무 체크
@@ -73,6 +76,6 @@ public interface MemberSVC {
    * @param nickname
    * @return
    */
-  String findEmailByNickname(String nickname);
+  String findIdByNickname(String nickname);
 
 }

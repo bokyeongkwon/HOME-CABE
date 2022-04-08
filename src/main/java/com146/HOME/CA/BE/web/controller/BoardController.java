@@ -5,11 +5,12 @@ import com146.HOME.CA.BE.domain.board.svc.BoardSVC;
 import com146.HOME.CA.BE.domain.common.category.Category;
 import com146.HOME.CA.BE.domain.common.category.CategoryAll;
 import com146.HOME.CA.BE.domain.common.category.CategoryDAO;
+import com146.HOME.CA.BE.domain.common.file.UploadFile;
+import com146.HOME.CA.BE.domain.common.file.svc.UploadFileSVC;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
-import com146.HOME.CA.BE.web.form.board.ListForm;
-import com146.HOME.CA.BE.web.form.board.ReplyForm;
+import com146.HOME.CA.BE.domain.member.svc.MemberSVC;
+import com146.HOME.CA.BE.web.form.board.*;
 import com146.HOME.CA.BE.web.form.login.LoginMember;
-import com146.HOME.CA.BE.web.form.member.DetailForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -17,11 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +36,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardController {
 
+  private final MemberSVC memberSVC;
   private final BoardSVC boardSVC;
   private final CategoryDAO categoryDAO;
+  private final UploadFileSVC uploadFileSVC;
 
   //    페이징 구현 (10, 10) - 디폴트?
   @Autowired
@@ -137,61 +143,162 @@ public String list(
 
 
 //  공통 CRUD
-//    작성 양식
-  @GetMapping("/add")
-  public String boardAdd(){
+//작성양식
+@GetMapping("/add")
+public String addForm(
+        Model model,
+        @RequestParam(required = false) Optional<Integer> category,
+        HttpSession session) {
+  int cate = getCategory(category);
 
-    return "/board/boardAdd";
-  }
+//    LoginMember loginMember = (LoginMember)session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-  //    작성 처리.
+  AddForm addForm = new AddForm();
+//    addForm.setMemberNum(memberSVC.findById(loginMember.getId()).getMemberNum());
+//    addForm.setNickname(loginMember.getNickname());
+  model.addAttribute("addForm", addForm);
+  model.addAttribute("category", cate);
+
+  return "board/boardUpload";
+}
+
+  //작성처리
   @PostMapping("/add")
-  public String add(){
+  public String add(
+          //@Valid
+          @ModelAttribute AddForm addForm,
+          @RequestParam(required = false) Optional<Integer> category,
+          BindingResult bindingResult,      // 폼객체에 바인딩될때 오류내용이 저장되는 객체
+          HttpSession session,
+          RedirectAttributes redirectAttributes) throws IOException {
+    log.info("addForm={}",addForm);
 
-    return "redirect:/board/{num}/detail";
+    if(bindingResult.hasErrors()){
+      log.info("add/bindingResult={}",bindingResult);
+      return "board/boardUpload";
+    }
+
+    int cate = getCategory(category);
+
+    Board board = new Board();
+    BeanUtils.copyProperties(addForm, board);
+
+//    //세션 가져오기
+//    LoginMember loginMember = (LoginMember)session.getAttribute(SessionConst.LOGIN_MEMBER);
+//    //세션 정보가 없으면 로그인페이지로 이동
+//    if(loginMember == null){
+//      return "redirect:/login";
+//    }
+//
+//    //세션에서 아이디,별칭가져오기
+//    board.setMemberNum(memberSVC.findById(loginMember.getId()).getMemberNum());
+//    board.setNickname(loginMember.getNickname());
+
+
+    Long boardNum = 0l;
+    //파일첨부유무
+    if(addForm.getFiles().size() == 0) {
+      boardNum = boardSVC.boardUpload(board);
+    }else{
+      boardNum = boardSVC.boardUpload(board, addForm.getFiles());
+    }
+    redirectAttributes.addAttribute("boardNum", boardNum);
+    redirectAttributes.addAttribute("category",cate);
+    // <=서버응답 302 get http://서버:port/board/10
+    // =>클라이언트요청 get http://서버:port/board/10
+    return "redirect:/board/{boardNum}";
   }
 
 
   //상세 조회
-  @GetMapping("/{boardNum}/detail")
-  public String boardDetail(@PathVariable Long boardNum,
-                            HttpServletRequest request,
-                            Model model){
+  @GetMapping("/{boardNum}")
+  public String detail(
+          @PathVariable Long boardNum,
+          @RequestParam(required = false) Optional<Integer> category,
+          Model model) {
 
-    HttpSession session = request.getSession(false);
+    int cate = getCategory(category);
 
-//    LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
-//    if(loginMember != null)
-//    String id = loginMember.getId();
-
-    Board detail = boardSVC.selectByNum(boardNum);
-    DetailForm detailForm = new DetailForm();
-    BeanUtils.copyProperties(detail, detailForm);
+    Board detailBoard = boardSVC.findByBoardNum(boardNum);
+    com146.HOME.CA.BE.web.form.board.DetailForm detailForm = new DetailForm();
+    BeanUtils.copyProperties(detailBoard, detailForm);
     model.addAttribute("detailForm", detailForm);
+    model.addAttribute("category", cate);
 
-    return "/board/boardDetail";
+    //첨부조회
+    List<UploadFile> attachFiles = uploadFileSVC.getFilesByCateNumWithBoardNum(detailBoard.getCateNum(), detailBoard.getBoardNum());
+    if(attachFiles.size() > 0){
+      log.info("attachFiles={}",attachFiles);
+      model.addAttribute("attachFiles", attachFiles);
+    }
+
+    return "board/content";
   }
 
 
-  //    수정 양식
+  //수정양식
   @GetMapping("/{boardNum}/edit")
-  public String boardEdit(){
+  public String editForm(
+          @PathVariable Long boardNum,
+          @RequestParam(required = false) Optional<Integer> category,
+          Model model){
+    int cate = getCategory(category);
+    Board board = boardSVC.findByBoardNum(boardNum);
 
-    return  "/board/boardEdit";
+    EditForm editForm = new EditForm();
+    BeanUtils.copyProperties(board,editForm);
+    model.addAttribute("editForm", editForm);
+    model.addAttribute("category",cate);
+
+    //첨부조회
+    List<UploadFile> attachFiles = uploadFileSVC.getFilesByCateNumWithBoardNum(board.getCateNum(), board.getBoardNum());
+    if(attachFiles.size() > 0){
+      log.info("attachFiles={}",attachFiles);
+      model.addAttribute("attachFiles", attachFiles);
+    }
+
+    return "board/boardUpdate";
   }
 
-  //    수정 처리
+  //수정처리
   @PostMapping("/{boardNum}/edit")
-  public String edit(){
+  public String edit(
+          @PathVariable Long boardNum,
+          @RequestParam(required = false) Optional<Integer> category,
+          @Valid @ModelAttribute EditForm editForm,
+          BindingResult bindingResult,
+          RedirectAttributes redirectAttributes
+  ) {
 
-    return  "redirect:/board/{boardNum}/detail";
+    if(bindingResult.hasErrors()){
+      return "board/boardUpdate";
+    }
+
+    int cate = getCategory(category);
+    Board board = new Board();
+    BeanUtils.copyProperties(editForm, board);
+    boardSVC.boardUpdate(boardNum,board);
+
+    if(editForm.getFiles().size() == 0) {
+      boardSVC.boardUpdate(boardNum, board);
+    }else{
+      boardSVC.boardUpdate(boardNum, board, editForm.getFiles());
+    }
+    redirectAttributes.addAttribute("boardNum",boardNum);
+    redirectAttributes.addAttribute("category", cate);
+
+    return "redirect:/board/{boardNum}";
   }
 
   //    삭제
-  @GetMapping("/{boardNum}/delete")
-  public String delete(){
+  @GetMapping("/{boardNum}/del")
+  public String del(
+          @PathVariable Long boardNum,
+          @RequestParam(required = false) Optional<Integer> category) {
 
-    return "redirect:/board";
+    boardSVC.deleteByBoardNum(boardNum);
+    int cate = getCategory(category);
+    return "redirect:/board/list?category="+cate;
   }
 
   //댓글 작성
@@ -239,4 +346,11 @@ public String list(
 
 
 
+
+  //쿼리스트링 카테고리 읽기, 없으면 ""반환
+  private int getCategory(Optional<Integer> category) {
+    int cate = category.isPresent()? category.get():null;
+    log.info("category={}", cate);
+    return cate;
+  }
 }
