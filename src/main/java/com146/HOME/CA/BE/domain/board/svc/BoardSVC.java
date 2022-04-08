@@ -58,10 +58,10 @@ public interface BoardSVC {
   int deleteByBoardNum(Long boardNum);
 
   //  전체 조회. 각 게시판 분류별.
-  List<Board> selectBoard(int cateCode, int startRec, int endRec);
+  List<Board> selectBoard(int cateNum, int startRec, int endRec);
 
   //게시판별 전체 게시물 수
-  int totalCount(int cateCode);
+  int totalCount(int cateNum);
 
   /**
    * 검색

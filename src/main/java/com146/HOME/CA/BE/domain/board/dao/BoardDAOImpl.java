@@ -53,7 +53,7 @@ public class BoardDAOImpl implements BoardDAO {
                 pstmt.setLong(3, board.getMemberNum());
                 pstmt.setString(4, board.getNickname());
                 pstmt.setString(5, board.getBoardContent());
-                pstmt.setString(6, board.getBoardMapAddress());
+                pstmt.setString(6, board.getFromRecipe());
                 pstmt.setString(7, board.getBoardMapAddress());
                 return pstmt;
             }

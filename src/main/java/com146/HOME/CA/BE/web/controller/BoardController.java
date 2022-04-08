@@ -147,9 +147,9 @@ public String list(
 @GetMapping("/add")
 public String addForm(
         Model model,
-        @RequestParam(required = false) Optional<Integer> category,
+        @RequestParam(required = false) Optional<Integer> cateNum,
         HttpSession session) {
-  int cate = getCategory(category);
+  int cate = getCategory(cateNum);
 
 //    LoginMember loginMember = (LoginMember)session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -167,7 +167,7 @@ public String addForm(
   public String add(
           //@Valid
           @ModelAttribute AddForm addForm,
-          @RequestParam(required = false) Optional<Integer> category,
+          @RequestParam(required = false) Optional<Integer> cateNum,
           BindingResult bindingResult,      // 폼객체에 바인딩될때 오류내용이 저장되는 객체
           HttpSession session,
           RedirectAttributes redirectAttributes) throws IOException {
@@ -178,7 +178,7 @@ public String addForm(
       return "board/boardUpload";
     }
 
-    int cate = getCategory(category);
+    int cate = getCategory(cateNum);
 
     Board board = new Board();
     BeanUtils.copyProperties(addForm, board);
@@ -214,10 +214,10 @@ public String addForm(
   @GetMapping("/{boardNum}")
   public String detail(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category,
+          @RequestParam(required = false) Optional<Integer> cateNum,
           Model model) {
 
-    int cate = getCategory(category);
+    int cate = getCategory(cateNum);
 
     Board detailBoard = boardSVC.findByBoardNum(boardNum);
     com146.HOME.CA.BE.web.form.board.DetailForm detailForm = new DetailForm();
@@ -240,9 +240,9 @@ public String addForm(
   @GetMapping("/{boardNum}/edit")
   public String editForm(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category,
+          @RequestParam(required = false) Optional<Integer> cateNum,
           Model model){
-    int cate = getCategory(category);
+    int cate = getCategory(cateNum);
     Board board = boardSVC.findByBoardNum(boardNum);
 
     EditForm editForm = new EditForm();
@@ -264,7 +264,7 @@ public String addForm(
   @PostMapping("/{boardNum}/edit")
   public String edit(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category,
+          @RequestParam(required = false) Optional<Integer> cateNum,
           @Valid @ModelAttribute EditForm editForm,
           BindingResult bindingResult,
           RedirectAttributes redirectAttributes
@@ -274,7 +274,7 @@ public String addForm(
       return "board/boardUpdate";
     }
 
-    int cate = getCategory(category);
+    int cate = getCategory(cateNum);
     Board board = new Board();
     BeanUtils.copyProperties(editForm, board);
     boardSVC.boardUpdate(boardNum,board);
@@ -294,10 +294,10 @@ public String addForm(
   @GetMapping("/{boardNum}/del")
   public String del(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category) {
+          @RequestParam(required = false) Optional<Integer> cateNum) {
 
     boardSVC.deleteByBoardNum(boardNum);
-    int cate = getCategory(category);
+    int cate = getCategory(cateNum);
     return "redirect:/board/list?category="+cate;
   }
 
@@ -348,8 +348,8 @@ public String addForm(
 
 
   //쿼리스트링 카테고리 읽기, 없으면 ""반환
-  private int getCategory(Optional<Integer> category) {
-    int cate = category.isPresent()? category.get():null;
+  private int getCategory(Optional<Integer> cateNum) {
+    int cate = cateNum.isPresent()? cateNum.get():null;
     log.info("category={}", cate);
     return cate;
   }
