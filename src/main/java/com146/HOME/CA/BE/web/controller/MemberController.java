@@ -37,7 +37,7 @@ public class MemberController {
         return "member/editMember";
     }
 
-    수정처리
+    //수정처리
     @PostMapping("/{member_num}/edit")
     public String edit(@PathVariable Long member_num,
                        @ModelAttribute EditForm editForm,

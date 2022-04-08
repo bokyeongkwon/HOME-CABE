@@ -52,47 +52,40 @@ public class BoardController {
     return categoryDAO.categoryAll();
   }
 
-//  페이지 소제목과 왼쪽 메뉴에 카테고리 데이터 바인딩
+  //  각 페이지 소제목, 왼쪽 카테고리 메뉴 하위 분류명 자동 렌더링
   @ModelAttribute("subTitle")
-  public List<Category> subTitle(@RequestParam int cateNum){
+  public List<Category> subTitle(@RequestParam Integer cateNum){
+//    log.info("cateNum={}",cateNum);
     int pcateNum = 0;
-    switch (cateNum) {
-      case 11:
-      case 12:
-      case 13:
-      case 14:
+    switch (cateNum){
+      case 11: case 12: case 13: case 14:
         pcateNum = 10;
         break;
-      case 21:
-      case 22:
-      case 23:
-      case 24:
+      case 21: case 22: case 23: case 24:
         pcateNum = 20;
         break;
-      case 31:
-      case 32:
+      case 31: case 32:
         pcateNum = 30;
         break;
       case 41:
         pcateNum = 40;
         break;
-      case 51:
-      case 52:
+      case 51: case 52:
         pcateNum = 50;
         break;
       default:
         break;
     }
-   return categoryDAO.category(pcateNum);
-}
+    return categoryDAO.category(pcateNum);
+  }
 
-//왼쪽 메뉴 상위 카테고리명 반환
-@ModelAttribute("superTitle")
-public List<Category> superTitle(@RequestParam int cateNum){
+  // 왼쪽 카테고리 메뉴에 상위 분류명 자동 렌더링
+  @ModelAttribute("leftMenuTitle")
+  public List<Category> leftMenuTitle(@RequestParam Integer cateNum){
+//    log.info("cateNum={}", cateNum);
     int ccateNum = cateNum;
     return categoryDAO.superCategory(ccateNum);
   }
-
 
 
 //  각 카테고리별 게시판 목록으로 이동
@@ -162,21 +155,19 @@ public String list(
   //상세 조회
   @GetMapping("/{boardNum}/detail")
   public String boardDetail(@PathVariable Long boardNum,
-                            @RequestParam int cateNum,
                             HttpServletRequest request,
                             Model model){
 
     HttpSession session = request.getSession(false);
 
-    LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
-    if(loginMember != null)
-    String id = loginMember.getId();
+//    LoginMember loginMember = (LoginMember)session.getAttribute("loginMember");
+//    if(loginMember != null)
+//    String id = loginMember.getId();
 
     Board detail = boardSVC.selectByNum(boardNum);
     DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detail, detailForm);
     model.addAttribute("detailForm", detailForm);
-    model.addAttribute("cateNum", cateNum);
 
     return "/board/boardDetail";
   }

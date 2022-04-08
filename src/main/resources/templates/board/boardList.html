@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
@@ -5,15 +6,12 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--    외부 라이브러리 임포트-->
   <script src="https://kit.fontawesome.com/d4b88f7572.js" crossorigin="anonymous"></script>
-  <!--    폰트-->
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-  <!--    css 파일-->
+  <!--css-->
   <link rel="stylesheet" href="/static/css/board/list.css" th:href="@{/css/board/boardList.css}">
-  <!--    js 파일-->
-  <script defer src="" th:src="@{/js/board/list.js}"></script>
-
+  <!--  js-->
+  <script defer src="" th:src="@{/js/board/boardList.js}"></script>
   <title>갤러리형 게시판</title>
 </head>
 
@@ -25,7 +23,7 @@
   <!-- 상단 메뉴 -->
   <div class="category">
     <!-- 카테고리 구분, menu = depth1 -->
-    <ul class="menu">
+    <ul class="menu" >
       <li class="pcode">분야별 레시피</li>
       <li>|</li>
       <li class="pcode">테마별 레시피</li>
@@ -83,47 +81,38 @@
   </div>
 </div>
 
-<main >
-  <!-- 왼쪽 메뉴.-->
-  <div id="leftCategory" th:each=" title :${superTitle}">
-    <div id="leftCategory_title" th:text="${title.cateName}">[super]</div>
-    <ul class="leftCategory_ul">
-      <th:block th:each=" sub : ${subTitle}">
-        <li class="leftCategory_li"><a href="" th:href="@{/board/1(cateNum=${sub.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${sub.cateName}">[sub]</a></li>
+<main>
+  <!-- 왼쪽 배너.-->
+  <div id="leftCategory" >
+    <th:block th:each=" super :${leftMenuTitle}">
+      <div id="leftCategory_title" th:text="${super.cateName}">[super]</div>
+    </th:block>
+    <ul class="leftCategory_ul" >
+      <th:block th:each=" items :${subTitle}">
+        <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
       </th:block>
     </ul>
   </div>
   <!-- 본문 -->
   <div class="liLiWrap">
     <div class="upperBox">
-      <th:block th:each=" sub : ${subTitle}">
-      <div class="liLiMenu" th:if="${sub.cateNum==cateNum}" th:text="${sub.cateName}">[sub]</div>
+      <th:block th:each=" items :${subTitle}" th:if="${items.cateNum}==${cateNum}">
+        <div class="liLiMenu" th:text="${items.cateName}">[sub]</div>
       </th:block>
-      <button type="button" id="recipeWriteBtn" >글쓰기</button>
+      <button type="button" id="writeBtn">글쓰기</button>
     </div>
 
     <div class="liLiItems">
 
       <!-- start -->
-      <div class="item" th:each=" item : ${list}">
+      <div class="item"  th:each=" item : ${list}">
         <div class="post">
           <div class="img-wrap">
-<!--            th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${cateNum})}"-->
-            <a href="" >
-              <img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt="">
-            </a>
+            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}"><img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt=""></a>
           </div>
           <div class="caption">
-<!--            th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum}, cateNum=${cateNum})}"-->
-            <a href=""  class="postTitle" th:text="${item.boardTitle}">제목</a>
-
-            <label for="bookmark" class="bookmark">
-              <input type="checkbox" id="bookmark" >
-              <i class="fas fa-heart" id="unchecked"></i>
-              <i class="fas fa-heart" id="checked"></i>
-              </input>
-            </label>
-
+            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}" class="postTitle" th:text="${item.boardTitle}">제목</a>
+            <div class="bookmark"><i class="fas fa-heart"></i></div>
           </div>
           <div class="info">
             <span class="memId" th:text="${item.nickname}">By "회원명"</span>
@@ -154,11 +143,13 @@
     <!--페이지표시-->
     <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
       <th:block th:if="${pnum != 0}">
+        <!--                  <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href="" th:href="@{|/board/${pnum}|}" th:text="${pnum}">1</a>-->
         <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href=""
            th:href="@{/board/{reqPage}(reqPage=${pnum}, cateNum=${param.cateNum})}"
            th:text="${pnum}">1</a>
       </th:block>
     </th:block>
+    <!--                (cateNum=${param.cateNum})-->
 
     <!--다음페이지정보-->
     <th:block th:if="${pc.next}">
@@ -195,8 +186,6 @@
     <li>개인정보취급방침</li>
   </ul>
 </footer>
-
-
 </body>
 
 </html>
