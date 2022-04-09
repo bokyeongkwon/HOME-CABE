@@ -17,8 +17,8 @@
   <title>베이킹 클래스 게시판</title>
 
   <!-- 외부 JS파일 연결, 화면이 로딩 된 후 적용 -->
-  <script defer src="" th:src="@{/js/board/bakingClass/bakingClass_ajax.js}"></script>
-  <script defer src="" th:src="@{/js/board/bakingClass/bakingClass.js}"></script>
+  <script defer src="" th:src="@{/js/board/bakingClass_ajax.js}"></script>
+  <script defer src="" th:src="@{/js/board/bakingClass.js}"></script>
 
   <!-- 네이버, 카카오 지도 API. 기기가 달라지면 플랫폼 별도 추가 필요 -->
   <script type="text/javascript"
@@ -75,7 +75,6 @@
       </div>
     </div>
   </div>
-
   <!-- 우측상단 아이콘 -->
   <div class="icon">
     <ul class="icon_ul">
@@ -102,7 +101,7 @@
     <!--            th:data-code="${cateNum}"-->
     <div id="page_status" >
       <th:block th:each=" sub : ${subTitle}">
-      <div id="page_name" th:text="${sub.cateName}">지역별 클래스 검색</div>
+        <div id="page_name" th:text="${sub.cateName}">지역별 클래스 검색</div>
       </th:block>
 
       <!-- order_wrapper = (order + write_btn) -->
@@ -167,7 +166,7 @@
         <!-- db내용을 ListForm 형식에 맞게 표시하는 데 타임리프 반복문 필요 -->
         <th:block th:each=" item : ${list}">
           <div class="col" th:text="${item.boardNum}">게시물 번호</div>
-          <a href="" class="col" id="boardTitle" th:text="${item.boardTitle}" th:href="@{|/board/${item.boardNum}/detail|}">제목</a>
+          <a href="" class="col" id="boardTitle" th:text="${item.boardTitle}" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}">제목</a>
           <div class="col" th:text="${item.nickname}">작성자ID or Nickname</div>
           <div class="col" th:text="${#temporals.format(item.boardDate,'yy/MM/dd HH:dd')}">작성일</div>
           <div class="col" th:text="${item.boardHit}">조회수</div>
