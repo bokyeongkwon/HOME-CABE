@@ -9,6 +9,8 @@ import com146.HOME.CA.BE.domain.common.file.UploadFile;
 import com146.HOME.CA.BE.domain.common.file.svc.UploadFileSVC;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
 import com146.HOME.CA.BE.domain.member.svc.MemberSVC;
+import com146.HOME.CA.BE.domain.reply.Reply;
+import com146.HOME.CA.BE.domain.reply.svc.ReplySVC;
 import com146.HOME.CA.BE.web.form.board.*;
 import com146.HOME.CA.BE.web.form.login.LoginMember;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class BoardController {
   private final BoardSVC boardSVC;
   private final CategoryDAO categoryDAO;
   private final UploadFileSVC uploadFileSVC;
+  private final ReplySVC replySVC;
 
   //    페이징 구현 (10, 10) - 디폴트?
   @Autowired
@@ -211,11 +214,12 @@ public String addForm(
 
 
   //상세 조회
-  @GetMapping("/{boardNum}")
+  @GetMapping("/{cateNum}/{boardNum}")
   public String detail(
           @PathVariable Long boardNum,
           @RequestParam(required = false) Optional<Integer> category,
-          Model model) {
+          Model model,
+          HttpServletRequest request) {
 
     int cate = getCategory(category);
 
@@ -232,7 +236,25 @@ public String addForm(
       model.addAttribute("attachFiles", attachFiles);
     }
 
-    return "board/content";
+    //댓글 작성 양식
+    ReplyForm replyForm = new ReplyForm();
+    model.addAttribute("RelyForm", replyForm);
+
+    //댓글 불러오기
+    List<Reply> replyList = replySVC.showReply(boardNum);
+
+    //불러온 댓글 null 체크
+    if(replyList.isEmpty()){
+      model.addAttribute("ReplyList", null);
+    }else {
+      model.addAttribute("ReplyList", replyList);
+    }
+
+    //댓글
+    HttpSession session = request.getSession(false);
+    LoginMember loginMember = (LoginMember) session.getAttribute("loginMember");
+
+    return "board/boardDetail";
   }
 
 
@@ -304,14 +326,14 @@ public String addForm(
   //댓글 작성
   @PostMapping("/{boardNum}/reply")
   public String insertReply(ReplyForm replyForm,
-                            @PathVariable Long replyNum,
+                            @PathVariable Long boardNum,
                             HttpServletRequest request,
                             RedirectAttributes redirectAttributes) {
 
-    Board board = new Board();
-    BeanUtils.copyProperties(replyForm, board);
+    Reply reply = new Reply();
+    BeanUtils.copyProperties(replyForm, reply);
 
-    board.setReplyNum(replyNum);
+    reply.setBoardNum(boardNum);
 
     HttpSession session = request.getSession(false);
     if(session != null && session.getAttribute("loginMember") != null) {
@@ -322,26 +344,27 @@ public String addForm(
     }
 
 
-    boardSVC.insertReply(board);
+    replySVC.writeReply(reply);
 
-    redirectAttributes.addAttribute("boardNum", replyNum);
+    redirectAttributes.addAttribute("boardNum", boardNum);
     return "redirect:/board/{boardNum}";
   }
 
 
-
-  //댓글 수정
-
-
-
   //댓글 삭제
-//  @DeleteMapping("/{boardNum}}/{replyNum}/")
-//  public String delReply(@PathVariable Long replyNum){
-//
-//    boardSVC.deleteReply(replyNum);
-//
-//    return "redirect:/board/{boardNum}/reply";
-//  }
+  @DeleteMapping("/{boardNum}/{replyNum}/")
+  public String delReply(@PathVariable Long replyNum,
+                         RedirectAttributes redirectAttributes) throws IllegalAccessException {
+
+    Reply foundReply = replySVC.findParentReply(replyNum);
+    Long boardNum = foundReply.getBoardNum();
+
+    replySVC.deleteReply(replyNum);
+
+    redirectAttributes.addAttribute("boardNum", boardNum);
+
+    return "redirect:/board/{boardNum}/reply";
+  }
 
 
 

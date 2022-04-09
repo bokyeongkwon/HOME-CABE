@@ -27,7 +27,7 @@ public class JoinForm {
     @Size(min=10, max=11)
     private String tel;                 //전화번호 VARCHAR2(13)
     @NotBlank
-    @Size(min=6, max=20)
+    @Size(max=20)
     private String email;               //이메일 VARCHAR2(40)
     @NotBlank
     @Size(min=8, max=8)

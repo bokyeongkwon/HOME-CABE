@@ -52,7 +52,7 @@
 
     <!-- 회원가입 화면 -->
     <main>
-        <form action="" method="post" th:action th:object="${joinForm}">
+        <form action="" method="post" th:method="post" th:action th:object="${joinForm}">
             <!-- 회원가입 텍스트 -->
             <div class="member_join">
                 <b>회원가입</b>
@@ -66,7 +66,7 @@
                     <div class="item name">이름</div>
                     <div class="item2">
                         <input typre="text" name="m_e_name" class="m_e_name" th:field="*{name}"
-                               th:class="${#fileds.hasErrors('name') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('name') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('id')}">
                             <p th:erros="*{id}" th:errorclass="filedError"></p>
@@ -77,12 +77,12 @@
                     <div class="item id">아이디</div>
                     <div class="item2">
                         <input type="text" name="m_e_id" class="m_e_id" id="id" th:field="*{id}"
-                               th:class="${#fileds.hasErrors('id') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('id') ? 'fieldError' : 'fieldSuccess'}" required>
                         <button class="id_chk" id="idDubChk" type="button">중복확인</button>
                         <span>영문, 숫자 조합 6~20자 입력 가능</span>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('id')}">
-                            <p th:erros="*{id}" th:errorclass="filedError"></p>
+                            <p th:erros="*{id}" th:errorclass="fieldError"></p>
                         </li>
                     </div>
                 </div>
@@ -90,11 +90,11 @@
                     <div class="item pwd">비밀번호</div>
                     <div class="item2">
                         <input type="text" name="m_e_pwd" class="m_e_pwd" th:field="*{pw}"
-                               th:class="${#fileds.hasErrors('pw') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('pw') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span>영문, 숫자, 특수문자 조합으로 8~20자 입력 가능</span>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('pw')}">
-                            <p th:erros="*{pw}" th:errorclass="filedError"></p>
+                            <p th:erros="*{pw}" th:errorclass="fieldError"></p>
                         </li>
                     </div>
                 </div>
@@ -102,10 +102,10 @@
                     <div class="item pwd_chk">비밀번호 확인</div>
                     <div class="item2">
                         <input type="text" name="m_e_pwd_chk" class="m_e_pwd_chk" th:field="*{pw2}"
-                               th:class="${#fileds.hasErrors('pw2') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('pw2') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('pw2')}">
-                            <p th:erros="*{pw2}" th:errorclass="filedError"></p>
+                            <p th:erros="*{pw2}" th:errorclass="fieldError"></p>
                         </li>
                         <li th:if="${#fields.hasErrors('global')}">
                             <p th:erros="*{global}" th:errorclass="globalError"></p>
@@ -120,52 +120,43 @@
                     </div>
                     <span class="errmsg"></span>
                     <li th:if="${#fields.hasErrors('nickname')}">
-                        <p th:erros="*{nickname}" th:errorclass="filedError"></p>
+                        <p th:erros="*{nickname}" th:errorclass="fieldError"></p>
                     </li>
                 </div>
                 <div class="content m_phone">
                     <div class="item phone">연락처</div>
                     <div class="item2">
                         <input type="text" name="m_phone1" class="m_e_phone" th:field="*{tel}"
-                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}"required>
+                               th:class="${#fields.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}"required>
                         <span class="dash">-</span>
                         <input type="text" name="m_phone2" class="m_e_phone" th:fild="*{tel}"
-                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span class="dash">-</span>
                         <input type="text" name="m_phone3" class="m_e_phone" th:field="*{tel}"
-                               th:class="${#fileds.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('tel') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('tel')}">
-                            <p th:erros="*{tel}" th:errorclass="filedError"></p>
+                            <p th:erros="*{tel}" th:errorclass="fieldError"></p>
                         </li>
                     </div>
                 </div>
                 <div class="content m_email">
                     <div class="item email">이메일</div>
-                    <div class="item2">
-                        <input type="text" name="m_e_email1" class="m_e_email" id="email1" th:field="*{email}"
-                               th:class="${#fileds.hasErrors('email') ? 'fieldError' : 'fieldSuccess'}" required>
-                        <span class="at">@</span>
-                        <input type="text" name="m_e_email2" class="m_e_email" id="email2" th:field="*{email2}"
-                               th:class="${#fileds.hasErrors('email2') ? 'fieldError' : 'fieldSuccess'}" required>
-                        <button class="email_chk" id="emailDubChk" type="button">중복확인</button>
-                        <span class="errmsg"></span>
-                        <li th:if="${#fields.hasErrors('email')}">
-                            <p th:erros="*{email}" th:errorclass="filedError"></p>
-                        </li>
-                        <li th:if="${#fields.hasErrors('email2')}">
-                            <p th:erros="*{email2}" th:errorclass="filedError"></p>
-                        </li>
+                    <div>
+                        <input type="text" name="email" id="email" th:field="*{email}"
+                               th:class="${#fields.hasErrors('email') ? 'fieldError' : 'fieldSuccess'}" required>
+                        <button id="emailDubChk" type="button">중복확인</button>
+                        <div class="errmsg"></div>
                     </div>
                 </div>
                 <div class="content m_birth">
                     <div class="item birth">생년월일</div>
                     <div class="item2">
                         <input type="text" name="m_birth" class="m_birth" placeholder="생년월일(YYYYMMDD)" th:field="*{birth}"
-                               th:class="${#fileds.hasErrors('email2') ? 'fieldError' : 'fieldSuccess'}" required>
+                               th:class="${#fields.hasErrors('birth') ? 'fieldError' : 'fieldSuccess'}" required>
                         <span class="errmsg"></span>
                         <li th:if="${#fields.hasErrors('birth')}">
-                            <p th:erros="*{birth}" th:errorclass="filedError"></p>
+                            <p th:erros="*{birth}" th:errorclass="fieldError"></p>
                         </li>
                     </div>
                 </div>

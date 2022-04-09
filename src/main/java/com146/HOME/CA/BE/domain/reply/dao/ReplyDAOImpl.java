@@ -32,7 +32,19 @@ public class ReplyDAOImpl implements ReplyDAO{
     @Override
     public List<Reply> showReply(Long boardNum) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" select * from reply where board_num = ? order by reply_date ASC ");
+        sql.append("select ");
+        sql.append("    r.reply_num, ");
+        sql.append("    r.board_num, ");
+        sql.append("    r.member_num, ");
+        sql.append("    r.reply_date, ");
+        sql.append("    r.reply_content, ");
+        sql.append("    r.reply_group, ");
+        sql.append("    r.preply_num, ");
+        sql.append("    r.report_chk, ");
+        sql.append("    m.nickname ");
+        sql.append("    from reply r inner join member m ");
+        sql.append("         on r.member_num = m.member_num ");
+        sql.append("  where r.board_num = ? order by reply_date ASC ");
 
         List<Reply> replyList = jdbcTemplate.query(sql.toString(),
                 new BeanPropertyRowMapper<>(Reply.class),
@@ -100,8 +112,8 @@ public class ReplyDAOImpl implements ReplyDAO{
         log.info(modifiedContent, replyNum, memberNum);
         StringBuffer sql = new StringBuffer();
         sql.append("update reply ");
-        sql.append("    set replyContent = ?, ");
-        sql.append("  where replyNum = ? and memberNum = ?  ");
+        sql.append("    set reply_content = ?, ");
+        sql.append("  where reply_num = ? and member_num = ?  ");
 
         int rows = jdbcTemplate.update(sql.toString(), modifiedContent, replyNum, memberNum);
 
@@ -119,7 +131,7 @@ public class ReplyDAOImpl implements ReplyDAO{
     public void deleteReply(Long replyNum) throws IllegalAccessException {
         StringBuffer sql = new StringBuffer();
         sql.append("delete from reply ");
-        sql.append("  where replyNum = ? ");
+        sql.append("  where reply_num = ? ");
 
         if(jdbcTemplate.update(sql.toString(), replyNum) != 1){
             throw new IllegalAccessException(replyNum + "번 댓글을 찾을 수 없습니다.");
@@ -135,7 +147,19 @@ public class ReplyDAOImpl implements ReplyDAO{
     @Override
     public Reply findParentReply(Long replyNum) {
         StringBuffer sql = new StringBuffer();
-        sql.append("select * from reply where replyNum = ? ");
+        sql.append("select ");
+        sql.append("    r.reply_num, ");
+        sql.append("    r.board_num, ");
+        sql.append("    r.member_num, ");
+        sql.append("    r.reply_date, ");
+        sql.append("    r.reply_content, ");
+        sql.append("    r.reply_group, ");
+        sql.append("    r.preply_num, ");
+        sql.append("    r.report_chk, ");
+        sql.append("    m.nickname ");
+        sql.append("    from reply r inner join member m ");
+        sql.append("         on r.member_num = m.member_num ");
+        sql.append("  where r.reply_num = ? ");
 
         Reply reply = jdbcTemplate.queryForObject(
                 sql.toString(),
@@ -162,7 +186,7 @@ public class ReplyDAOImpl implements ReplyDAO{
         sql.append("  preply_num, ");			  //부모댓글 번호
         sql.append("  reply_group) ");			//댓글그룹
         sql.append("	VALUES ( ");
-        sql.append("  comments_cnum_seq.nextval, ");
+        sql.append("  reply_reply_num_seq.nextval, ");
         sql.append("  ?, ");				//댓글이 작성된 게시글번호
         sql.append("  ?, ");				//회원번호
         sql.append("  ?, ");				//작성일

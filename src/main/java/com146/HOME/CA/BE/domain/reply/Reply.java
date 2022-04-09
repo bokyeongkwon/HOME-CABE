@@ -15,4 +15,5 @@ public class Reply {
     private int replyStep;                    //댓글의 단계 NUMBER(5)
     private int replyIndent;                  //댓글의 들여쓰기 NUMBER(5)
     private int preplyNum;                    //부모댓글번호 NUMBER(10)
+    private String nickname;            //varchar2(40) --별칭
 }

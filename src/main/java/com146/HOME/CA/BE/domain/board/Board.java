@@ -18,12 +18,12 @@ public class Board {
     private String boardMapAddress;	//VARCHAR2(300) --지도 API에서 받은 주소
     private byte[] boardPicture;         //BLOB --대표사진
 
-    Long ReplyNum;                    //댓글번호 NUMBER(10)
-    LocalDate replyDate;              //작성일 TIMESTAMP
-    String replyContent;              //댓글내용 CLOB
-    int replyGroup;                   //댓글그룹 NUMBER(5)
-    int replyStep;                    //댓글의 단계 NUMBER(5)
-    int replyIndent;                  //댓글의 들여쓰기 NUMBER(5)
-    int preplyNum;                    //부모댓글번호 NUMBER(10)
+    private Long ReplyNum;                    //댓글번호 NUMBER(10)
+    private LocalDate replyDate;              //작성일 TIMESTAMP
+    private String replyContent;              //댓글내용 CLOB
+    private int replyGroup;                   //댓글그룹 NUMBER(5)
+    private int replyStep;                    //댓글의 단계 NUMBER(5)
+    private int replyIndent;                  //댓글의 들여쓰기 NUMBER(5)
+    private int preplyNum;                    //부모댓글번호 NUMBER(10)
 
 }

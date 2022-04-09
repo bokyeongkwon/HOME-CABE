@@ -12,6 +12,13 @@
         const $idDubChk = document.getElementById('idDubChk');
 
         $idDubChk.addEventListener('click', e=>{
+          const $errmsg = $idDubChk.closest('div').querySelector('.errmsg');
+          if(!$id.value){
+            $errmsg.textContent = '아이디를 입력하세요';
+            $id.select();$id.focus();
+            return false;
+          }
+
             const xmlHttpreq = new XMLHttpRequest();
 
             const url = `/api/member/${$id.value}`;
@@ -46,9 +53,16 @@
         const $emailDubChk = document.getElementById('emailDubChk');
 
         $emailDubChk.addEventListener('click', e=>{
+          const $errmsg = $emailDubChk.closest('div').querySelector('.errmsg');
+          if(!$email.value){
+            $errmsg.textContent = '이메일을 입력하세요';
+            $email.select();$email.focus();
+            return false;
+          }
+
             const xmlHttpreq = new XMLHttpRequest();
 
-            const url = `/api/member/${$id.value}`;
+            const url = `/api/member/${$email.value}`;
             xmlHttpreq.open("GET", url);
             xmlHttpreq.send();
 
@@ -80,9 +94,15 @@
         const $nicknameDubChk = document.getElementById('nicknameDubChk');
 
         $nicknameDubChk.addEventListener('click', e=>{
+          const $errmsg = $nicknameDubChk.closest('div').querySelector('.errmsg');
+          if(!$nickname.value){
+            $errmsg.textContent = '닉네임을 입력하세요';
+            $nickname.select();$nickname.focus();
+            return false;
+          }
             const xmlHttpreq = new XMLHttpRequest();
 
-            const url = `/api/member/${$id.value}`;
+            const url = `/api/member/${$nickname.value}`;
             xmlHttpreq.open("GET", url);
             xmlHttpreq.send();
 
