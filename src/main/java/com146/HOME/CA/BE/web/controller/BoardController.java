@@ -9,8 +9,6 @@ import com146.HOME.CA.BE.domain.common.file.UploadFile;
 import com146.HOME.CA.BE.domain.common.file.svc.UploadFileSVC;
 import com146.HOME.CA.BE.domain.common.paging.PageCriteria;
 import com146.HOME.CA.BE.domain.member.svc.MemberSVC;
-import com146.HOME.CA.BE.domain.reply.Reply;
-import com146.HOME.CA.BE.domain.reply.svc.ReplySVC;
 import com146.HOME.CA.BE.web.form.board.*;
 import com146.HOME.CA.BE.web.form.login.LoginMember;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +40,8 @@ public class BoardController {
   private final BoardSVC boardSVC;
   private final CategoryDAO categoryDAO;
   private final UploadFileSVC uploadFileSVC;
-  private final ReplySVC replySVC;
 
-  //    페이징 구현 (10, 10) - 디폴트?
+  //    페이징 구현 (10, 10) - 디폴트
   @Autowired
   @Qualifier("pc10")
   private PageCriteria pc10;
@@ -54,7 +51,7 @@ public class BoardController {
   @Qualifier("pc5")
   private PageCriteria pc5;
 
-//  게시판 카테고리
+  //  게시판 카테고리
   @ModelAttribute("classifier")
   public List<CategoryAll> classifier(){
 //    13개 일반 게시판 분류 전부 반환
@@ -97,73 +94,73 @@ public class BoardController {
   }
 
 
-//  각 카테고리별 게시판 목록으로 이동
-@GetMapping("/{reqPage}")
-public String list(
-    @PathVariable(required = false) Optional<Integer> reqPage,
-    @RequestParam int cateNum,
-    Model model
-){
+  //  각 카테고리별 게시판 목록으로 이동
+  @GetMapping("/{reqPage}")
+  public String list(
+          @PathVariable(required = false) Optional<Integer> reqPage,
+          @RequestParam int cateNum,
+          Model model
+  ){
 //        페이징 (10, 10)/(9,5) 분기
-  PageCriteria pc = null;
-  if(cateNum == 41 || cateNum == 51 || cateNum == 52){
-    pc = pc10;
-  }else{
-    pc = pc5;
-  }
-  //페이지 요청이 없으면 1페이지로.
-  Integer page = reqPage.orElse(1);
+    PageCriteria pc = null;
+    if(cateNum == 41 || cateNum == 51 || cateNum == 52){
+      pc = pc10;
+    }else{
+      pc = pc5;
+    }
+    //페이지 요청이 없으면 1페이지로.
+    Integer page = reqPage.orElse(1);
 //      1) 사용자 입력 - 요청 페이지
-  pc.getRc().setReqPage(page);
+    pc.getRc().setReqPage(page);
 //       2) 게시판 타입의 리스트 객체를 생성
-  List<Board> list = null;
+    List<Board> list = null;
 
 //       3) 해당 게시판의 게시물 총 개수를 구하고 페이징 적용 메소드로 게시판의 처음과 끝 페이지 출력
-  pc.setTotalRec(boardSVC.totalCount(cateNum));
-  list = boardSVC.selectBoard(cateNum, pc.getRc().getStartRec(), pc.getRc().getEndRec());
+    pc.setTotalRec(boardSVC.totalCount(cateNum));
+    list = boardSVC.selectBoard(cateNum, pc.getRc().getStartRec(), pc.getRc().getEndRec());
 
 //       4)ListForm과 데이터를 대조해 복사
-  List<ListForm> partOfList = new ArrayList<>();
-  for (Board board : list) {
-    ListForm listForm = new ListForm();
-    BeanUtils.copyProperties(board, listForm);
-    partOfList.add(listForm);
+    List<ListForm> partOfList = new ArrayList<>();
+    for (Board board : list) {
+      ListForm listForm = new ListForm();
+      BeanUtils.copyProperties(board, listForm);
+      partOfList.add(listForm);
+    }
+    model.addAttribute("list", partOfList);
+    model.addAttribute("pc", pc);
+    model.addAttribute("cateNum", cateNum);
+
+    //   분류별 적절한 게시판으로 이동.
+    if( cateNum == 41 ){
+      return "/board/bakingClass";
+    }else if( cateNum == 51 || cateNum == 52  ){
+      return "/board/boardCommu";
+    }else{
+      return "/board/boardList";
+    }
   }
-  model.addAttribute("list", partOfList);
-  model.addAttribute("pc", pc);
-  model.addAttribute("cateNum", cateNum);
-
-  //   분류별 적절한 게시판으로 이동.
-  if( cateNum == 41 ){
-    return "/board/bakingClass";
-  }else if( cateNum == 51 || cateNum == 52  ){
-    return "/board/boardCommu";
-  }else{
-    return "/board/boardList";
-  }
-}
 
 
 
-//  공통 CRUD
+  //  공통 CRUD
 //작성양식
-@GetMapping("/add")
-public String addForm(
-        Model model,
-        @RequestParam(required = false) Optional<Integer> category,
-        HttpSession session) {
-  int cate = getCategory(category);
+  @GetMapping(value="/add")
+  public String addForm(
+          Model model,
+          @RequestParam(required = false) Optional<Integer> category,
+          HttpSession session) {
+    int cate = getCategory(category);
 
 //    LoginMember loginMember = (LoginMember)session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-  AddForm addForm = new AddForm();
+    AddForm addForm = new AddForm();
 //    addForm.setMemberNum(memberSVC.findById(loginMember.getId()).getMemberNum());
 //    addForm.setNickname(loginMember.getNickname());
-  model.addAttribute("addForm", addForm);
-  model.addAttribute("category", cate);
+    model.addAttribute("addForm", addForm);
+    model.addAttribute("category", cate);
 
-  return "board/boardUpload";
-}
+    return "board/boardUpload";
+  }
 
   //작성처리
   @PostMapping("/add")
@@ -212,22 +209,21 @@ public String addForm(
     return "redirect:/board/{boardNum}";
   }
 
-
+  //  카테고리 링크 관련 일부 주석처리
   //상세 조회
-  @GetMapping("/{cateNum}/{boardNum}")
+  @GetMapping(value="/{boardNum}/detail")
   public String detail(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category,
-          Model model,
-          HttpServletRequest request) {
+//          @RequestParam(required = false) Optional<Integer> category,
+          Model model) {
 
-    int cate = getCategory(category);
+//    int cate = getCategory(category);
 
     Board detailBoard = boardSVC.findByBoardNum(boardNum);
     com146.HOME.CA.BE.web.form.board.DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detailBoard, detailForm);
     model.addAttribute("detailForm", detailForm);
-    model.addAttribute("category", cate);
+//    model.addAttribute("category", cate);
 
     //첨부조회
     List<UploadFile> attachFiles = uploadFileSVC.getFilesByCateNumWithBoardNum(detailBoard.getCateNum(), detailBoard.getBoardNum());
@@ -235,24 +231,6 @@ public String addForm(
       log.info("attachFiles={}",attachFiles);
       model.addAttribute("attachFiles", attachFiles);
     }
-
-    //댓글 작성 양식
-    ReplyForm replyForm = new ReplyForm();
-    model.addAttribute("RelyForm", replyForm);
-
-    //댓글 불러오기
-    List<Reply> replyList = replySVC.showReply(boardNum);
-
-    //불러온 댓글 null 체크
-    if(replyList.isEmpty()){
-      model.addAttribute("ReplyList", null);
-    }else {
-      model.addAttribute("ReplyList", replyList);
-    }
-
-    //댓글
-    HttpSession session = request.getSession(false);
-    LoginMember loginMember = (LoginMember) session.getAttribute("loginMember");
 
     return "board/boardDetail";
   }
@@ -326,14 +304,14 @@ public String addForm(
   //댓글 작성
   @PostMapping("/{boardNum}/reply")
   public String insertReply(ReplyForm replyForm,
-                            @PathVariable Long boardNum,
+                            @PathVariable Long replyNum,
                             HttpServletRequest request,
                             RedirectAttributes redirectAttributes) {
 
-    Reply reply = new Reply();
-    BeanUtils.copyProperties(replyForm, reply);
+    Board board = new Board();
+    BeanUtils.copyProperties(replyForm, board);
 
-    reply.setBoardNum(boardNum);
+    board.setReplyNum(replyNum);
 
     HttpSession session = request.getSession(false);
     if(session != null && session.getAttribute("loginMember") != null) {
@@ -344,30 +322,26 @@ public String addForm(
     }
 
 
-    replySVC.writeReply(reply);
+    boardSVC.insertReply(board);
 
-    redirectAttributes.addAttribute("boardNum", boardNum);
+    redirectAttributes.addAttribute("boardNum", replyNum);
     return "redirect:/board/{boardNum}";
   }
 
 
+
+  //댓글 수정
+
+
+
   //댓글 삭제
-  @DeleteMapping("/{boardNum}/{replyNum}/")
-  public String delReply(@PathVariable Long replyNum,
-                         RedirectAttributes redirectAttributes) throws IllegalAccessException {
-
-    Reply foundReply = replySVC.findParentReply(replyNum);
-    Long boardNum = foundReply.getBoardNum();
-
-    replySVC.deleteReply(replyNum);
-
-    redirectAttributes.addAttribute("boardNum", boardNum);
-
-    return "redirect:/board/{boardNum}/reply";
-  }
-
-
-
+//  @DeleteMapping("/{boardNum}}/{replyNum}/")
+//  public String delReply(@PathVariable Long replyNum){
+//
+//    boardSVC.deleteReply(replyNum);
+//
+//    return "redirect:/board/{boardNum}/reply";
+//  }
 
 
   //쿼리스트링 카테고리 읽기, 없으면 ""반환
@@ -376,4 +350,5 @@ public String addForm(
     log.info("category={}", cate);
     return cate;
   }
+
 }
