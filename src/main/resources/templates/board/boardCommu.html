@@ -12,13 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <!-- css -->
   <link rel="stylesheet" href="/static/css/board/community.css" th:href="@{/css/board/community.css}">
-
 </head>
 
 <header>
   <!-- 로고, 클릭하면 메인 화면으로 이동 -->
   <a href="" th:href="@{/}" class="logo"><img src="" th:src="@{/img/logo.jpg}" alt="" width="150px"
                                               height="100px"></a>
+
   <!-- 상단 메뉴 -->
   <div class="category">
     <!-- 카테고리 구분, menu = depth1 -->
@@ -35,7 +35,6 @@
     </ul>
     <!-- 드롭다운 -->
     <div class="dropdown-content">
-      <!-- 각 url에 {reqPage}/{cateNum} -->
       <div class="depth2">
         <a href="#" th:href="@{/board/1?cateNum=11}" class="">제과</a>
         <a href="#" th:href="@{/board/1?cateNum=12}" class="">제빵</a>
@@ -82,19 +81,22 @@
 
 <!-- main -->
 <main>
-  <!-- 왼쪽 배너. 이자식 바인딩 거슬리네 정말-->
-  <div id="leftCategory" th:each=" title :${superTitle}">
-    <div id="leftCategory_title" th:text="${title.cateName}">[super]</div>
+  <!-- 왼쪽 배너.-->
+  <div id="leftCategory" >
+    <th:block th:each=" super :${leftMenuTitle}">
+      <div id="leftCategory_title" th:text="${super.cateName}">[super]</div>
+    </th:block>
     <ul class="leftCategory_ul" >
-      <th:block th:each=" sub : ${subTitle}">
-        <li class="leftCategory_li"><a href="" th:href="@{/board/1(cateNum=${sub.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${sub.cateName}">[sub]</a></li>
+      <th:block th:each=" items :${subTitle}">
+        <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}"
+                                        id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
       </th:block>
     </ul>
   </div>
   <!-- 본문 -->
   <div class="liLiWrap" >
-    <th:block th:each=" sub : ${subTitle}">
-    <div class="liLiMenu" th:if="${sub.cateNum==cateNum}" th:text="${sub.cateName}">[sub]</div>
+    <th:block th:each=" items :${subTitle}" th:if="${items.cateNum}==${cateNum}">
+      <div class="liLiMenu" th:text="${items.cateName}">[sub]</div>
     </th:block>
     <div class="liLiItems">
 
@@ -110,7 +112,7 @@
           <!-- db내용을 ListForm 형식에 맞게 표시하는 데 타임리프 반복문 필요 -->
           <th:block th:each=" item : ${list}">
             <div class="col" th:text="${item.boardNum}">게시물 번호</div>
-            <a href="" class="col" id="boardTitle" th:text="${item.boardTitle}" th:href="@{|/board/${item.boardNum}/detail|}">제목</a>
+            <a href="" class="col" id="boardTitle" th:text="${item.boardTitle}" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}">제목</a>
             <div class="col" th:text="${item.nickname}">작성자ID or Nickname</div>
             <div class="col" th:text="${#temporals.format(item.boardDate,'yy/MM/dd HH:dd')}">작성일</div>
             <div class="col" th:text="${item.boardHit}">조회수</div>
@@ -131,16 +133,15 @@
     <!--이전페이지정보-->
     <th:block th:if="${pc.prev}">
       <a class="bbs-page-item" href="" th:href="@{/board/1(cateNum=${param.cateNum})}"><i
-          class="fas fa-backward"></i></a>
+              class="fas fa-backward"></i></a>
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateNum=${param.cateNum})}"><i
-          class="fas fa-angle-left"></i></a>
+              class="fas fa-angle-left"></i></a>
     </th:block>
 
     <!--페이지표시-->
     <th:block th:each="pnum : ${#numbers.sequence(pc.startPage,pc.endPage)}">
       <th:block th:if="${pnum != 0}">
-        <!--                  <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href="" th:href="@{|/board/${pnum}|}" th:text="${pnum}">1</a>-->
         <a class="bbs-page-item" th:classappend="${pc.rc.reqPage == pnum} ? 'active'" href=""
            th:href="@{/board/{reqPage}(reqPage=${pnum}, cateNum=${param.cateNum})}"
            th:text="${pnum}">1</a>
@@ -151,10 +152,10 @@
     <th:block th:if="${pc.next}">
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateNum=${param.cateNum})}"><i
-          class="fas fa-angle-right"></i></a>
+              class="fas fa-angle-right"></i></a>
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateNum=${param.cateNum})}"><i
-          class="fas fa-forward"></i></a>
+              class="fas fa-forward"></i></a>
     </th:block>
   </div>
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
@@ -81,7 +80,7 @@
   </div>
 </div>
 
-<main>
+<main th:data-cate-num="${cateNum}">
   <!-- 왼쪽 배너.-->
   <div id="leftCategory" >
     <th:block th:each=" super :${leftMenuTitle}">
@@ -89,7 +88,8 @@
     </th:block>
     <ul class="leftCategory_ul" >
       <th:block th:each=" items :${subTitle}">
-        <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
+        <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}"
+                                        id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
       </th:block>
     </ul>
   </div>
@@ -110,9 +110,14 @@
           <div class="img-wrap">
             <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}"><img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt=""></a>
           </div>
-          <div class="caption">
-            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}" class="postTitle" th:text="${item.boardTitle}">제목</a>
-            <div class="bookmark"><i class="fas fa-heart"></i></div>
+          <div class="caption" >
+            <a href="" th:href="@{/board/{boardNum}/detail(boardNum=${item.boardNum},cateNum=${param.cateNum})}" class="postTitle"
+               th:text="${item.boardTitle}">제목</a>
+            <!-- check -->
+            <div class="bookmark-container">
+              <!--                                관심(체크박스) 생성 위치-->
+            </div>
+            <!-- check end -->
           </div>
           <div class="info">
             <span class="memId" th:text="${item.nickname}">By "회원명"</span>
@@ -134,10 +139,10 @@
     <!--이전페이지정보-->
     <th:block th:if="${pc.prev}">
       <a class="bbs-page-item" href="" th:href="@{/board/1(cateNum=${param.cateNum})}"><i
-          class="fas fa-backward"></i></a>
+              class="fas fa-backward"></i></a>
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.startPage-1}, cateNum=${param.cateNum})}"><i
-          class="fas fa-angle-left"></i></a>
+              class="fas fa-angle-left"></i></a>
     </th:block>
 
     <!--페이지표시-->
@@ -149,16 +154,15 @@
            th:text="${pnum}">1</a>
       </th:block>
     </th:block>
-    <!--                (cateNum=${param.cateNum})-->
 
     <!--다음페이지정보-->
     <th:block th:if="${pc.next}">
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.endPage+1}, cateNum=${param.cateNum})}"><i
-          class="fas fa-angle-right"></i></a>
+              class="fas fa-angle-right"></i></a>
       <a class="bbs-page-item" href=""
          th:href="@{/board/{reqPage}(reqPage=${pc.finalEndPage}, cateNum=${param.cateNum})}"><i
-          class="fas fa-forward"></i></a>
+              class="fas fa-forward"></i></a>
     </th:block>
   </div>
 
