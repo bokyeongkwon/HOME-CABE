@@ -42,6 +42,19 @@ public class MemberSVCImpl implements MemberSVC {
         return memberDAO.selectMemberByMemberNum(memberNum);
     }
 
+    //조회 by email
+    @Override
+    public Member findByEmail(String email) {
+        return memberDAO.selectMemberByEmail(email);
+    }
+
+    //조회 by nickname
+    @Override
+    public Member findByNickname(String nickname) {
+        return memberDAO.selectMemberByNickname(nickname);
+    }
+
+
     //전체조회
     @Override
     public List<Member> findAll() {

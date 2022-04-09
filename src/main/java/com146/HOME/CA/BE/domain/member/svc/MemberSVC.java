@@ -37,6 +37,20 @@ public interface MemberSVC {
   Member findByMemberNum(Long memberNum);
 
   /**
+   * 조회 by email
+   * @param email
+   * @return
+   */
+  Member findByEmail(String email);
+
+  /**
+   * 조회 by nickname
+   * @param nickname
+   * @return
+   */
+  Member findByNickname(String nickname);
+
+  /**
    * 전체조회
    * @return
    */
