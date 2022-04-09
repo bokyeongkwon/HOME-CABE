@@ -37,6 +37,20 @@ public interface MemberDAO {
   Member selectMemberByMemberNum(Long memberNum);
 
   /**
+   * 조회 by email
+   * @param email
+   * @return
+   */
+  Member selectMemberByEmail(String email);
+
+  /**
+   * 조회 by nickname
+   * @param nickname
+   * @return
+   */
+  Member selectMemberByNickname(String nickname);
+
+  /**
    * 전체조회
    * @return
    */

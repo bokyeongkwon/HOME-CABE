@@ -28,11 +28,38 @@ public class ApiMemberController {
         return result;
     }
 
-    //멤버 하나조회
+    //멤버 아이디로 조회
     @ResponseBody
     @GetMapping("/api/member/{id}")
-    public ApiResult<Member> member(@PathVariable String id){
+    public ApiResult<Member> memberId(@PathVariable String id){
         Member member = memberSVC.findById(id);
+        ApiResult<Member> result = new ApiResult<>("00","success",member);
+        return result;
+    }
+
+    //멤버 넘버로 조회
+    @ResponseBody
+    @GetMapping("/api/member/{memberNum}")
+    public ApiResult<Member> memberNum(@PathVariable Long memberNum){
+        Member member = memberSVC.findByMemberNum(memberNum);
+        ApiResult<Member> result = new ApiResult<>("00","success",member);
+        return result;
+    }
+
+    //멤버 이메일로 조회
+    @ResponseBody
+    @GetMapping("/api/member/{email}")
+    public ApiResult<Member> memberEmail(@PathVariable String email){
+        Member member = memberSVC.findByEmail(email);
+        ApiResult<Member> result = new ApiResult<>("00","success",member);
+        return result;
+    }
+
+    //멤버 닉네임으로 조회
+    @ResponseBody
+    @GetMapping("/api/member/{nickname}")
+    public ApiResult<Member> memberNickname(@PathVariable String nickname){
+        Member member = memberSVC.findByNickname(nickname);
         ApiResult<Member> result = new ApiResult<>("00","success",member);
         return result;
     }

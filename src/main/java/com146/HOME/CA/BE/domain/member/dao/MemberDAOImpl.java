@@ -143,6 +143,60 @@ public class MemberDAOImpl implements MemberDAO{
         return member;
     }
 
+    //이메일로 찾기
+    @Override
+    public Member selectMemberByEmail(String email) {
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("select member_num, ");
+        sql.append("       id, ");
+        sql.append("       name, ");
+        sql.append("       pw, ");
+        sql.append("       tel, ");
+        sql.append("       email, ");
+        sql.append("       birth, ");
+        sql.append("       gender, ");
+        sql.append("       nickname, ");
+        sql.append("       cdate, ");
+        sql.append("       udate ");
+        sql.append("  from member ");
+        sql.append(" where email = ? ");
+
+        Member member = jdbcTemplate.queryForObject(
+                sql.toString(),
+                new BeanPropertyRowMapper<>(Member.class),
+                email
+        );
+        return member;
+    }
+
+    //닉네임으로 찾기
+    @Override
+    public Member selectMemberByNickname(String nickname) {
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("select member_num, ");
+        sql.append("       id, ");
+        sql.append("       name, ");
+        sql.append("       pw, ");
+        sql.append("       tel, ");
+        sql.append("       email, ");
+        sql.append("       birth, ");
+        sql.append("       gender, ");
+        sql.append("       nickname, ");
+        sql.append("       cdate, ");
+        sql.append("       udate ");
+        sql.append("  from member ");
+        sql.append(" where nickname = ? ");
+
+        Member member = jdbcTemplate.queryForObject(
+                sql.toString(),
+                new BeanPropertyRowMapper<>(Member.class),
+                nickname
+        );
+        return member;
+    }
+
     //전체조회
     @Override
     public List<Member> selectAll() {
