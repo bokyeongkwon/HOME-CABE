@@ -50,7 +50,7 @@ public class ApiMemberController {
 
     //회원탈퇴
     @ResponseBody
-    @DeleteMapping("/api/member/{member_num}")
+    @DeleteMapping("/api/member/{memberNum}")
     public void delete(@PathVariable Long member_num){
         memberSVC.outMember(member_num);
     }
