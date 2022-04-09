@@ -75,19 +75,21 @@
       </div>
     </header>
     <main>
-      <!-- 왼쪽 카테고리 -->
-      <div id="leftCategory">
-        <div id="leftCategory_title">분야별 레시피</div>
-        <ul class="leftCategory_ul">
-          <li class="leftCategory_li"><a href="" class="leftLi_a" id="cookie">제과</a></li>
-          <li class="leftCategory_li"><a href="" class="leftLi_a" id="bread">제빵</a></li>
-          <li class="leftCategory_li"><a href="" class="leftLi_a" id="drink">음료</a></li>
-          <li class="leftCategory_li"><a href="" class="leftLi_a" id="noOven">노오븐 베이킹</a></li>
+      <!-- 왼쪽 배너.-->
+      <div id="leftCategory" >
+        <th:block th:each=" super :${leftMenuTitle}">
+          <div id="leftCategory_title" th:text="${super.cateName}">[super]</div>
+        </th:block>
+        <ul class="leftCategory_ul" >
+          <th:block th:each=" items :${subTitle}">
+            <li class="leftCategory_li" ><a href="" th:href="@{/board/1(cateNum=${items.cateNum})}" id="leftCategory_li" class="leftLi_a" th:text="${items.cateName}">[sub]</a></li>
+          </th:block>
         </ul>
       </div>
       <!-- 본문 -->
       <!-- 게시물 -->
       <div class="main_content">
+        <form action="" th:action th:method="Get" th:object="${detailForm}"></form>
         <div class="contentWrap" th:data-code="${cateNum}">
           <!-- 게시물 상단 -->
           <div class="content_top">
@@ -104,13 +106,9 @@
                   <li><i th:if="$(good==-1)" th:data-boardNum="*{boardNum}" class="fas fa-heart toggleColorChange"></i></li>
                 </ul>
               </div>
-              <!-- 구독, 관심리스트 -->
+              <!-- 게시물 -->
               <div class="side_med">
                 <ul class="med_ul">
-                  <li><button class="sub_member" type="button" id="subscribe"
-                              th:unless="${board.memberNum} == &{subscribe.subMemberNum}">구독</button></li>
-                  <li><button class="del_sub_member" type="button" id="delSubscribe"
-                              th:if="${board.memberNum} == &{subscribe.subMemberNum}">구독 취소</button></li>
                   <li><div><a href="#" class="boardList" th:href="@{/mypage/{board.memberNum}/boardList}" >[[${nickname}]]의 게시물</a></div></li>
                 </ul>
               </div>
@@ -138,6 +136,7 @@
           </div>
           <!-- 게시물 내용 -->
           <div class="content_main">
+            <img src="https://cdn.pixabay.com/photo/2016/07/01/19/43/pretzels-1491789_960_720.jpg" alt="">
             <p th:text="*{boardContent}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sed labore ut tempora amet? Id, voluptatibus incidunt quis rem et amet ut excepturi minus, aliquid velit eum numquam quos cupiditate.
               Laboriosam, quaerat aliquid placeat quia, amet optio totam voluptatum illo nulla autem blanditiis architecto ipsa laborum debitis vel neque modi in cum! Fuga at unde officia tenetur distinctio vel delectus.
               Aliquam obcaecati eveniet soluta eligendi alias quibusdam recusandae harum, quis cum sed repellendus veniam minus culpa nostrum dolorem assumenda, illum corporis suscipit deserunt error accusantium doloribus minima placeat voluptates. Consequuntur.
@@ -156,25 +155,24 @@
           <div class="replied_top">댓글</div>
           <!-- 댓글 내용 -->
           <table>
-            <tr th:each="board : ${list}">
-              <td width="20% th:text=${board.nickname}"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</td>
-              <td width="55%" th:text="${board.replyContent}">너무 맛있어 보여요~</td>
-              <td width="20%" th:text="${board.replyDate}">2022-03-04</td>
+            <tr th:each="reply : ${replyList}">
+              <td width="20% th:text=${reply.nickname}"><img src="/등급 아이콘/1.png" alt="" width="15px" height="15px">알로하</td>
+              <td width="55%" th:text="${reply.replyContent}">너무 맛있어 보여요~</td>
+              <td width="20%" th:text="${reply.replyDate}">2022-03-04</td>
               <td width="5%" class="icon">
-                  <i class="fas fa-bars" >
-                      <div class="menu1" th:unless="${memberNum} == ${board.memberNum}" >
-                        <ul class="menu_list">
-                          <li class="menu_item"><button class="replyBtn" id="replyBtn" type="button">답글</button></li>
-                          <li class="menu_item"><button class="reportBtn" id="reportRBtn" type="button"><a href="#">신고</a></button></li>
-                        </ul>
-                      </div>
-                      <div class="menu2" th:if="${memberNum} == ${board.memberNum}" >
-                        <ul class="menu_list">
-                          <li class="menu_item"><button class="updateBtn" id="replyUBtn" type="button">수정</button></li>
-                          <li class="menu_item"><button class="deleteBtn" id="replyDBtn" type="button">삭제</button></li>
-                        </ul>
-                      </div>
-                  </i>
+                <i class="fas fa-bars" >
+                  <div class="menu1" th:unless="${memberNum} == ${reply.memberNum}" >
+                    <ul class="menu_list">
+                      <li class="menu_item"><button class="reportBtn" id="reportRBtn" type="button"><a href="#">신고</a></button></li>
+                    </ul>
+                  </div>
+                  <div class="menu2" th:if="${memberNum} == ${reply.memberNum}" >
+                    <ul class="menu_list">
+                      <li class="menu_item"><button class="updateBtn" id="replyUBtn" type="button">수정</button></li>
+                      <li class="menu_item"><button class="deleteBtn" id="replyDBtn" type="button">삭제</button></li>
+                    </ul>
+                  </div>
+                </i>
               </td>
             </tr>
           </table>

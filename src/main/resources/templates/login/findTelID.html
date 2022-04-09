@@ -47,7 +47,7 @@
   </div>
 </div>
 <!-- 타이틀 내용 -->
-<form action="/home.html" th:action="@{/findTelID}" class="findTelID" th:object="${findTelIDForm}" method="post" th:method="post">
+<form action="/home.html" th:action="@{/findTelID}" class="findTelID" th:object="${findTelID}" method="post" th:method="post">
 <!--<form action="" th:action method="post" th:object="${findTelID}">-->
 
 
@@ -75,10 +75,10 @@
   <div id="type1" style="display:block">
     <ul class="idFind-phoneText">
       <li>
-        <input type="text" class="text-name" placeholder=" 이름" >
+        <input type="text" class="text-name" th:field="*{name}" placeholder=" 이름" >
       </li>
       <li>
-        <input type="text" class="textInfo" placeholder="  - 없이 입력" >
+        <input type="text" class="textInfo" th:field="*{tel}" placeholder="  - 없이 입력" >
       </li>
       <!-- 선택1 버튼 -->
       <button type="submit" class="findID-button">확인</button>
