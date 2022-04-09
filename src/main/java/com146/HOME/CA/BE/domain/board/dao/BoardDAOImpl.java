@@ -41,6 +41,8 @@ public class BoardDAOImpl implements BoardDAO {
         sql.append(" board_content, ");
         sql.append(" from_recipe, ");
         sql.append(" board_map_address) ");
+//        이미지 첨부 오류 나서 잠시 주석처리
+//        sql.append(" board_picture) ");
         sql.append(" values(board_board_num_seq.nextval,?,?,?,?,?,?,?) ");
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -53,13 +55,13 @@ public class BoardDAOImpl implements BoardDAO {
                 pstmt.setLong(3, board.getMemberNum());
                 pstmt.setString(4, board.getNickname());
                 pstmt.setString(5, board.getBoardContent());
-                pstmt.setString(6, board.getBoardMapAddress());
+                pstmt.setString(6, board.getFromRecipe());
                 pstmt.setString(7, board.getBoardMapAddress());
+//                이미지가 다수 첨부될 수 있어 bytes 사용.
+//                pstmt.setBytes(8, board.getBoardPicture());
                 return pstmt;
             }
         },keyHolder);
-
-
 
         return Long.valueOf(keyHolder.getKeys().get("board_num").toString());
     }
@@ -174,7 +176,7 @@ public class BoardDAOImpl implements BoardDAO {
         sql.append(" select t1.* from( ");
         sql.append("     SELECT ROW_NUMBER() OVER (ORDER BY board_num desc) no, ");
         sql.append("     board_num, ");
-        sql.append("     cate_code, ");
+        sql.append("     cate_num, ");
         sql.append("     board_title, ");
         sql.append("     member_num, ");
         sql.append("     nickname, ");
@@ -182,7 +184,7 @@ public class BoardDAOImpl implements BoardDAO {
         sql.append("     board_date ");
         sql.append("     FROM ");
         sql.append("     board ");
-        sql.append("     where cate_code = ? ) t1 ");
+        sql.append("     where cate_num = ? ) t1 ");
         sql.append(" where t1.no between ? and ? ");
 
         List<Board> list = jdbcTemplate.query(
@@ -206,8 +208,6 @@ public class BoardDAOImpl implements BoardDAO {
         sql.append("  from board  ");
         sql.append(" where  ");
 
-
-
         return 0;
     }
 
@@ -218,7 +218,7 @@ public class BoardDAOImpl implements BoardDAO {
      */
     @Override
     public int totalCount(int cateNum) {
-        String sql = " select count(*) from board where cate_code = ? ";
+        String sql = " select count(*) from board where cate_num = ? ";
 
         Integer itemCnt = 0;
         try {

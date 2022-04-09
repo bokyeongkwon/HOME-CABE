@@ -41,7 +41,7 @@ public class BoardController {
   private final CategoryDAO categoryDAO;
   private final UploadFileSVC uploadFileSVC;
 
-  //    페이징 구현 (10, 10) - 디폴트?
+  //    페이징 구현 (10, 10) - 디폴트
   @Autowired
   @Qualifier("pc10")
   private PageCriteria pc10;
@@ -144,7 +144,7 @@ public String list(
 
 //  공통 CRUD
 //작성양식
-@GetMapping("/add")
+@GetMapping(value="/add")
 public String addForm(
         Model model,
         @RequestParam(required = false) Optional<Integer> category,
@@ -209,21 +209,21 @@ public String addForm(
     return "redirect:/board/{boardNum}";
   }
 
-
+//  카테고리 링크 관련 일부 주석처리
   //상세 조회
-  @GetMapping("/{boardNum}")
+  @GetMapping(value="/{boardNum}/detail")
   public String detail(
           @PathVariable Long boardNum,
-          @RequestParam(required = false) Optional<Integer> category,
+//          @RequestParam(required = false) Optional<Integer> category,
           Model model) {
 
-    int cate = getCategory(category);
+//    int cate = getCategory(category);
 
     Board detailBoard = boardSVC.findByBoardNum(boardNum);
     com146.HOME.CA.BE.web.form.board.DetailForm detailForm = new DetailForm();
     BeanUtils.copyProperties(detailBoard, detailForm);
     model.addAttribute("detailForm", detailForm);
-    model.addAttribute("category", cate);
+//    model.addAttribute("category", cate);
 
     //첨부조회
     List<UploadFile> attachFiles = uploadFileSVC.getFilesByCateNumWithBoardNum(detailBoard.getCateNum(), detailBoard.getBoardNum());
@@ -232,7 +232,7 @@ public String addForm(
       model.addAttribute("attachFiles", attachFiles);
     }
 
-    return "board/content";
+    return "board/boardDetail";
   }
 
 
@@ -344,13 +344,11 @@ public String addForm(
 //  }
 
 
-
-
-
   //쿼리스트링 카테고리 읽기, 없으면 ""반환
   private int getCategory(Optional<Integer> category) {
     int cate = category.isPresent()? category.get():null;
     log.info("category={}", cate);
     return cate;
   }
+
 }

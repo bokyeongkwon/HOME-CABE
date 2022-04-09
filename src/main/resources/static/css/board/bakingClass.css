@@ -207,15 +207,14 @@
 
    }
 
-
    /* 지도 */
    #mapDisplay{
     height: 40%;
+    max-height: 393px;
 
     border: black 1px solid;
     border-radius: 5px;
     margin: 20px 20px 0 20px;
-
    }
 
    #map{

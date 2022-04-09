@@ -109,24 +109,24 @@ public class BoardSVCImpl implements BoardSVC {
 
   /**
    * 페이징 적용된 카테고리별 게시판 목록
-   * @param cateCode
+   * @param cateNum
    * @param startRec
    * @param endRec
    * @return
    */
   @Override
-  public List<Board> selectBoard(int cateCode, int startRec, int endRec) {
-    return boardDAO.selectBoard(cateCode, startRec, endRec);
+  public List<Board> selectBoard(int cateNum, int startRec, int endRec) {
+    return boardDAO.selectBoard(cateNum, startRec, endRec);
   }
 
   /**
    * 카테고리별 게시물 총 개수
-   * @param cateCode
+   * @param cateNum
    * @return
    */
   @Override
-  public int totalCount(int cateCode) {
-    return boardDAO.totalCount(cateCode);
+  public int totalCount(int cateNum) {
+    return boardDAO.totalCount(cateNum);
   }
 
   /**

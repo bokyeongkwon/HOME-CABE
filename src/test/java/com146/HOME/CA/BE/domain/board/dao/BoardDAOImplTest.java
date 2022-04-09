@@ -108,14 +108,16 @@ class BoardDAOImplTest {
 
   @Test
   @DisplayName("샘플 데이터 다수 등록")
-  void insertBbss() {
-    for(int i=1; i<101; i++) {
+  void insertBbs() {
+    for(int i=1; i<102; i++) {
       Board board = new Board();
-      board.setCateNum(11);
-      board.setBoardTitle("제과"+i);
+      board.setCateNum(32);
+      board.setBoardTitle("보정"+i);
       board.setMemberNum(1L);
       board.setNickname("닉네임1");
-      board.setBoardContent("제과"+i);
+      board.setBoardContent("보정"+i);
+      board.setFromRecipe("나의 레시피");
+//      board.setBoardPicture();
 
       boardDAO.insertBoard(board);
     }
